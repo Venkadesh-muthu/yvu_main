@@ -17,6 +17,7 @@ class FacultyEducationModel extends Model
         'town',
         'district',
         'state',
+        'visibility',
         'created_at',
         'updated_at'
     ];

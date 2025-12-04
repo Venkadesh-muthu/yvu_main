@@ -6,18 +6,14 @@ use App\Controllers\BaseController;
 use App\Models\FacultyProfileModel;
 use App\Models\FacultyEducationModel;
 use App\Models\FacultyProfileVisibilityModel;
-use App\Models\FacultyEducationVisibilityModel;
 use App\Models\FacultyExperienceModel;
-use App\Models\FacultyExperienceVisibilityModel;
 
 class FacultyController extends BaseController
 {
     protected $profileModel;
     protected $eduModel;
     protected $ProfileVisibilityModel;
-    protected $educationVisibilityModel;
     protected $experienceModel;
-    protected $experienceVisibilityModel;
 
     public function __construct()
     {
@@ -25,9 +21,7 @@ class FacultyController extends BaseController
         $this->profileModel = new FacultyProfileModel();
         $this->eduModel = new FacultyEducationModel();
         $this->ProfileVisibilityModel = new FacultyProfileVisibilityModel();
-        $this->educationVisibilityModel = new FacultyEducationVisibilityModel();
         $this->experienceModel = new FacultyExperienceModel();
-        $this->experienceVisibilityModel = new FacultyExperienceVisibilityModel();
 
         $this->updateProfileExistsSession();
     }
@@ -351,25 +345,10 @@ class FacultyController extends BaseController
             ->where('faculty_id', $facultyId)
             ->orderBy('id', 'DESC')
             ->findAll();
-
-        // ✅ FETCH VISIBILITY FOR EACH EDUCATION
-        $visibility = [];
-
-        foreach ($education as $edu) {
-            $row = $this->educationVisibilityModel
-                ->where('faculty_education_id', $edu['id'])
-                ->first();
-
-            if ($row) {
-                $visibility[$edu['id']] = $row;
-            }
-        }
-
         $data = [
             'title'      => 'Educational Background',
             'content'    => 'faculty/educations',
-            'education'  => $education,
-            'visibility' => $visibility
+            'education'  => $education
         ];
 
         return view('faculty/layout/template', $data);
@@ -505,11 +484,6 @@ class FacultyController extends BaseController
             return redirect()->to('/faculty/educations')->with('error', 'Unauthorized access.');
         }
 
-        // ✅ DELETE VISIBILITY DATA FIRST
-        $this->educationVisibilityModel
-            ->where('faculty_education_id', $id)
-            ->delete();
-
         // ✅ DELETE EDUCATION DATA
         $this->eduModel->delete($id);
 
@@ -523,34 +497,21 @@ class FacultyController extends BaseController
         }
 
         $eduId  = $this->request->getPost('faculty_education_id');
-        $field  = $this->request->getPost('field');
-        $status = $this->request->getPost('status');
 
-        $model = $this->educationVisibilityModel;
-
-        $row = $model->where('faculty_education_id', $eduId)->first();
-
-        if ($row) {
-            $model->update($row['id'], [
-                $field => $status
-            ]);
-        } else {
-            $insertData = [
-                'faculty_education_id' => $eduId,
-                'category' => 'hide',
-                'year_of_class' => 'hide',
-                'institute' => 'hide',
-                'town' => 'hide',
-                'district' => 'hide',
-                'state' => 'hide',
-                $field => $status
-            ];
-
-            $model->insert($insertData);
+        $edu = $this->eduModel->find($eduId);
+        if (!$edu) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Education not found']);
         }
 
-        return $this->response->setJSON(['status' => 'success']);
+        // Toggle visibility
+        $newStatus = ($edu['visibility'] === 'view') ? 'hide' : 'view';
+
+        $this->eduModel->update($eduId, ['visibility' => $newStatus]);
+
+        return $this->response->setJSON(['status' => 'success', 'newVisibility' => $newStatus]);
     }
+
+
     // ---------------------- EXPERIENCE FUNCTIONS ----------------------
 
     public function experiences()
@@ -566,22 +527,10 @@ class FacultyController extends BaseController
             ->orderBy('id', 'DESC')
             ->findAll();
 
-        // Fetch visibility for each experience
-        $visibility = [];
-        foreach ($experience as $exp) {
-            $row = $this->experienceVisibilityModel
-                        ->where('faculty_experience_id', $exp['id'])
-                        ->first();
-            if ($row) {
-                $visibility[$exp['id']] = $row;
-            }
-        }
-
         $data = [
             'title'       => 'Faculty Experience',
             'content'     => 'faculty/experiences',
-            'experience'  => $experience,
-            'visibility'  => $visibility
+            'experience'  => $experience
         ];
 
         return view('faculty/layout/template', $data);
@@ -713,12 +662,6 @@ class FacultyController extends BaseController
         if (!$row) {
             return redirect()->to('/faculty/experiences')->with('error', 'Unauthorized access.');
         }
-
-        // Delete visibility first
-        $this->experienceVisibilityModel
-            ->where('faculty_experience_id', $id)
-            ->delete();
-
         // Delete experience row
         $this->experienceModel->delete($id);
 
@@ -731,33 +674,21 @@ class FacultyController extends BaseController
             return $redirect;
         }
 
-        $expId  = $this->request->getPost('faculty_experience_id');
-        $field  = $this->request->getPost('field');
-        $status = $this->request->getPost('status');
+        $expId = $this->request->getPost('faculty_experience_id');
 
-        $model = $this->experienceVisibilityModel;
-
-        $row = $model->where('faculty_experience_id', $expId)->first();
-
-        if ($row) {
-            $model->update($row['id'], [$field => $status]);
-        } else {
-            $insertData = [
-                'faculty_experience_id' => $expId,
-                'section' => 'hide',
-                'title_type' => 'hide',
-                'title_value' => 'hide',
-                'workplace' => 'hide',
-                'from_date' => 'hide',
-                'to_date' => 'hide',
-                $field => $status
-            ];
-
-            $model->insert($insertData);
+        $exp = $this->experienceModel->find($expId);
+        if (!$exp) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Experience not found']);
         }
 
-        return $this->response->setJSON(['status' => 'success']);
+        // Toggle visibility
+        $newStatus = ($exp['visibility'] === 'view') ? 'hide' : 'view';
+
+        $this->experienceModel->update($expId, ['visibility' => $newStatus]);
+
+        return $this->response->setJSON(['status' => 'success', 'newVisibility' => $newStatus]);
     }
+
     // ---------------------------------------------------------
     // LOGOUT
     // ---------------------------------------------------------

@@ -39,76 +39,96 @@
                             <th>Actions</th>
                         </tr>
                     </thead>
-
                     <tbody>
                     <?php if (!empty($profile)): ?>
                         <tr>
                             <td>1</td>
 
+                            <!-- Name -->
                             <td>
                                 <div class="d-flex align-items-center justify-content-between">
                                     <span><?= esc($profile['name']) ?></span>
-                                    <input class="form-check-input ms-2" type="checkbox"
-                                        id="name_checkbox"
-                                        <?= (!empty($visibility['name']) && $visibility['name'] === 'view') ? 'checked' : '' ?>
-                                        onchange="toggleVisibility('name', this.checked)">
+                                    <button type="button" class="btn btn-sm btn-info ms-3"
+                                        id="name_eye"
+                                        onclick="toggleVisibility('name')"
+                                        data-status="<?= (!empty($visibility['name']) && $visibility['name'] === 'view') ? 'view' : 'hide' ?>"
+                                        title="<?= (!empty($visibility['name']) && $visibility['name'] === 'view') ? 'Hide' : 'Show' ?>">
+                                        <i class="fas <?= (!empty($visibility['name']) && $visibility['name'] === 'view') ? 'fa-eye' : 'fa-eye-slash' ?>"></i>
+                                    </button>
                                 </div>
                             </td>
 
+                            <!-- Designation -->
                             <td>
                                 <div class="d-flex align-items-center justify-content-between">
                                     <span><?= esc($profile['designation'] ?: '-') ?></span>
-                                    <input class="form-check-input ms-2" type="checkbox"
-                                        id="designation_checkbox"
-                                        <?= (!empty($visibility['designation']) && $visibility['designation'] === 'view') ? 'checked' : '' ?>
-                                        onchange="toggleVisibility('designation', this.checked)">
+                                    <button type="button" class="btn btn-sm btn-info ms-3"
+                                        id="designation_eye"
+                                        onclick="toggleVisibility('designation')"
+                                        data-status="<?= (!empty($visibility['designation']) && $visibility['designation'] === 'view') ? 'view' : 'hide' ?>"
+                                        title="<?= (!empty($visibility['designation']) && $visibility['designation'] === 'view') ? 'Hide' : 'Show' ?>">
+                                        <i class="fas <?= (!empty($visibility['designation']) && $visibility['designation'] === 'view') ? 'fa-eye' : 'fa-eye-slash' ?>"></i>
+                                    </button>
                                 </div>
                             </td>
 
+                            <!-- Department -->
                             <td>
                                 <div class="d-flex align-items-center justify-content-between">
                                     <span><?= esc($profile['department'] ?: '-') ?></span>
-                                    <input class="form-check-input ms-2" type="checkbox"
-                                        id="department_checkbox"
-                                        <?= (!empty($visibility['department']) && $visibility['department'] === 'view') ? 'checked' : '' ?>
-                                        onchange="toggleVisibility('department', this.checked)">
+                                    <button type="button" class="btn btn-sm btn-info ms-3"
+                                        id="department_eye"
+                                        onclick="toggleVisibility('department')"
+                                        data-status="<?= (!empty($visibility['department']) && $visibility['department'] === 'view') ? 'view' : 'hide' ?>"
+                                        title="<?= (!empty($visibility['department']) && $visibility['department'] === 'view') ? 'Hide' : 'Show' ?>">
+                                        <i class="fas <?= (!empty($visibility['department']) && $visibility['department'] === 'view') ? 'fa-eye' : 'fa-eye-slash' ?>"></i>
+                                    </button>
                                 </div>
                             </td>
 
+                            <!-- Phone -->
                             <td>
                                 <div class="d-flex align-items-center justify-content-between">
                                     <span><?= esc($profile['phone_no'] ?: '-') ?></span>
-                                    <input class="form-check-input ms-2" type="checkbox"
-                                        id="phone_no_checkbox"
-                                        <?= (!empty($visibility['phone_no']) && $visibility['phone_no'] === 'view') ? 'checked' : '' ?>
-                                        onchange="toggleVisibility('phone_no', this.checked)">
+                                    <button type="button" class="btn btn-sm btn-info ms-3"
+                                        id="phone_no_eye"
+                                        onclick="toggleVisibility('phone_no')"
+                                        data-status="<?= (!empty($visibility['phone_no']) && $visibility['phone_no'] === 'view') ? 'view' : 'hide' ?>"
+                                        title="<?= (!empty($visibility['phone_no']) && $visibility['phone_no'] === 'view') ? 'Hide' : 'Show' ?>">
+                                        <i class="fas <?= (!empty($visibility['phone_no']) && $visibility['phone_no'] === 'view') ? 'fa-eye' : 'fa-eye-slash' ?>"></i>
+                                    </button>
                                 </div>
                             </td>
 
+                            <!-- Email -->
                             <td>
                                 <div class="d-flex align-items-center justify-content-between">
                                     <span><?= esc($profile['email_official'] ?: '-') ?></span>
-                                    <input class="form-check-input ms-2" type="checkbox"
-                                        id="email_official_checkbox"
-                                        <?= (!empty($visibility['email_official']) && $visibility['email_official'] === 'view') ? 'checked' : '' ?>
-                                        onchange="toggleVisibility('email_official', this.checked)">
+                                    <button type="button" class="btn btn-sm btn-info ms-3"
+                                        id="email_official_eye"
+                                        onclick="toggleVisibility('email_official')"
+                                        data-status="<?= (!empty($visibility['email_official']) && $visibility['email_official'] === 'view') ? 'view' : 'hide' ?>"
+                                        title="<?= (!empty($visibility['email_official']) && $visibility['email_official'] === 'view') ? 'Hide' : 'Show' ?>">
+                                        <i class="fas <?= (!empty($visibility['email_official']) && $visibility['email_official'] === 'view') ? 'fa-eye' : 'fa-eye-slash' ?>"></i>
+                                    </button>
                                 </div>
                             </td>
 
+                            <!-- Actions -->
                             <td>
                                 <a href="<?= base_url('faculty/edit-profile/' . $profile['id']) ?>" class="btn btn-warning btn-sm">
                                     <i class="bi bi-pencil-square"></i> Edit
                                 </a>
-                                <a href="<?= base_url('faculty/delete-profile/' . $profile['id']) ?>"
-                                onclick="return confirm('Delete this profile?');"
+                                <a href="<?= base_url('faculty/delete-profile/' . $profile['id']) ?>" 
+                                onclick="return confirm('Delete this profile?');" 
                                 class="btn btn-danger btn-sm">
                                     <i class="bi bi-trash"></i> Delete
                                 </a>
                             </td>
                         </tr>
-
                     <?php endif; ?>
                     </tbody>
+
                 </table>
 
                 </div>
@@ -138,8 +158,6 @@
                             'reservation' => 'Reservation',
                             'address_residential' => 'Residential Address',
                             'address_office' => 'Office Address',
-                            'phone_no' => 'Phone',
-                            'email_official' => 'Email',
                             'aadhaar_no' => 'Aadhaar No',
                             'blood_group' => 'Blood Group',
                             'place_of_birth' => 'Place of Birth'
@@ -151,27 +169,30 @@
                                 <td class="d-flex align-items-center justify-content-between">
                                     <span><?= esc($profile[$field_key] ?: '-') ?></span>
 
-                                    <div class="form-check mb-0 ms-3">
-                                        <input class="form-check-input" type="checkbox" 
-                                            id="<?= $field_key ?>_checkbox"
-                                            <?= (!empty($visibility[$field_key]) && $visibility[$field_key] === 'view') ? 'checked' : '' ?>
-                                            onchange="toggleVisibility('<?= $field_key ?>', this.checked)">
-                                        <label class="form-check-label" for="<?= $field_key ?>_checkbox">
-                                            Show
-                                        </label>
-                                    </div>
+                                    <!-- ✅ Eye icon instead of checkbox -->
+                                    <button type="button" class="btn btn-sm btn-info ms-3"
+                                            id="<?= $field_key ?>_eye"
+                                            onclick="toggleVisibility('<?= $field_key ?>')"
+                                            data-status="<?= (!empty($visibility[$field_key]) && $visibility[$field_key] === 'view') ? 'view' : 'hide' ?>"
+                                            title="<?= (!empty($visibility[$field_key]) && $visibility[$field_key] === 'view') ? 'Hide' : 'Show' ?>">
+                                        <?php if (!empty($visibility[$field_key]) && $visibility[$field_key] === 'view'): ?>
+                                            <i class="fas fa-eye"></i>
+                                        <?php else: ?>
+                                            <i class="fas fa-eye-slash"></i>
+                                        <?php endif; ?>
+                                    </button>
+
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     </table>
-
                     <h5 class="mt-4">Research Profile Links</h5>
                     <?php
                     $researchLinks = [
-                        'vidwan_url'          => 'VIDWAN',
-                        'orcid_url'           => 'ORCID',
-                        'scopus_url'          => 'SCOPUS',
-                        'google_scholar_url'  => 'Google Scholar'
+                    'vidwan_url'          => 'VIDWAN',
+                    'orcid_url'           => 'ORCID',
+                    'scopus_url'          => 'SCOPUS',
+                    'google_scholar_url'  => 'Google Scholar'
                     ];
                     ?>
 
@@ -186,20 +207,23 @@
                                         -
                                     <?php endif; ?>
 
-                                    <div class="form-check mb-0">
-                                        <input class="form-check-input" type="checkbox" 
-                                            id="<?= $field_key ?>_checkbox"
-                                            <?= (!empty($visibility[$field_key]) && $visibility[$field_key] === 'view') ? 'checked' : '' ?>
-                                            onchange="toggleVisibility('<?= $field_key ?>', this.checked)">
-                                        <label class="form-check-label" for="<?= $field_key ?>_checkbox">
-                                            Show
-                                        </label>
-                                    </div>
+                                    <!-- Eye icon instead of checkbox -->
+                                    <button type="button" class="btn btn-sm btn-info"
+                                            id="<?= $field_key ?>_eye"
+                                            onclick="toggleVisibility('<?= $field_key ?>')"
+                                            data-status="<?= (!empty($visibility[$field_key]) && $visibility[$field_key] === 'view') ? 'view' : 'hide' ?>"
+                                            title="<?= (!empty($visibility[$field_key]) && $visibility[$field_key] === 'view') ? 'Hide' : 'Show' ?>">
+                                        <?php if (!empty($visibility[$field_key]) && $visibility[$field_key] === 'view'): ?>
+                                            <i class="fas fa-eye"></i>
+                                        <?php else: ?>
+                                            <i class="fas fa-eye-slash"></i>
+                                        <?php endif; ?>
+                                    </button>
+
                                 </td>
                             </tr>
                         <?php endforeach; ?>
                     </table>
-
                 <?php endif; ?>
             </div>
         </div>

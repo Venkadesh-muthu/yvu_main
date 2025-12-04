@@ -17,6 +17,7 @@ class FacultyExperienceModel extends Model
         'workplace',
         'from_date',
         'to_date',
+        'visibility',
         'created_at',
         'updated_at'
     ];

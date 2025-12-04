@@ -26,102 +26,60 @@
                                 <th>Town</th>
                                 <th>District</th>
                                 <th>State</th>
+                                <th>Visibility</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
 
                         <tbody>
-                        <?php if (!empty($education)): ?>
-                            <?php $i = 1;
-                            foreach ($education as $edu): ?>
-                                <tr>
-                                    <td><?= $i++; ?></td>
+                            <?php if (!empty($education)): ?>
+                                <?php $i = 1;
+                                foreach ($education as $edu): ?>
+                                    <tr id="edu-row-<?= $edu['id'] ?>">
 
-                                    <!-- CATEGORY -->
-                                    <td>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span><?= ucfirst(str_replace('_', ' ', $edu['category'])) ?></span>
+                                        <td><?= $i++; ?></td>
 
-                                            <input class="form-check-input ms-2" type="checkbox"
-                                            <?= (!empty($visibility[$edu['id']]['category']) && $visibility[$edu['id']]['category'] == 'view') ? 'checked' : '' ?>
-                                            onchange="toggleEducationVisibility(<?= $edu['id'] ?>, 'category', this.checked)">
-                                        </div>
-                                    </td>
+                                        <td class="edu-content"><?= ucfirst(str_replace('_', ' ', $edu['category'])) ?></td>
+                                        <td class="edu-content"><?= esc($edu['year_of_class']) ?></td>
+                                        <td class="edu-content"><?= esc($edu['institute']) ?></td>
+                                        <td class="edu-content"><?= esc($edu['town']) ?></td>
+                                        <td class="edu-content"><?= esc($edu['district']) ?></td>
+                                        <td class="edu-content"><?= esc($edu['state']) ?></td>
 
-                                    <!-- YEAR/CLASS -->
-                                    <td>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span><?= esc($edu['year_of_class']) ?></span>
+                                        <!-- ✅ ONE COMMON EYE ICON -->
+                                        <td class="text-center">
+                                            <button type="button"
+                                                class="btn btn-sm btn-info"
+                                                id="eye-btn-<?= $edu['id'] ?>"
+                                                onclick="toggleEducationVisibility(<?= $edu['id'] ?>)">
+                                                <?php if ($edu['visibility'] === 'view'): ?>
+                                                    <i class="fas fa-eye"></i>
+                                                <?php else: ?>
+                                                    <i class="fas fa-eye-slash"></i>
+                                                <?php endif; ?>
+                                            </button>
+                                        </td>
 
-                                            <input class="form-check-input ms-2" type="checkbox"
-                                            <?= (!empty($visibility[$edu['id']]['year_of_class']) && $visibility[$edu['id']]['year_of_class'] == 'view') ? 'checked' : '' ?>
-                                            onchange="toggleEducationVisibility(<?= $edu['id'] ?>, 'year_of_class', this.checked)">
-                                        </div>
-                                    </td>
+                                        <!-- ACTIONS -->
+                                        <td>
+                                            <a href="<?= base_url('faculty/edit-education/' . $edu['id']) ?>" class="btn btn-warning btn-sm">
+                                                <i class="bi bi-pencil-square"></i> Edit
+                                            </a>
 
-                                    <!-- INSTITUTE -->
-                                    <td>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span><?= esc($edu['institute']) ?></span>
+                                            <a href="<?= base_url('faculty/delete-education/' . $edu['id']) ?>"
+                                            onclick="return confirm('Delete this education?');"
+                                            class="btn btn-danger btn-sm">
+                                                <i class="bi bi-trash"></i> Delete
+                                            </a>
+                                        </td>
 
-                                            <input class="form-check-input ms-2" type="checkbox"
-                                            <?= (!empty($visibility[$edu['id']]['institute']) && $visibility[$edu['id']]['institute'] == 'view') ? 'checked' : '' ?>
-                                            onchange="toggleEducationVisibility(<?= $edu['id'] ?>, 'institute', this.checked)">
-                                        </div>
-                                    </td>
-
-                                    <!-- TOWN -->
-                                    <td>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span><?= esc($edu['town']) ?></span>
-
-                                            <input class="form-check-input ms-2" type="checkbox"
-                                            <?= (!empty($visibility[$edu['id']]['town']) && $visibility[$edu['id']]['town'] == 'view') ? 'checked' : '' ?>
-                                            onchange="toggleEducationVisibility(<?= $edu['id'] ?>, 'town', this.checked)">
-                                        </div>
-                                    </td>
-
-                                    <!-- DISTRICT -->
-                                    <td>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span><?= esc($edu['district']) ?></span>
-
-                                            <input class="form-check-input ms-2" type="checkbox"
-                                            <?= (!empty($visibility[$edu['id']]['district']) && $visibility[$edu['id']]['district'] == 'view') ? 'checked' : '' ?>
-                                            onchange="toggleEducationVisibility(<?= $edu['id'] ?>, 'district', this.checked)">
-                                        </div>
-                                    </td>
-
-                                    <!-- STATE -->
-                                    <td>
-                                        <div class="d-flex justify-content-between align-items-center">
-                                            <span><?= esc($edu['state']) ?></span>
-
-                                            <input class="form-check-input ms-2" type="checkbox"
-                                            <?= (!empty($visibility[$edu['id']]['state']) && $visibility[$edu['id']]['state'] == 'view') ? 'checked' : '' ?>
-                                            onchange="toggleEducationVisibility(<?= $edu['id'] ?>, 'state', this.checked)">
-                                        </div>
-                                    </td>
-
-                                    <!-- ACTIONS -->
-                                    <td>
-                                        <a href="<?= base_url('faculty/edit-education/' . $edu['id']) ?>" class="btn btn-warning btn-sm">
-                                            <i class="bi bi-pencil-square"></i> Edit
-                                        </a>
-
-                                        <a href="<?= base_url('faculty/delete-education/' . $edu['id']) ?>"
-                                        onclick="return confirm('Delete this education?');"
-                                        class="btn btn-danger btn-sm">
-                                            <i class="bi bi-trash"></i> Delete
-                                        </a>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        <?php endif; ?>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                         </tbody>
-
                     </table>
                 </div>
+
             </div>
         </div>
 

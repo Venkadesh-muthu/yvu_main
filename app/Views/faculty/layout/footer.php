@@ -101,8 +101,10 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 <?php if (!empty($profile)): ?>
 <script>
-function toggleVisibility(field, isChecked) {
-    let status = isChecked ? 'view' : 'hide';
+function toggleVisibility(field) {
+    let btn = document.getElementById(field + '_eye');
+    let currentStatus = btn.getAttribute('data-status'); // 'view' or 'hide'
+    let newStatus = currentStatus === 'view' ? 'hide' : 'view';
     let faculty_profiles_id = "<?= $profile['id'] ?>";
 
     let csrfName = "<?= csrf_token() ?>";
@@ -111,62 +113,99 @@ function toggleVisibility(field, isChecked) {
     let formData = new URLSearchParams();
     formData.append('faculty_profiles_id', faculty_profiles_id);
     formData.append('field', field);
-    formData.append('status', status);
+    formData.append('status', newStatus);
     formData.append(csrfName, csrfValue);
 
     fetch("<?= base_url('faculty/update-profile-visibility') ?>", {
         method: 'POST',
         body: formData
-    }).then(res => res.json())
-      .then(res => console.log(res))
-      .catch(err => console.error(err));
+    })
+    .then(res => res.json())
+    .then(res => {
+        if(res.status === 'success') {
+            // Update the button icon, title, and data-status
+            if(newStatus === 'view') {
+                btn.innerHTML = '<i class="fas fa-eye"></i>';
+                btn.setAttribute('title', 'Hide');
+                btn.setAttribute('data-status', 'view');
+            } else {
+                btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+                btn.setAttribute('title', 'Show');
+                btn.setAttribute('data-status', 'hide');
+            }
+        } else {
+            console.error('Failed to update visibility');
+        }
+    })
+    .catch(err => console.error(err));
 }
 </script>
 <?php endif; ?>
 
 <script>
-function toggleEducationVisibility(educationId, field, isChecked)
-{
-    let status = isChecked ? 'view' : 'hide';
+  function toggleEducationVisibility(eduId) {
+      let csrfName = "<?= csrf_token() ?>";
+      let csrfHash = "<?= csrf_hash() ?>";
 
-    let csrfName  = "<?= csrf_token() ?>";
-    let csrfValue = "<?= csrf_hash() ?>";
+      let formData = new URLSearchParams();
+      formData.append('faculty_education_id', eduId);
+      formData.append(csrfName, csrfHash);
 
-    let formData = new URLSearchParams();
-    formData.append('faculty_education_id', educationId);
-    formData.append('field', field);
-    formData.append('status', status);
-    formData.append(csrfName, csrfValue);
-
-    fetch("<?= base_url('faculty/update-education-visibility') ?>", {
-        method: 'POST',
-        body: formData
-    })
-    .then(res => res.json())
-    .then(res => console.log(res))
-    .catch(err => console.error(err));
-}
-</script>
-<script>
-function toggleExperienceVisibility(expId, field, isChecked) {
-    let status = isChecked ? 'view' : 'hide';
-    let csrfName = "<?= csrf_token() ?>";
-    let csrfValue = "<?= csrf_hash() ?>";
-
-    let formData = new URLSearchParams();
-    formData.append('faculty_experience_id', expId);
-    formData.append('field', field);
-    formData.append('status', status);
-    formData.append(csrfName, csrfValue);
-
-    fetch("<?= base_url('faculty/update-experience-visibility') ?>", {
-        method: 'POST',
-        body: formData
-    }).then(res => res.json())
-      .then(res => console.log(res))
+      fetch("<?= base_url('faculty/update-education-visibility') ?>", {
+          method: 'POST',
+          body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+          if (data.status === 'success') {
+              let btn = document.querySelector('#eye-btn-' + eduId + ' i');
+              if (data.newVisibility === 'view') {
+                  btn.classList.remove('fa-eye-slash');
+                  btn.classList.add('fa-eye');
+              } else {
+                  btn.classList.remove('fa-eye');
+                  btn.classList.add('fa-eye-slash');
+              }
+          } else {
+              alert(data.message || 'Something went wrong!');
+          }
+      })
       .catch(err => console.error(err));
-}
+  }
 </script>
+
+<script>
+  function toggleExperienceVisibility(expId) {
+      let csrfName = "<?= csrf_token() ?>";
+      let csrfHash = "<?= csrf_hash() ?>";
+
+      let formData = new URLSearchParams();
+      formData.append('faculty_experience_id', expId);
+      formData.append(csrfName, csrfHash);
+
+      fetch("<?= base_url('faculty/update-experience-visibility') ?>", {
+          method: 'POST',
+          body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+          if (data.status === 'success') {
+              let btn = document.querySelector('#eye-btn-exp-' + expId + ' i');
+              if (data.newVisibility === 'view') {
+                  btn.classList.remove('fa-eye-slash');
+                  btn.classList.add('fa-eye');
+              } else {
+                  btn.classList.remove('fa-eye');
+                  btn.classList.add('fa-eye-slash');
+              }
+          } else {
+              alert(data.message || 'Something went wrong!');
+          }
+      })
+      .catch(err => console.error(err));
+  }
+</script>
+
 
 
 
