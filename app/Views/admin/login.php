@@ -7,7 +7,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <title>Skydash Admin</title>
+    <title>YVU main</title>
     <!-- plugins:css -->
     <link rel="stylesheet" href="<?php base_url()?>admin-template/assets/vendors/feather/feather.css" />
     <link
