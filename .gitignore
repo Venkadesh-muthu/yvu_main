@@ -1,0 +1,15 @@
+# Dependencies
+/vendor/
+node_modules/
+
+# Environment file
+.env
+
+# Writable directory (CodeIgniter)
+writable/*
+!writable/.htaccess
+!writable/index.html
+
+# OS files
+.DS_Store
+Thumbs.db
