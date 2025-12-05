@@ -131,7 +131,11 @@
                                 </a>
                             </td>
                         </tr>
-                    <?php endif; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="7" class="text-center text-muted">No records found</td>
+                            </tr>
+                        <?php endif; ?>
                     </tbody>
                 </table>
 

@@ -206,7 +206,94 @@ function toggleVisibility(field) {
   }
 </script>
 
+<script>
+  function toggleAchievementVisibility(achId) {
+      let csrfName = "<?= csrf_token() ?>";
+      let csrfHash = "<?= csrf_hash() ?>";
 
+      let formData = new URLSearchParams();
+      formData.append('achievement_id', achId);
+      formData.append(csrfName, csrfHash);
+
+      fetch("<?= base_url('faculty/update-achievement-visibility') ?>", {
+          method: 'POST',
+          body: formData
+      })
+      .then(res => res.json())
+      .then(data => {
+          if (data.status === 'success') {
+              let btn = document.querySelector('#eye-btn-' + achId + ' i');
+
+              if (data.newVisibility == 1) {
+                  btn.classList.remove('fa-eye-slash');
+                  btn.classList.add('fa-eye');
+              } else {
+                  btn.classList.remove('fa-eye');
+                  btn.classList.add('fa-eye-slash');
+              }
+
+          } else {
+              alert(data.message || 'Something went wrong!');
+          }
+      })
+      .catch(err => console.error(err));
+  }
+</script>
+
+<script>
+function toggleSkillVisibility(skillId)
+{
+    let csrfName = "<?= csrf_token() ?>";
+    let csrfHash = "<?= csrf_hash() ?>";
+
+    let formData = new URLSearchParams();
+    formData.append('faculty_skill_id', skillId);
+    formData.append(csrfName, csrfHash);
+
+    fetch("<?= base_url('faculty/update-skill-visibility') ?>", {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if(data.status === 'success') {
+            let icon = document.querySelector('#eye-btn-skill-'+skillId+' i');
+            icon.className = (data.newVisibility === 'view') ? 'fas fa-eye' : 'fas fa-eye-slash';
+        }
+    });
+}
+</script>
+<script>
+function toggleWorkVisibility(workId)
+{
+    let csrfName = "<?= csrf_token() ?>";
+    let csrfHash = "<?= csrf_hash() ?>";
+
+    let formData = new URLSearchParams();
+    formData.append('faculty_work_id', workId); // ✅ MUST MATCH CONTROLLER
+    formData.append(csrfName, csrfHash);
+
+    fetch("<?= base_url('faculty/update-work-visibility') ?>", {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            let icon = document.querySelector('#eye-btn-' + workId + ' i');
+            icon.className = (data.newVisibility === 'view')
+                ? 'fas fa-eye'
+                : 'fas fa-eye-slash';
+        } else {
+            alert(data.message || 'Visibility update failed');
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Something went wrong');
+    });
+}
+</script>
 
 
 </body>

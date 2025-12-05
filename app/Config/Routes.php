@@ -75,5 +75,34 @@ $routes->group('faculty', function ($routes) {
     $routes->get('delete-experience/(:num)', 'FacultyController::delete_experience/$1'); // Delete experience
     $routes->post('update-experience-visibility', 'FacultyController::updateExperienceVisibility'); // AJAX toggle visibility
 
+    /* ---------------------------------------------------
+     |  ACHIEVEMENTS CRUD (AWARDS / HONORS + PATENTS)
+     ----------------------------------------------------*/
+    $routes->get('achievements', 'FacultyController::achievements');
+    $routes->get('add-achievement', 'FacultyController::add_achievement');
+    $routes->post('save-achievement', 'FacultyController::save_achievement');
+    $routes->get('edit-achievement/(:num)', 'FacultyController::edit_achievement/$1');
+    $routes->post('update-achievement', 'FacultyController::update_achievement');
+    $routes->get('delete-achievement/(:num)', 'FacultyController::delete_achievement/$1');
+    $routes->post('update-achievement-visibility', 'FacultyController::updateAchievementVisibility');
 
+    $routes->get('skills', 'FacultyController::skills');
+    $routes->get('add-skill', 'FacultyController::add_skill');
+    $routes->post('save-skill', 'FacultyController::save_skill');
+
+    $routes->get('edit-skill/(:num)', 'FacultyController::edit_skill/$1');
+    $routes->post('update-skill', 'FacultyController::update_skill');
+
+    $routes->get('delete-skill/(:num)', 'FacultyController::delete_skill/$1');
+
+    $routes->post('update-skill-visibility', 'FacultyController::updateSkillVisibility');
+    $routes->get('works', 'FacultyController::works');
+    $routes->get('add-work', 'FacultyController::add_work');
+    $routes->post('save-work', 'FacultyController::save_work');
+
+    $routes->get('edit-work/(:num)', 'FacultyController::edit_work/$1');
+    $routes->post('update-work', 'FacultyController::update_work');
+
+    $routes->get('delete-work/(:num)', 'FacultyController::delete_work/$1');
+    $routes->post('update-work-visibility', 'FacultyController::updateWorkVisibility');
 });

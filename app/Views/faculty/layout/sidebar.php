@@ -35,6 +35,31 @@
             </a>
         </li>
 
+        <!-- Achievements -->
+        <li class="nav-item <?= ($title == 'Achievements') ? 'active' : '' ?>"
+            <?= (!$profileExists) ? 'style="display:none"' : '' ?>>
+
+            <a class="nav-link" href="<?= base_url('faculty/achievements') ?>">
+                <i class="ti-medall menu-icon"></i>
+                <span class="menu-title">Achievements</span>
+            </a>
+
+        </li>
+        <li class="nav-item <?= ($title == 'Skills') ? 'active' : '' ?>"
+            <?= (!$profileExists) ? 'style="display:none"' : '' ?>>
+            <a class="nav-link" href="<?= base_url('faculty/skills') ?>">
+                <i class="ti-medall menu-icon"></i>
+                <span class="menu-title">Skills</span>
+            </a>
+        </li>
+
+        <li class="nav-item <?= ($title == 'Works') ? 'active' : '' ?>"
+            <?= (!$profileExists) ? 'style="display:none"' : '' ?>>
+            <a class="nav-link" href="<?= base_url('faculty/works') ?>">
+                <i class="ti-book menu-icon"></i>
+                <span class="menu-title">Works</span>
+            </a>
+        </li>
 
 
 

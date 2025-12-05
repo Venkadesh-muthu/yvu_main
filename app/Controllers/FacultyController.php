@@ -7,6 +7,9 @@ use App\Models\FacultyProfileModel;
 use App\Models\FacultyEducationModel;
 use App\Models\FacultyProfileVisibilityModel;
 use App\Models\FacultyExperienceModel;
+use App\Models\FacultyAchievementModel;
+use App\Models\FacultySkillModel;
+use App\Models\FacultyWorksModel;
 
 class FacultyController extends BaseController
 {
@@ -14,6 +17,10 @@ class FacultyController extends BaseController
     protected $eduModel;
     protected $ProfileVisibilityModel;
     protected $experienceModel;
+    protected $achievementModel;
+    protected $skillModel;
+    protected $worksModel;
+
 
     public function __construct()
     {
@@ -22,6 +29,10 @@ class FacultyController extends BaseController
         $this->eduModel = new FacultyEducationModel();
         $this->ProfileVisibilityModel = new FacultyProfileVisibilityModel();
         $this->experienceModel = new FacultyExperienceModel();
+        $this->achievementModel = new FacultyAchievementModel();
+        $this->skillModel = new FacultySkillModel();
+        $this->worksModel = new FacultyWorksModel();
+
 
         $this->updateProfileExistsSession();
     }
@@ -361,7 +372,7 @@ class FacultyController extends BaseController
         }
 
         $data = [
-            'title'   => 'Add Education',
+            'title'   => 'Educational Background',
             'content' => 'faculty/add_education'
         ];
 
@@ -419,7 +430,7 @@ class FacultyController extends BaseController
         }
 
         $data = [
-            'title'      => 'Edit Education',
+            'title'      => 'Educational Background',
             'content'    => 'faculty/edit_education',
             'education'  => $row
         ];
@@ -528,7 +539,7 @@ class FacultyController extends BaseController
             ->findAll();
 
         $data = [
-            'title'       => 'Faculty Experience',
+            'title'       => 'Experience',
             'content'     => 'faculty/experiences',
             'experience'  => $experience
         ];
@@ -543,7 +554,7 @@ class FacultyController extends BaseController
         }
 
         $data = [
-            'title'   => 'Add Experience',
+            'title'   => 'Experience',
             'content' => 'faculty/add_experience'
         ];
 
@@ -601,7 +612,7 @@ class FacultyController extends BaseController
         }
 
         $data = [
-            'title'      => 'Edit Experience',
+            'title'      => 'Experience',
             'content'    => 'faculty/edit_experience',
             'experience' => $row
         ];
@@ -688,7 +699,618 @@ class FacultyController extends BaseController
 
         return $this->response->setJSON(['status' => 'success', 'newVisibility' => $newStatus]);
     }
+    public function achievements()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
 
+        $facultyId = session()->get('faculty_id');
+
+        $achievements = $this->achievementModel
+            ->where('faculty_id', $facultyId)
+            ->orderBy('id', 'DESC')
+            ->findAll();
+
+        $data = [
+            'title'        => 'Achievements',
+            'content'      => 'faculty/achievements',
+            'achievements' => $achievements
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+    public function add_achievement()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $data = [
+            'title'   => 'Achievements',
+            'content' => 'faculty/add_achievement'
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+    public function save_achievement()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $sections     = $this->request->getPost('section');
+        $titles       = $this->request->getPost('title');
+        $descriptions = $this->request->getPost('description');
+        $monthYears   = $this->request->getPost('month_year');
+
+        foreach ($sections as $index => $section) {
+            $data = [
+                'faculty_id'  => $facultyId,
+                'section'     => $section,
+                'title'       => $titles[$index] ?? '',
+                'description' => $descriptions[$index] ?? '',
+                'month_year'  => $monthYears[$index] ?? '',
+                'visibility'  => 1
+            ];
+
+            $this->achievementModel->save($data);
+        }
+
+        return redirect()->to('/faculty/achievements')->with('success', 'Achievement added successfully.');
+    }
+    public function edit_achievement($id)
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $row = $this->achievementModel
+            ->where('id', $id)
+            ->where('faculty_id', $facultyId)
+            ->first();
+
+        if (!$row) {
+            return redirect()->to('/faculty/achievements')->with('error', 'Unauthorized access.');
+        }
+
+        $data = [
+            'title'       => 'Achievements',
+            'content'     => 'faculty/edit_achievement',
+            'achievement' => $row
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+    public function update_achievement()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $ids          = $this->request->getPost('id');
+        $sections     = $this->request->getPost('section');
+        $titles       = $this->request->getPost('title');
+        $descriptions = $this->request->getPost('description');
+        $monthYears   = $this->request->getPost('month_year');
+
+        foreach ($sections as $key => $section) {
+            $data = [
+                'faculty_id'  => $facultyId,
+                'section'     => $section,
+                'title'       => $titles[$key],
+                'description' => $descriptions[$key],
+                'month_year'  => $monthYears[$key],
+            ];
+
+            if (!empty($ids[$key])) {
+                $this->achievementModel->update($ids[$key], $data);
+            } else {
+                $this->achievementModel->insert($data);
+            }
+        }
+
+        return redirect()->to('/faculty/achievements')->with('success', 'Achievement updated successfully.');
+    }
+    public function delete_achievement($id)
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $row = $this->achievementModel
+            ->where('id', $id)
+            ->where('faculty_id', $facultyId)
+            ->first();
+
+        if (!$row) {
+            return redirect()->to('/faculty/achievements')->with('error', 'Unauthorized access.');
+        }
+
+        $this->achievementModel->delete($id);
+
+        return redirect()->to('/faculty/achievements')->with('success', 'Achievement deleted successfully.');
+    }
+    public function updateAchievementVisibility()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $achId = $this->request->getPost('achievement_id');
+
+        $ach = $this->achievementModel->find($achId);
+        if (!$ach) {
+            return $this->response->setJSON(['status' => 'error']);
+        }
+
+        $newStatus = ($ach['visibility'] == 1) ? 0 : 1;
+
+        $this->achievementModel->update($achId, ['visibility' => $newStatus]);
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'newVisibility' => $newStatus
+        ]);
+    }
+    /* ---------------------------------------------------
+ |  SKILLS / SPECIALISATION / RESEARCH AREA CRUD
+ ----------------------------------------------------*/
+
+    public function skills()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $skills = $this->skillModel
+            ->where('faculty_id', $facultyId)
+            ->orderBy('id', 'DESC')
+            ->findAll();
+
+        $data = [
+            'title'    => 'Skills',
+            'content'  => 'faculty/skills',
+            'skills'   => $skills
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+
+
+    /* ---------------- ADD FORM ---------------- */
+
+    public function add_skill()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $data = [
+            'title'   => 'Skills',
+            'content' => 'faculty/add_skill'
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+
+
+    /* ---------------- SAVE ---------------- */
+
+    public function save_skill()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        // Get the array of skill values
+        $skills = $this->request->getPost('skill_value');
+
+        // Ensure $skills is an array
+        if (!is_array($skills)) {
+            $skills = [];
+        }
+
+        foreach ($skills as $skill) {
+            if (!empty($skill)) {
+                $this->skillModel->insert([
+                    'faculty_id' => $facultyId,
+                    'skill_value' => $skill
+                ]);
+            }
+        }
+
+        return redirect()->to('/faculty/skills')->with('success', 'Skills added successfully.');
+    }
+
+    /* ---------------- EDIT FORM ---------------- */
+
+    public function edit_skill($id)
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $skill = $this->skillModel
+            ->where('id', $id)
+            ->where('faculty_id', $facultyId)
+            ->first();
+
+        if (!$skill) {
+            return redirect()->to('/faculty/skills')->with('error', 'Unauthorized access.');
+        }
+
+        $data = [
+            'title'   => 'Skills',
+            'content' => 'faculty/edit_skill', // your view file
+            'skill'   => $skill // only the selected skill
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+
+
+    /* ---------------- UPDATE ---------------- */
+
+    public function update_skill()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+        $ids = $this->request->getPost('id');           // existing IDs (empty for new)
+        $skills = $this->request->getPost('skill_value');
+
+        if (!empty($skills) && is_array($skills)) {
+            foreach ($skills as $key => $skillValue) {
+                if (!empty($skillValue)) {
+                    $data = [
+                        'faculty_id'  => $facultyId,
+                        'skill_value' => $skillValue
+                    ];
+
+                    if (!empty($ids[$key])) {
+                        // Update existing skill
+                        $this->skillModel->update($ids[$key], $data);
+                    } else {
+                        // Insert new skill
+                        $this->skillModel->insert($data);
+                    }
+                }
+            }
+        }
+
+        return redirect()->to('/faculty/skills')->with('success', 'Skills updated successfully.');
+    }
+
+    /* ---------------- DELETE ---------------- */
+
+    public function delete_skill($id)
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $row = $this->skillModel
+            ->where('id', $id)
+            ->where('faculty_id', $facultyId)
+            ->first();
+
+        if (!$row) {
+            return redirect()->to('/faculty/skills')->with('error', 'Unauthorized access.');
+        }
+
+        $this->skillModel->delete($id);
+
+        return redirect()->to('/faculty/skills')->with('success', 'Skill deleted successfully.');
+    }
+
+
+    /* ---------------- VISIBILITY TOGGLE (AJAX) ---------------- */
+
+    public function updateSkillVisibility()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $skillId = $this->request->getPost('faculty_skill_id');
+
+        $skill = $this->skillModel->find($skillId);
+
+        if (!$skill) {
+            return $this->response->setJSON([
+                'status'  => 'error',
+                'message' => 'Skill not found'
+            ]);
+        }
+
+        $newStatus = ($skill['visibility'] === 'view') ? 'hide' : 'view';
+
+        $this->skillModel->update($skillId, [
+            'visibility' => $newStatus
+        ]);
+
+        return $this->response->setJSON([
+            'status'        => 'success',
+            'newVisibility' => $newStatus
+        ]);
+    }
+    public function works()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $works = $this->worksModel
+            ->where('faculty_id', $facultyId)
+            ->orderBy('id', 'DESC')
+            ->findAll();
+
+        $data = [
+            'title'   => 'Works',
+            'content' => 'faculty/works',
+            'works'   => $works
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+
+    // ================== Add Work ==================
+    public function add_work()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $data = [
+            'title'   => 'Works',
+            'content' => 'faculty/add_work'
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+
+    // ================== Save Work ==================
+    public function save_work()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId  = session()->get('faculty_id');
+
+        $categories = $this->request->getPost('category');
+        $titles     = $this->request->getPost('title');
+        $roles      = $this->request->getPost('role');
+        $journals   = $this->request->getPost('journal');
+        $types      = $this->request->getPost('type');
+        $monthYears = $this->request->getPost('month_year');
+        $isbnIssn   = $this->request->getPost('isbn_issn');
+        $urls       = $this->request->getPost('url'); // matches form input name
+
+        // ✅ Get multiple files correctly for input name "pdf_file[]"
+        $pdfFiles = $this->request->getFileMultiple('pdf_file');
+
+        foreach ($categories as $key => $category) {
+
+            // Correct title logic for Book category
+            if (strtolower($category) === 'book') {
+                $titleToSave = $roles[$key] ?? '';
+            } else {
+                $titleToSave = $titles[$key] ?? '';
+            }
+
+            // Skip row if all important fields are empty
+            if (empty($titleToSave) && empty($journals[$key]) && empty($types[$key])) {
+                continue;
+            }
+
+            // Handle PDF upload
+            $pdfPath = '';
+            if (isset($pdfFiles[$key]) && $pdfFiles[$key]->isValid() && !$pdfFiles[$key]->hasMoved()) {
+
+                $file = $pdfFiles[$key];
+
+                // Optional: validate extension
+                if (strtolower($file->getExtension()) === 'pdf') {
+                    $newName = $file->getRandomName();
+
+                    // Save to public/uploads so it is accessible via browser
+                    $file->move(FCPATH . 'uploads/works', $newName);
+
+                    $pdfPath = 'uploads/works/' . $newName;
+                }
+            }
+
+            // Insert row
+            $this->worksModel->insert([
+                'faculty_id' => $facultyId,
+                'category'   => $category,
+                'title'      => $titleToSave,
+                'role'       => $roles[$key] ?? '',
+                'journal'    => $journals[$key] ?? '',
+                'type'       => $types[$key] ?? '',
+                'month_year' => $monthYears[$key] ?? '',
+                'isbn_issn'  => $isbnIssn[$key] ?? '',
+                'url'        => $urls[$key] ?? '',
+                'pdf_path'   => $pdfPath,
+                'visibility' => 'view'
+            ]);
+        }
+
+        return redirect()->to('/faculty/works')->with('success', 'Works added successfully.');
+    }
+
+
+
+    // ================== Edit Work ==================
+    public function edit_work($id)
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $row = $this->worksModel
+            ->where('id', $id)
+            ->where('faculty_id', $facultyId)
+            ->first();
+
+        if (!$row) {
+            return redirect()->to('/faculty/works')->with('error', 'Unauthorized access.');
+        }
+
+        $data = [
+            'title'   => 'Works',
+            'content' => 'faculty/edit_work',
+            'works'   => [$row] // wrap in an array for the form loop
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+
+
+    // ================== Update Work ==================
+    public function update_work()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $ids        = $this->request->getPost('id');
+        $categories = $this->request->getPost('category');
+        $titles     = $this->request->getPost('title');
+        $roles      = $this->request->getPost('role');
+        $journals   = $this->request->getPost('journal');
+        $types      = $this->request->getPost('type');
+        $monthYears = $this->request->getPost('month_year');
+        $isbnIssns  = $this->request->getPost('isbn_issn');
+        $urls       = $this->request->getPost('url');
+
+        // ✅ Correctly handle multiple files
+        $pdfFiles = $this->request->getFileMultiple('pdf_file');
+
+        if (!is_array($categories)) {
+            return redirect()->back()->with('error', 'No work data received.');
+        }
+
+        foreach ($categories as $key => $category) {
+
+            // ✅ Book category title logic
+            $titleToSave = (strtolower($category) === 'book') ? ($roles[$key] ?? '') : ($titles[$key] ?? '');
+
+            if (empty($category) || empty($titleToSave)) {
+                continue;
+            }
+
+            // ✅ Keep old PDF if no new file uploaded
+            $pdfPath = null;
+            if (!empty($ids[$key])) {
+                $oldWork = $this->worksModel->find($ids[$key]);
+                $pdfPath = $oldWork['pdf_path'] ?? null;
+            }
+
+            // ✅ Upload new PDF if exists
+            if (isset($pdfFiles[$key]) && $pdfFiles[$key]->isValid() && !$pdfFiles[$key]->hasMoved()) {
+                $file = $pdfFiles[$key];
+
+                // Optional: validate extension
+                if (strtolower($file->getExtension()) === 'pdf') {
+                    $newName = $file->getRandomName();
+                    $file->move(FCPATH . 'uploads/works', $newName); // ✅ save in public folder
+                    $pdfPath = 'uploads/works/' . $newName;
+                }
+            }
+
+            $data = [
+                'faculty_id' => $facultyId,
+                'category'   => $category,
+                'title'      => $titleToSave,
+                'role'       => $roles[$key] ?? null,
+                'journal'    => $journals[$key] ?? null,
+                'type'       => $types[$key] ?? null,
+                'month_year' => $monthYears[$key] ?? null,
+                'isbn_issn'  => $isbnIssns[$key] ?? null,
+                'url'        => $urls[$key] ?? null,
+                'pdf_path'   => $pdfPath,
+            ];
+
+            if (!empty($ids[$key])) {
+                $this->worksModel->update($ids[$key], $data);
+            } else {
+                $this->worksModel->insert($data);
+            }
+        }
+
+        return redirect()->to('/faculty/works')->with('success', 'Works updated successfully.');
+    }
+
+
+    // ================== Delete Work ==================
+    public function delete_work($id)
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $row = $this->worksModel
+            ->where('id', $id)
+            ->where('faculty_id', $facultyId)
+            ->first();
+
+        if (!$row) {
+            return redirect()->to('/faculty/works')->with('error', 'Unauthorized access.');
+        }
+
+        $this->worksModel->delete($id);
+
+        return redirect()->to('/faculty/works')->with('success', 'Work deleted successfully.');
+    }
+
+    // ================== Toggle Visibility ==================
+    public function updateWorkVisibility()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $workId = $this->request->getPost('faculty_work_id');
+
+        $work = $this->worksModel->find($workId);
+        if (!$work) {
+            return $this->response->setJSON(['status' => 'error', 'message' => 'Work not found']);
+        }
+
+        $newStatus = ($work['visibility'] === 'view') ? 'hide' : 'view';
+        $this->worksModel->update($workId, ['visibility' => $newStatus]);
+
+        return $this->response->setJSON(['status' => 'success', 'newVisibility' => $newStatus]);
+    }
     // ---------------------------------------------------------
     // LOGOUT
     // ---------------------------------------------------------

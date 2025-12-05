@@ -70,7 +70,11 @@
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
-                        <?php endif; ?>
+                            <?php else: ?>
+                                    <tr>
+                                        <td colspan="9" class="text-center text-muted">No records found</td>
+                                    </tr>
+                                <?php endif; ?>
                         </tbody>
                     </table>
                 </div>
