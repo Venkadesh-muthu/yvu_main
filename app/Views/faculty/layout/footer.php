@@ -294,6 +294,130 @@ function toggleWorkVisibility(workId)
     });
 }
 </script>
+<script>
+function toggleActivityVisibility(activityId)
+{
+    fetch("<?= base_url('faculty/update-activity-visibility') ?>", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        body: "activity_id=" + activityId
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            const btn = document.getElementById("eye-btn-activity-" + activityId);
+
+            if (data.newVisibility === 'view') {
+                btn.innerHTML = '<i class="fas fa-eye"></i>';
+            } else {
+                btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            }
+        }
+    });
+}
+</script>
+<script>
+function toggleResearchStudentVisibility(studentId)
+{
+    fetch("<?= base_url('faculty/update-research-student-visibility') ?>", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        body: "student_id=" + studentId
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            const btn = document.getElementById("eye-btn-research-" + studentId);
+            if (data.newVisibility === 'view') {
+                btn.innerHTML = '<i class="fas fa-eye"></i>';
+            } else {
+                btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            }
+        }
+    });
+}
+</script>
+<script>
+  function toggleProjectVisibility(projectId)
+  {
+      fetch("<?= base_url('faculty/update-project-visibility') ?>", {
+          method: "POST",
+          headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "X-Requested-With": "XMLHttpRequest"
+          },
+          body: "project_id=" + projectId
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.status === 'success') {
+              const btn = document.getElementById("eye-btn-project-" + projectId);
+
+              if (data.newVisibility === 'view') {
+                  btn.innerHTML = '<i class="fas fa-eye"></i>';
+              } else {
+                  btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+              }
+          }
+      });
+  }
+</script>
+<script>
+function toggleInformationVisibility(infoId)
+{
+    fetch("<?= base_url('faculty/update-information-visibility') ?>", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        body: "information_id=" + infoId
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            const btn = document.getElementById("eye-btn-info-" + infoId);
+
+            if (data.newVisibility === 'view') {
+                btn.innerHTML = '<i class="fas fa-eye"></i>';
+            } else {
+                btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            }
+        }
+    });
+}
+</script>
+<script>
+function toggleNewsVisibility(newsId)
+{
+    fetch("<?= base_url('faculty/update-news-visibility') ?>", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        body: "news_id=" + newsId
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            const btn = document.getElementById("eye-btn-news-" + newsId);
+
+            if (data.newVisibility === 'view') {
+                btn.innerHTML = '<i class="fas fa-eye"></i>';
+            } else {
+                btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            }
+        }
+    });
+}
+</script>
 
 
 </body>

@@ -61,6 +61,50 @@
             </a>
         </li>
 
+        <li class="nav-item <?= ($title == 'Activities') ? 'active' : '' ?>"
+            <?= (!$profileExists) ? 'style="display:none"' : '' ?>>
+            
+            <a class="nav-link" href="<?= base_url('faculty/activities') ?>">
+                <i class="ti-briefcase menu-icon"></i>
+                <span class="menu-title">Activities</span>
+            </a>
+        </li>
+
+        <li class="nav-item <?= ($title == 'Research Students') ? 'active' : '' ?>"
+            <?= (!$profileExists) ? 'style="display:none"' : '' ?>>
+
+            <a class="nav-link" href="<?= base_url('faculty/research-students') ?>">
+                <i class="ti-user menu-icon"></i>
+                <span class="menu-title">Research Students</span>
+            </a>
+        </li>
+        <li class="nav-item <?= ($title == 'Projects') ? 'active' : '' ?>"
+            <?= (!$profileExists) ? 'style="display:none"' : '' ?>>
+
+            <a class="nav-link" href="<?= base_url('faculty/projects') ?>">
+                <i class="ti-briefcase menu-icon"></i>
+                <span class="menu-title">Projects</span>
+            </a>
+
+        </li>
+        <li class="nav-item <?= ($title == 'Information') ? 'active' : '' ?>"
+            <?= (!$profileExists) ? 'style="display:none"' : '' ?>>
+
+            <a class="nav-link" href="<?= base_url('faculty/information') ?>">
+                <i class="ti-layout-list-post menu-icon"></i>
+                <span class="menu-title">Information</span>
+            </a>
+
+        </li>
+        <li class="nav-item <?= ($title == 'News / Press / Pictures') ? 'active' : '' ?>"
+            <?= (!$profileExists) ? 'style="display:none"' : '' ?>>
+
+            <a class="nav-link" href="<?= base_url('faculty/news') ?>">
+                <i class="ti-announcement  menu-icon"></i>
+                <span class="menu-title">News / Press / Pictures</span>
+            </a>
+
+        </li>
 
 
 

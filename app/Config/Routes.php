@@ -94,8 +94,8 @@ $routes->group('faculty', function ($routes) {
     $routes->post('update-skill', 'FacultyController::update_skill');
 
     $routes->get('delete-skill/(:num)', 'FacultyController::delete_skill/$1');
-
     $routes->post('update-skill-visibility', 'FacultyController::updateSkillVisibility');
+
     $routes->get('works', 'FacultyController::works');
     $routes->get('add-work', 'FacultyController::add_work');
     $routes->post('save-work', 'FacultyController::save_work');
@@ -105,4 +105,57 @@ $routes->group('faculty', function ($routes) {
 
     $routes->get('delete-work/(:num)', 'FacultyController::delete_work/$1');
     $routes->post('update-work-visibility', 'FacultyController::updateWorkVisibility');
+
+    // ================== FACULTY ACTIVITIES ROUTES ==================
+
+    $routes->get('activities', 'FacultyController::activities');
+    $routes->get('add-activity', 'FacultyController::add_activity');
+    $routes->post('save-activity', 'FacultyController::save_activity');
+
+    $routes->get('edit-activity/(:num)', 'FacultyController::edit_activity/$1');
+    $routes->post('update-activity', 'FacultyController::update_activity');
+
+    $routes->get('delete-activity/(:num)', 'FacultyController::delete_activity/$1');
+    $routes->post('update-activity-visibility', 'FacultyController::updateActivityVisibility');
+
+    $routes->get('research-students', 'FacultyController::research_students');
+
+    $routes->get('add-research-student', 'FacultyController::add_research_student');
+    $routes->post('save-research-student', 'FacultyController::save_research_student');
+
+    $routes->get('edit-research-student/(:num)', 'FacultyController::edit_research_student/$1');
+    $routes->post('update-research-student', 'FacultyController::update_research_student');
+
+    $routes->get('delete-research-student/(:num)', 'FacultyController::delete_research_student/$1');
+    $routes->post('update-research-student-visibility', 'FacultyController::updateResearchStudentVisibility');
+
+    // Projects Routes
+    $routes->get('projects', 'FacultyController::projects');
+    $routes->get('add-project', 'FacultyController::add_project');
+    $routes->post('save-project', 'FacultyController::save_project');
+
+    $routes->get('edit-project/(:num)', 'FacultyController::edit_project/$1');
+    $routes->post('update-project', 'FacultyController::update_project');
+
+    $routes->get('delete-project/(:num)', 'FacultyController::delete_project/$1');
+    $routes->post('update-project-visibility', 'FacultyController::updateProjectVisibility');
+
+    $routes->get('information', 'FacultyController::information');
+
+    $routes->get('add-information', 'FacultyController::add_information');
+    $routes->post('save-information', 'FacultyController::save_information');
+
+    $routes->get('edit-information/(:num)', 'FacultyController::edit_information/$1');
+    $routes->post('update-information', 'FacultyController::update_information');
+
+    $routes->get('delete-information/(:num)', 'FacultyController::delete_information/$1');
+    $routes->post('update-information-visibility', 'FacultyController::updateInformationVisibility');
+
+    $routes->get('news', 'FacultyController::news');
+    $routes->get('add-news', 'FacultyController::add_news');
+    $routes->post('save-news', 'FacultyController::save_news');
+    $routes->get('edit-news/(:num)', 'FacultyController::edit_news/$1');
+    $routes->post('update-news', 'FacultyController::update_news');
+    $routes->get('delete-news/(:num)', 'FacultyController::delete_news/$1');
+    $routes->post('update-news-visibility', 'FacultyController::updateNewsVisibility');
 });

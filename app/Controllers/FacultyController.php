@@ -10,6 +10,11 @@ use App\Models\FacultyExperienceModel;
 use App\Models\FacultyAchievementModel;
 use App\Models\FacultySkillModel;
 use App\Models\FacultyWorksModel;
+use App\Models\FacultyActivitiesModel;
+use App\Models\FacultyResearchStudentsModel;
+use App\Models\FacultyProjectsModel;
+use App\Models\FacultyInformationModel;
+use App\Models\FacultyNewsModel;
 
 class FacultyController extends BaseController
 {
@@ -20,6 +25,12 @@ class FacultyController extends BaseController
     protected $achievementModel;
     protected $skillModel;
     protected $worksModel;
+    protected $activitiesModel;
+    protected $researchStudentsModel;
+    protected $projectsModel;
+    protected $informationModel;
+    protected $newsModel;
+
 
 
     public function __construct()
@@ -32,7 +43,11 @@ class FacultyController extends BaseController
         $this->achievementModel = new FacultyAchievementModel();
         $this->skillModel = new FacultySkillModel();
         $this->worksModel = new FacultyWorksModel();
-
+        $this->activitiesModel = new FacultyActivitiesModel();
+        $this->researchStudentsModel = new FacultyResearchStudentsModel();
+        $this->projectsModel = new FacultyProjectsModel();
+        $this->informationModel = new FacultyInformationModel();
+        $this->newsModel = new FacultyNewsModel();
 
         $this->updateProfileExistsSession();
     }
@@ -1311,6 +1326,1063 @@ class FacultyController extends BaseController
 
         return $this->response->setJSON(['status' => 'success', 'newVisibility' => $newStatus]);
     }
+    public function activities()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $activities = $this->activitiesModel
+            ->where('faculty_id', $facultyId)
+            ->orderBy('id', 'DESC')
+            ->findAll();
+
+        $data = [
+            'title'      => 'Activities',
+            'content'    => 'faculty/activities',
+            'activities' => $activities
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+    public function add_activity()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $data = [
+            'title'   => 'Activities',
+            'content' => 'faculty/add_activity'
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+    public function save_activity()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $categories  = $this->request->getPost('category');
+        $titles      = $this->request->getPost('title');
+        $types       = $this->request->getPost('type');
+        $monthYears  = $this->request->getPost('month_year');
+        $roles       = $this->request->getPost('attended_or_role');
+        $locations   = $this->request->getPost('location');
+
+        $files = $this->request->getFileMultiple('certificate');
+
+        foreach ($categories as $key => $category) {
+
+            if (empty($titles[$key])) {
+                continue;
+            }
+
+            $filePath = '';
+            if (isset($files[$key]) && $files[$key]->isValid() && !$files[$key]->hasMoved()) {
+                $newName = $files[$key]->getRandomName();
+                $files[$key]->move(FCPATH . 'uploads/activities', $newName);
+                $filePath = 'uploads/activities/' . $newName;
+            }
+
+            $this->activitiesModel->insert([
+                'faculty_id'       => $facultyId,
+                'category'         => $category,
+                'title'            => $titles[$key],
+                'type'             => $types[$key],
+                'month_year'       => $monthYears[$key],
+                'attended_or_role' => $roles[$key],
+                'location'         => $locations[$key],
+                'certificate_path' => $filePath,
+                'visibility'       => 'view'
+            ]);
+        }
+
+        return redirect()->to('/faculty/activities')->with('success', 'Activities added successfully.');
+    }
+    public function edit_activity($id)
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $row = $this->activitiesModel
+            ->where('id', $id)
+            ->where('faculty_id', $facultyId)
+            ->first();
+
+        if (!$row) {
+            return redirect()->to('/faculty/activities')->with('error', 'Unauthorized access.');
+        }
+
+        $data = [
+            'title'      => 'Activities',
+            'content'    => 'faculty/edit_activity',
+            'activities' => [$row]
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+    public function update_activity()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $ids        = $this->request->getPost('id');
+        $categories = $this->request->getPost('category');
+        $titles     = $this->request->getPost('title');
+        $types      = $this->request->getPost('type');
+        $monthYears = $this->request->getPost('month_year');
+        $roles      = $this->request->getPost('attended_or_role');
+        $locations  = $this->request->getPost('location');
+
+        $files = $this->request->getFileMultiple('certificate');
+
+        foreach ($categories as $key => $category) {
+
+            $filePath = null;
+
+            // ✅ IF RECORD EXISTS → KEEP OLD FILE
+            if (!empty($ids[$key])) {
+                $old = $this->activitiesModel->find($ids[$key]);
+                $filePath = $old['certificate_path'] ?? null;
+            }
+
+            // ✅ IF NEW FILE UPLOADED → REPLACE
+            if (isset($files[$key]) && $files[$key]->isValid() && !$files[$key]->hasMoved()) {
+                $newName = $files[$key]->getRandomName();
+                $files[$key]->move(FCPATH . 'uploads/activities', $newName);
+                $filePath = 'uploads/activities/' . $newName;
+            }
+
+            $data = [
+                'faculty_id'       => $facultyId,
+                'category'         => $category,
+                'title'            => $titles[$key],
+                'type'             => $types[$key] ?? null,
+                'month_year'       => $monthYears[$key] ?? null,
+                'attended_or_role' => $roles[$key] ?? null,
+                'location'         => $locations[$key] ?? null,
+                'certificate_path' => $filePath,
+            ];
+
+            // ✅ ✅ KEY FIX:
+            if (!empty($ids[$key])) {
+                // ✅ UPDATE EXISTING
+                $this->activitiesModel->update($ids[$key], $data);
+            } else {
+                // ✅ INSERT NEW ROW
+                $this->activitiesModel->insert($data);
+            }
+        }
+
+        return redirect()->to('/faculty/activities')
+            ->with('success', 'Activities updated successfully.');
+    }
+
+    public function delete_activity($id)
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $row = $this->activitiesModel
+            ->where('id', $id)
+            ->where('faculty_id', $facultyId)
+            ->first();
+
+        if (!$row) {
+            return redirect()->to('/faculty/activities')->with('error', 'Unauthorized access.');
+        }
+
+        $this->activitiesModel->delete($id);
+
+        return redirect()->to('/faculty/activities')->with('success', 'Activity deleted successfully.');
+    }
+    public function updateActivityVisibility()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $activityId = $this->request->getPost('activity_id');
+
+        $activity = $this->activitiesModel->find($activityId);
+
+        if (!$activity) {
+            return $this->response->setJSON(['status' => 'error']);
+        }
+
+        $newStatus = ($activity['visibility'] === 'view') ? 'hide' : 'view';
+
+        $this->activitiesModel->update($activityId, [
+            'visibility' => $newStatus
+        ]);
+
+        return $this->response->setJSON([
+            'status'        => 'success',
+            'newVisibility' => $newStatus
+        ]);
+    }
+    // ======================= LIST RESEARCH STUDENTS =======================
+    public function research_students()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $researchStudents = $this->researchStudentsModel
+            ->where('faculty_id', $facultyId)
+            ->orderBy('id', 'DESC')
+            ->findAll();
+
+        $data = [
+            'title'    => 'Research Students',
+            'content'  => 'faculty/research_students',
+            'researchStudents' => $researchStudents
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+
+
+    // ======================= ADD RESEARCH STUDENT =======================
+    public function add_research_student()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $data = [
+            'title'   => 'Research Students',
+            'content' => 'faculty/add_research_student'
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+
+
+    // ======================= SAVE RESEARCH STUDENT =======================
+    public function save_research_student()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $names    = $this->request->getPost('student_name');
+        $topics   = $this->request->getPost('topic_title');
+        $types    = $this->request->getPost('type');
+        $froms    = $this->request->getPost('from_year');
+        $tos      = $this->request->getPost('to_year');
+        $statuses = $this->request->getPost('status');
+
+        foreach ($names as $key => $name) {
+
+            if (empty($name)) {
+                continue;
+            }
+
+            $this->researchStudentsModel->insert([
+                'faculty_id'  => $facultyId,
+                'student_name'        => $name,
+                'topic_title' => $topics[$key] ?? null,
+                'type'        => $types[$key] ?? null,
+                'from_year'   => $froms[$key] ?? null,
+                'to_year'     => $tos[$key] ?? null,
+                'status'      => $statuses[$key] ?? null,
+                'visibility'  => 'view'
+            ]);
+        }
+
+        return redirect()->to('/faculty/research-students')
+            ->with('success', 'Research Students added successfully.');
+    }
+
+
+    // ======================= EDIT RESEARCH STUDENT =======================
+    public function edit_research_student($id)
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $row = $this->researchStudentsModel
+            ->where('id', $id)
+            ->where('faculty_id', $facultyId)
+            ->first();
+
+        if (!$row) {
+            return redirect()->to('/faculty/research-students')
+                ->with('error', 'Unauthorized access.');
+        }
+
+        $data = [
+            'title'    => 'Research Students',
+            'content'  => 'faculty/edit_research_student',
+            'research' => [$row]
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+
+
+    // ======================= UPDATE RESEARCH STUDENT =======================
+    public function update_research_student()
+    {
+        // Check faculty login
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        // Get all POST data
+        $ids      = $this->request->getPost('id') ?? [];
+        $names    = $this->request->getPost('student_name') ?? [];
+        $topics   = $this->request->getPost('topic_title') ?? [];
+        $types    = $this->request->getPost('type') ?? [];
+        $froms    = $this->request->getPost('from_year') ?? [];
+        $tos      = $this->request->getPost('to_year') ?? [];
+        $statuses = $this->request->getPost('status') ?? [];
+
+        foreach ($names as $key => $name) {
+
+            // Skip empty names
+            if (empty($name)) {
+                continue;
+            }
+
+            $data = [
+                'faculty_id'  => $facultyId,
+                'student_name' => $name,
+                'topic_title' => $topics[$key] ?? null,
+                'type'        => $types[$key] ?? null,
+                'from_year'   => $froms[$key] ?? null,
+                'to_year'     => $tos[$key] ?? null,
+                'status'      => $statuses[$key] ?? null,
+                'visibility'  => 'view' // default visibility
+            ];
+
+            // Update if ID exists, otherwise insert new
+            if (!empty($ids[$key])) {
+                $this->researchStudentsModel->update($ids[$key], $data);
+            } else {
+                $this->researchStudentsModel->insert($data);
+            }
+        }
+
+        return redirect()->to('/faculty/research-students')
+                         ->with('success', 'Research Students updated successfully.');
+    }
+
+    // ======================= DELETE RESEARCH STUDENT =======================
+    public function delete_research_student($id)
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $row = $this->researchStudentsModel
+            ->where('id', $id)
+            ->where('faculty_id', $facultyId)
+            ->first();
+
+        if (!$row) {
+            return redirect()->to('/faculty/research-students')
+                ->with('error', 'Unauthorized access.');
+        }
+
+        $this->researchStudentsModel->delete($id);
+
+        return redirect()->to('/faculty/research-students')
+            ->with('success', 'Research Student deleted successfully.');
+    }
+
+
+    // ======================= TOGGLE VISIBILITY =======================
+    public function updateResearchStudentVisibility()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $studentId = $this->request->getPost('student_id');
+
+        $student = $this->researchStudentsModel->find($studentId);
+
+        if (!$student) {
+            return $this->response->setJSON(['status' => 'error']);
+        }
+
+        $newStatus = ($student['visibility'] === 'view') ? 'hide' : 'view';
+
+        $this->researchStudentsModel->update($studentId, [
+            'visibility' => $newStatus
+        ]);
+
+        return $this->response->setJSON([
+            'status'        => 'success',
+            'newVisibility' => $newStatus
+        ]);
+    }
+    public function projects()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $projects = $this->projectsModel
+            ->where('faculty_id', $facultyId)
+            ->orderBy('id', 'DESC')
+            ->findAll();
+
+        $data = [
+            'title'    => 'Projects',
+            'content'  => 'faculty/projects',
+            'projects' => $projects
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+
+    // ✅ ADD PROJECT FORM
+    public function add_project()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $data = [
+            'title'   => 'Add Project',
+            'content' => 'faculty/add_project'
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+
+    // ✅ SAVE NEW PROJECT
+    public function save_project()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $titles    = $this->request->getPost('title');
+        $agencies  = $this->request->getPost('agency');
+        $fromYears = $this->request->getPost('from_year');
+        $toYears   = $this->request->getPost('to_year');
+        $statuses  = $this->request->getPost('status');
+
+        // Get all uploaded files safely
+        $files = $this->request->getFiles(); // Returns all $_FILES
+
+        foreach ($titles as $key => $title) {
+
+            if (empty($title)) {
+                continue;
+            }
+
+            $filePath = '';
+            if (isset($files['file'][$key]) && $files['file'][$key]->isValid() && !$files['file'][$key]->hasMoved()) {
+                $newName = $files['file'][$key]->getRandomName();
+                $files['file'][$key]->move(FCPATH . 'uploads/projects', $newName);
+                $filePath = 'uploads/projects/' . $newName;
+            }
+
+            $this->projectsModel->insert([
+                'faculty_id'  => $facultyId,
+                'title'       => $title,
+                'agency'      => $agencies[$key] ?? null,
+                'from_year'   => $fromYears[$key] ?? null,
+                'to_year'     => $toYears[$key] ?? null,
+                'status'      => $statuses[$key] ?? 'ongoing',
+                'upload_path' => $filePath,
+                'visibility'  => 'view'
+            ]);
+        }
+
+        return redirect()->to('/faculty/projects')
+            ->with('success', 'Projects added successfully.');
+    }
+
+
+    // ✅ EDIT PROJECT FORM
+    public function edit_project($id)
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $project = $this->projectsModel
+            ->where('id', $id)
+            ->where('faculty_id', $facultyId)
+            ->first();
+
+        if (!$project) {
+            return redirect()->to('/faculty/projects')->with('error', 'Unauthorized access.');
+        }
+
+        $data = [
+            'title'    => 'Edit Project',
+            'content'  => 'faculty/edit_project',
+            'projects' => [$project]
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+
+    // ✅ UPDATE PROJECT
+    public function update_project()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $ids       = $this->request->getPost('id');
+        $titles    = $this->request->getPost('title');
+        $agencies  = $this->request->getPost('agency');
+        $fromYears = $this->request->getPost('from_year');
+        $toYears   = $this->request->getPost('to_year');
+        $statuses  = $this->request->getPost('status');
+
+        // ✅ Get all uploaded files at once
+        $allFiles = $this->request->getFiles();
+
+        foreach ($titles as $key => $title) {
+
+            // Keep old file if exists
+            $filePath = null;
+            if (!empty($ids[$key])) {
+                $old = $this->projectsModel->find($ids[$key]);
+                $filePath = $old['upload_path'] ?? null;
+            }
+
+            // Check if a new file was uploaded for this row
+            if (isset($allFiles['file'][$key]) && $allFiles['file'][$key]->isValid() && !$allFiles['file'][$key]->hasMoved()) {
+                $newName = $allFiles['file'][$key]->getRandomName();
+                $allFiles['file'][$key]->move(FCPATH . 'uploads/projects', $newName);
+                $filePath = 'uploads/projects/' . $newName;
+            }
+
+            $data = [
+                'faculty_id'  => $facultyId,
+                'title'       => $title,
+                'agency'      => $agencies[$key] ?? null,
+                'from_year'   => $fromYears[$key] ?? null,
+                'to_year'     => $toYears[$key] ?? null,
+                'status'      => $statuses[$key] ?? 'ongoing',
+                'upload_path' => $filePath,
+            ];
+
+            // Update existing or insert new row
+            if (!empty($ids[$key])) {
+                $this->projectsModel->update($ids[$key], $data);
+            } else {
+                $this->projectsModel->insert($data);
+            }
+        }
+
+        return redirect()->to('/faculty/projects')
+            ->with('success', 'Projects updated successfully.');
+    }
+
+    // ✅ DELETE PROJECT
+    public function delete_project($id)
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $project = $this->projectsModel
+            ->where('id', $id)
+            ->where('faculty_id', $facultyId)
+            ->first();
+
+        if (!$project) {
+            return redirect()->to('/faculty/projects')->with('error', 'Unauthorized access.');
+        }
+
+        $this->projectsModel->delete($id);
+
+        return redirect()->to('/faculty/projects')->with('success', 'Project deleted successfully.');
+    }
+
+    // ✅ TOGGLE VISIBILITY
+    public function updateProjectVisibility()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $projectId = $this->request->getPost('project_id');
+
+        $project = $this->projectsModel->find($projectId);
+        if (!$project) {
+            return $this->response->setJSON(['status' => 'error']);
+        }
+
+        $newStatus = ($project['visibility'] === 'view') ? 'hide' : 'view';
+
+        $this->projectsModel->update($projectId, ['visibility' => $newStatus]);
+
+        return $this->response->setJSON([
+            'status'        => 'success',
+            'newVisibility' => $newStatus
+        ]);
+    }
+
+    public function information()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $information = $this->informationModel
+            ->where('faculty_id', $facultyId)
+            ->orderBy('id', 'DESC')
+            ->findAll();
+
+        $data = [
+            'title'       => 'Information',
+            'content'     => 'faculty/information',
+            'information' => $information
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+
+    public function add_information()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $data = [
+            'title'   => 'Information',
+            'content' => 'faculty/add_information'
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+    public function save_information()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        // ✅ TYPE ADDED BACK
+        $types     = $this->request->getPost('type');
+        $titles    = $this->request->getPost('title');
+        $agencies  = $this->request->getPost('agency');
+        $fromYears = $this->request->getPost('from_year');
+        $toYears   = $this->request->getPost('to_year');
+        $statuses  = $this->request->getPost('status');
+
+        $files = $this->request->getFiles();
+
+        foreach ($titles as $key => $title) {
+
+            if (empty($title)) {
+                continue;
+            }
+
+            $filePath = '';
+            if (isset($files['file'][$key]) && $files['file'][$key]->isValid() && !$files['file'][$key]->hasMoved()) {
+                $newName = $files['file'][$key]->getRandomName();
+                $files['file'][$key]->move(FCPATH . 'uploads/information', $newName);
+                $filePath = 'uploads/information/' . $newName;
+            }
+
+            $this->informationModel->insert([
+                'faculty_id'  => $facultyId,
+
+                // ✅ TYPE STORED HERE
+                'type'        => $types[$key] ?? null,
+
+                'title'       => $title,
+                'agency'      => $agencies[$key] ?? null,
+                'from_year'   => $fromYears[$key] ?? null,
+                'to_year'     => $toYears[$key] ?? null,
+                'status'      => $statuses[$key] ?? 'ongoing',
+                'upload_path' => $filePath,
+                'visibility'  => 'view'
+            ]);
+        }
+
+        return redirect()->to("/faculty/information")
+            ->with('success', 'Information added successfully.');
+    }
+
+    public function edit_information($id)
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $info = $this->informationModel
+            ->where('id', $id)
+            ->where('faculty_id', $facultyId)
+            ->first();
+
+        if (!$info) {
+            return redirect()->back()->with('error', 'Unauthorized access.');
+        }
+
+        $data = [
+            'title'       => 'Information',
+            'content'     => 'faculty/edit_information',
+            'information' => [$info],
+            'type'        => $info['type']
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+    public function update_information()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $ids       = $this->request->getPost('id');
+        $types     = $this->request->getPost('type');
+        $titles    = $this->request->getPost('title');
+        $agencies  = $this->request->getPost('agency');
+        $fromYears = $this->request->getPost('from_year');
+        $toYears   = $this->request->getPost('to_year');
+        $statuses  = $this->request->getPost('status');
+
+        $allFiles = $this->request->getFiles();
+
+        foreach ($titles as $key => $title) {
+
+            if (empty($title)) {
+                continue;
+            }
+
+            // ✅ Keep Old File If New File Not Uploaded
+            $filePath = null;
+            if (!empty($ids[$key])) {
+                $old = $this->informationModel->find($ids[$key]);
+                $filePath = $old['upload_path'] ?? null;
+            }
+
+            // ✅ New File Upload
+            if (isset($allFiles['file'][$key]) && $allFiles['file'][$key]->isValid() && !$allFiles['file'][$key]->hasMoved()) {
+                $newName = $allFiles['file'][$key]->getRandomName();
+                $allFiles['file'][$key]->move(FCPATH . 'uploads/information', $newName);
+                $filePath = 'uploads/information/' . $newName;
+            }
+
+            $data = [
+                'faculty_id'  => $facultyId,
+                'type'        => $types[$key] ?? null,
+                'title'       => $title,
+                'agency'      => $agencies[$key] ?? null,
+                'from_year'   => $fromYears[$key] ?? null,
+                'to_year'     => $toYears[$key] ?? null,
+                'status'      => $statuses[$key] ?? 'ongoing',
+                'upload_path' => $filePath,
+            ];
+
+            // ✅ Update OR Insert
+            if (!empty($ids[$key])) {
+                $this->informationModel->update($ids[$key], $data);
+            } else {
+                $this->informationModel->insert($data);
+            }
+        }
+
+        return redirect()->to("/faculty/information")
+            ->with('success', 'Information updated successfully.');
+    }
+
+    public function delete_information($id)
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $info = $this->informationModel
+            ->where('id', $id)
+            ->where('faculty_id', $facultyId)
+            ->first();
+
+        if (!$info) {
+            return redirect()->back()->with('error', 'Unauthorized access.');
+        }
+
+        $this->informationModel->delete($id);
+
+        return redirect()->back()->with('success', 'Information deleted successfully.');
+    }
+    public function updateInformationVisibility()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $infoId = $this->request->getPost('information_id');
+
+        $info = $this->informationModel->find($infoId);
+        if (!$info) {
+            return $this->response->setJSON(['status' => 'error']);
+        }
+
+        $newStatus = ($info['visibility'] === 'view') ? 'hide' : 'view';
+
+        $this->informationModel->update($infoId, ['visibility' => $newStatus]);
+
+        return $this->response->setJSON([
+            'status'        => 'success',
+            'newVisibility' => $newStatus
+        ]);
+    }
+
+    // List all news
+    public function news()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $news = $this->newsModel
+            ->where('faculty_id', $facultyId)
+            ->orderBy('id', 'DESC')
+            ->findAll();
+
+        $data = [
+            'title' => 'News / Press / Pictures',
+            'content' => 'faculty/news',
+            'news' => $news
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+
+    // Add News Form
+    public function add_news()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $data = [
+            'title' => 'Add News / Press / Pictures',
+            'content' => 'faculty/add_new'
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+
+    // Save News
+    public function save_news()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $titles      = $this->request->getPost('title');
+        $types       = $this->request->getPost('type'); // Intl / National / Local
+        $monthYears  = $this->request->getPost('month_year');
+
+        $files = $this->request->getFiles();
+
+        foreach ($titles as $key => $title) {
+            if (empty($title)) {
+                continue;
+            }
+
+            $filePath = '';
+            if (isset($files['file'][$key]) && $files['file'][$key]->isValid() && !$files['file'][$key]->hasMoved()) {
+                $newName = $files['file'][$key]->getRandomName();
+                $files['file'][$key]->move(FCPATH . 'uploads/news', $newName);
+                $filePath = 'uploads/news/' . $newName;
+            }
+
+            $this->newsModel->insert([
+                'faculty_id'  => $facultyId,
+                'title'       => $title,
+                'type'        => $types[$key] ?? 'Local',
+                'month_year'  => $monthYears[$key] ?? null,
+                'upload_path' => $filePath,
+                'visibility'  => 'view'
+            ]);
+        }
+
+        return redirect()->to("/faculty/news")
+            ->with('success', 'News added successfully.');
+    }
+
+    // Edit News Form
+    public function edit_news($id)
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $news = $this->newsModel
+            ->where('id', $id)
+            ->where('faculty_id', $facultyId)
+            ->first();
+
+        if (!$news) {
+            return redirect()->back()->with('error', 'Unauthorized access.');
+        }
+
+        $data = [
+            'title' => 'Edit News / Press / Pictures',
+            'content' => 'faculty/edit_new',
+            'news' => [$news]
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+
+    // Update News
+    public function update_news()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $ids         = $this->request->getPost('id');
+        $titles      = $this->request->getPost('title');
+        $types       = $this->request->getPost('type');
+        $monthYears  = $this->request->getPost('month_year');
+
+        $allFiles = $this->request->getFiles();
+
+        foreach ($titles as $key => $title) {
+            if (empty($title)) {
+                continue;
+            }
+
+            $filePath = null;
+            if (!empty($ids[$key])) {
+                $old = $this->newsModel->find($ids[$key]);
+                $filePath = $old['upload_path'] ?? null;
+            }
+
+            if (isset($allFiles['file'][$key]) && $allFiles['file'][$key]->isValid() && !$allFiles['file'][$key]->hasMoved()) {
+                $newName = $allFiles['file'][$key]->getRandomName();
+                $allFiles['file'][$key]->move(FCPATH . 'uploads/news', $newName);
+                $filePath = 'uploads/news/' . $newName;
+            }
+
+            $data = [
+                'faculty_id'  => $facultyId,
+                'title'       => $title,
+                'type'        => $types[$key] ?? 'Local',
+                'month_year'  => $monthYears[$key] ?? null,
+                'upload_path' => $filePath
+            ];
+
+            if (!empty($ids[$key])) {
+                $this->newsModel->update($ids[$key], $data);
+            } else {
+                $this->newsModel->insert($data);
+            }
+        }
+
+        return redirect()->to("/faculty/news")
+            ->with('success', 'News updated successfully.');
+    }
+
+    // Delete News
+    public function delete_news($id)
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $news = $this->newsModel
+            ->where('id', $id)
+            ->where('faculty_id', $facultyId)
+            ->first();
+
+        if (!$news) {
+            return redirect()->back()->with('error', 'Unauthorized access.');
+        }
+
+        $this->newsModel->delete($id);
+
+        return redirect()->back()->with('success', 'News deleted successfully.');
+    }
+
+    // Toggle News Visibility
+    public function updateNewsVisibility()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $newsId = $this->request->getPost('news_id');
+
+        $news = $this->newsModel->find($newsId);
+        if (!$news) {
+            return $this->response->setJSON(['status' => 'error']);
+        }
+
+        $newStatus = ($news['visibility'] === 'view') ? 'hide' : 'view';
+
+        $this->newsModel->update($newsId, ['visibility' => $newStatus]);
+
+        return $this->response->setJSON([
+            'status' => 'success',
+            'newVisibility' => $newStatus
+        ]);
+    }
+
     // ---------------------------------------------------------
     // LOGOUT
     // ---------------------------------------------------------
