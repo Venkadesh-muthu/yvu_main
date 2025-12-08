@@ -158,4 +158,32 @@ $routes->group('faculty', function ($routes) {
     $routes->post('update-news', 'FacultyController::update_news');
     $routes->get('delete-news/(:num)', 'FacultyController::delete_news/$1');
     $routes->post('update-news-visibility', 'FacultyController::updateNewsVisibility');
+
+});
+$routes->group('api', function ($routes) {
+    // User APIs
+    $routes->get('users', 'Api\UserController::getUsers');
+    $routes->get('users/(:num)', 'Api\UserController::getUser/$1');
+
+    // Faculty Profile APIs
+    $routes->get('faculty-profiles', 'Api\FacultyProfileController::getFacultyProfiles');
+    $routes->get('faculty-profiles/(:num)', 'Api\FacultyProfileController::getFacultyProfile/$1');
+
+    // Faculty Education APIs
+    $routes->get('faculty-educations/(:num)', 'Api\FacultyEducationController::getFacultyEducationsByUser/$1'); // all records for user_id
+    $routes->get('faculty-education/(:num)', 'Api\FacultyEducationController::getFacultyEducationByUser/$1'); // single/latest record for user_id
+
+    $routes->get('faculty-skills/(:num)', 'Api\FacultySkillController::getFacultySkillsByUser/$1'); // all skills
+    $routes->get('faculty-skill/(:num)', 'Api\FacultySkillController::getFacultySkillByUser/$1');    // single/latest skill
+
+    // Faculty Administrative APIs
+    $routes->get('faculty-administrative/(:num)', 'Api\FacultyAdministrativeController::getAdministrativeByUser/$1'); // all
+    $routes->get('faculty-administrative-single/(:num)', 'Api\FacultyAdministrativeController::getSingleAdministrativeByUser/$1'); // single/latest
+
+    $routes->get('faculty-awards/(:num)', 'Api\FacultyAchievementController::getAwardsByUser/$1');
+
+    // Teaching Experience APIs
+    $routes->get('faculty-teaching/(:num)', 'Api\FacultyTeachingController::getTeachingByUser/$1');
+    $routes->get('faculty-teaching/single/(:num)', 'Api\FacultyTeachingController::getSingleTeachingByUser/$1');
+
 });
