@@ -57,7 +57,7 @@
             <?= (!$profileExists) ? 'style="display:none"' : '' ?>>
             <a class="nav-link" href="<?= base_url('faculty/works') ?>">
                 <i class="ti-book menu-icon"></i>
-                <span class="menu-title">Works</span>
+                <span class="menu-title">Publications</span>
             </a>
         </li>
 
