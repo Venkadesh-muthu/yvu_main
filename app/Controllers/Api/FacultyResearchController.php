@@ -5,7 +5,7 @@ namespace App\Controllers\Api;
 use App\Controllers\BaseController;
 use App\Models\FacultySkillModel;
 
-class FacultySkillController extends BaseController
+class FacultyResearchController extends BaseController
 {
     protected $facultySkillModel;
 
@@ -18,19 +18,19 @@ class FacultySkillController extends BaseController
         $this->facultySkillModel = new FacultySkillModel();
     }
 
-    // ✅ Fetch ALL skills for a user (ONLY category = skill)
-    public function getFacultySkillsByUser($user_id)
+    // ✅ Fetch ALL Research Areas for a user
+    public function getFacultyResearchByUser($user_id)
     {
         $records = $this->facultySkillModel
             ->where('faculty_id', $user_id)
-            ->where('category', 'skill')   // ⭐ ONLY SKILLS
+            ->where('category', 'research')   // ⭐ ONLY research
             ->orderBy('id', 'DESC')
             ->findAll();
 
         if (!$records) {
             return $this->response->setJSON([
                 'status'  => 'error',
-                'message' => 'No skills found for this user.'
+                'message' => 'No research areas found for this user.'
             ]);
         }
 
@@ -38,7 +38,7 @@ class FacultySkillController extends BaseController
             return [
                 'user_id'     => $record['faculty_id'],
                 'category'    => $record['category'],
-                'skill_value' => $record['skill_value'],
+                'research_value' => $record['skill_value'],  // alias for clarity
                 'visibility'  => $record['visibility'],
                 'created_at'  => $record['created_at'],
                 'updated_at'  => $record['updated_at'],
@@ -51,31 +51,31 @@ class FacultySkillController extends BaseController
         ]);
     }
 
-    // ✅ Fetch SINGLE latest skill (ONLY category = skill)
-    public function getFacultySkillByUser($user_id)
+    // ✅ Fetch SINGLE latest Research Area
+    public function getSingleFacultyResearchByUser($user_id)
     {
         $record = $this->facultySkillModel
             ->where('faculty_id', $user_id)
-            ->where('category', 'skill')   // ⭐ ONLY SKILLS
+            ->where('category', 'research')   // ⭐ ONLY research
             ->orderBy('id', 'DESC')
             ->first();
 
         if (!$record) {
             return $this->response->setJSON([
                 'status'  => 'error',
-                'message' => 'No skill found for this user.'
+                'message' => 'No research area found for this user.'
             ]);
         }
 
         return $this->response->setJSON([
             'status' => 'success',
             'data'   => [
-                'user_id'     => $record['faculty_id'],
-                'category'    => $record['category'],
-                'skill_value' => $record['skill_value'],
-                'visibility'  => $record['visibility'],
-                'created_at'  => $record['created_at'],
-                'updated_at'  => $record['updated_at'],
+                'user_id'        => $record['faculty_id'],
+                'category'       => $record['category'],
+                'research_value' => $record['skill_value'],
+                'visibility'     => $record['visibility'],
+                'created_at'     => $record['created_at'],
+                'updated_at'     => $record['updated_at'],
             ]
         ]);
     }

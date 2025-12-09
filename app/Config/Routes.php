@@ -186,4 +186,21 @@ $routes->group('api', function ($routes) {
     $routes->get('faculty-teaching/(:num)', 'Api\FacultyTeachingController::getTeachingByUser/$1');
     $routes->get('faculty-teaching/single/(:num)', 'Api\FacultyTeachingController::getSingleTeachingByUser/$1');
 
+    // Research Areas API
+    $routes->get('faculty-research/(:num)', 'Api\FacultyResearchController::getFacultyResearchByUser/$1');
+    $routes->get('faculty-research-single/(:num)', 'Api\FacultyResearchController::getSingleFacultyResearchByUser/$1');
+
+    // Faculty Publications API routes
+    $routes->get('faculty-publication/(:num)', 'Api\FacultyPublicationController::getFacultyPublicationByUser/$1');
+    $routes->get('faculty-publication-single/(:num)', 'Api\FacultyPublicationController::getSingleFacultyPublicationByUser/$1');
+
+    $routes->get('faculty-workshops/(:num)', 'Api\FacultyWorkshopController::getWorkshopsByUser/$1');
+    $routes->get('faculty-workshop-single/(:num)', 'Api\FacultyWorkshopController::getSingleWorkshopByUser/$1');
+
+    $routes->get('faculty-memberships/(:num)', 'Api\FacultyMembershipController::getMembershipsByUser/$1');
+    $routes->get('faculty-membership-latest/(:num)', 'Api\FacultyMembershipController::getLatestMembershipByUser/$1');
+
+    $routes->get('faculty-research-students/(:num)', 'Api\FacultyResearchStudentsController::getResearchStudentsByUser/$1');
+    $routes->get('faculty-research-student-latest/(:num)', 'Api\FacultyResearchStudentsController::getLatestResearchStudentByUser/$1');
+
 });
