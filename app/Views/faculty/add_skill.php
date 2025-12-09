@@ -7,7 +7,7 @@
                     <div class="card-body">
 
                         <h4 class="card-title">Add Skills / Specialisation / Research Areas</h4>
-                        <p class="card-description">Fill all required skill details</p>
+                        <p class="card-description">Fill all required details</p>
 
                         <form class="row g-3" action="<?= base_url('faculty/save-skill') ?>" method="post">
                             <?= csrf_field() ?>
@@ -17,10 +17,20 @@
 
                                 <div class="skill-row row g-3 mb-3">
 
+                                    <!-- Category -->
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label">Category</label>
+                                        <select name="category[]" class="form-control" required>
+                                            <option value="skill">Skill</option>
+                                            <option value="specialisation">Specialisation</option>
+                                            <option value="research">Research Area</option>
+                                        </select>
+                                    </div>
+
                                     <!-- Skill Value -->
-                                    <div class="col-12 col-md-10">
+                                    <div class="col-12 col-md-6">
                                         <label class="form-label">Skill / Specialisation / Research Area</label>
-                                        <input type="text" class="form-control" name="skill_value[]" placeholder="Enter Skill" required>
+                                        <input type="text" class="form-control" name="skill_value[]" placeholder="Enter Value" required>
                                     </div>
 
                                     <!-- Remove Button -->
@@ -36,7 +46,7 @@
                             <!-- Add another skill button -->
                             <div class="col-12 text-end mb-3">
                                 <button type="button" id="add-skill" class="btn btn-success btn-sm">
-                                    <i class="bi bi-plus-circle"></i> Add Another Skill
+                                    <i class="bi bi-plus-circle"></i> Add Another
                                 </button>
                             </div>
 
@@ -59,10 +69,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const container = document.getElementById('skill-container');
 
     addBtn.addEventListener('click', function() {
-        const newRow = container.querySelector('.skill-row').cloneNode(true);
+        const firstRow = container.querySelector('.skill-row');
+        const newRow = firstRow.cloneNode(true);
 
-        // Clear input value
+        // Clear input values
         newRow.querySelectorAll('input').forEach(input => input.value = '');
+        newRow.querySelectorAll('select').forEach(select => select.value = 'skill');
 
         container.appendChild(newRow);
     });
@@ -74,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (rows.length > 1) { 
                 e.target.closest('.skill-row').remove();
             } else {
-                alert('At least one skill entry is required.');
+                alert('At least one entry is required.');
             }
         }
     });

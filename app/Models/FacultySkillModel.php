@@ -11,8 +11,9 @@ class FacultySkillModel extends Model
 
     protected $allowedFields = [
         'faculty_id',
-        'skill_value',     // ✅ SINGLE COLUMN
-        'visibility',
+        'category',        // ⭐ NEW FIELD (skill / specialisation / research)
+        'skill_value',     // VALUE OF THE SKILL OR SPECIALISATION
+        'visibility',      // view / hide
         'created_at',
         'updated_at'
     ];

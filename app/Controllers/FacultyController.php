@@ -930,25 +930,37 @@ class FacultyController extends BaseController
 
         $facultyId = session()->get('faculty_id');
 
-        // Get the array of skill values
-        $skills = $this->request->getPost('skill_value');
+        // Get arrays
+        $skills     = $this->request->getPost('skill_value');
+        $categories = $this->request->getPost('category');  // NEW
 
-        // Ensure $skills is an array
+        // Ensure arrays
         if (!is_array($skills)) {
             $skills = [];
         }
 
-        foreach ($skills as $skill) {
+        if (!is_array($categories)) {
+            $categories = [];
+        }
+
+        foreach ($skills as $index => $skill) {
+
             if (!empty($skill)) {
+
+                // Set category or default to 'skill'
+                $category = $categories[$index] ?? 'skill';
+
                 $this->skillModel->insert([
-                    'faculty_id' => $facultyId,
-                    'skill_value' => $skill
+                    'faculty_id'  => $facultyId,
+                    'skill_value' => $skill,
+                    'category'    => $category, // NEW
                 ]);
             }
         }
 
         return redirect()->to('/faculty/skills')->with('success', 'Skills added successfully.');
     }
+
 
     /* ---------------- EDIT FORM ---------------- */
 
@@ -988,22 +1000,29 @@ class FacultyController extends BaseController
         }
 
         $facultyId = session()->get('faculty_id');
-        $ids = $this->request->getPost('id');           // existing IDs (empty for new)
-        $skills = $this->request->getPost('skill_value');
+
+        $ids        = $this->request->getPost('id');          // existing IDs
+        $skills     = $this->request->getPost('skill_value'); // skill names
+        $categories = $this->request->getPost('category');    // categories (NEW)
 
         if (!empty($skills) && is_array($skills)) {
+
             foreach ($skills as $key => $skillValue) {
+
                 if (!empty($skillValue)) {
+
+                    // Prepare data
                     $data = [
                         'faculty_id'  => $facultyId,
-                        'skill_value' => $skillValue
+                        'skill_value' => $skillValue,
+                        'category'    => $categories[$key] ?? 'skill' // NEW
                     ];
 
                     if (!empty($ids[$key])) {
-                        // Update existing skill
+                        // ⭐ Update existing row
                         $this->skillModel->update($ids[$key], $data);
                     } else {
-                        // Insert new skill
+                        // ⭐ Insert new row
                         $this->skillModel->insert($data);
                     }
                 }
@@ -1012,6 +1031,7 @@ class FacultyController extends BaseController
 
         return redirect()->to('/faculty/skills')->with('success', 'Skills updated successfully.');
     }
+
 
     /* ---------------- DELETE ---------------- */
 
@@ -1068,6 +1088,7 @@ class FacultyController extends BaseController
             'newVisibility' => $newStatus
         ]);
     }
+
     public function works()
     {
         if ($redirect = $this->checkFacultyLogin()) {

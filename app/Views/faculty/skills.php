@@ -19,6 +19,7 @@
                         <thead>
                             <tr>
                                 <th>#</th>
+                                <th>Category</th>
                                 <th>Title</th>
                                 <th>Visibility</th>
                                 <th>Actions</th>
@@ -31,6 +32,17 @@
                                 foreach ($skills as $skill): ?>
                                 <tr>
                                     <td><?= $i++ ?></td>
+
+                                    <!-- Category -->
+                                    <td>
+                                        <?php
+                                            $cat = ucfirst($skill['category']);
+                                    // skill -> Skill, specialisation -> Specialisation, research -> Research
+                                    echo esc($cat);
+                                    ?>
+                                    </td>
+
+                                    <!-- Title -->
                                     <td><?= esc($skill['skill_value']) ?></td>
 
                                     <!-- Visibility Toggle -->
@@ -60,7 +72,7 @@
                                 <?php endforeach; ?>
                             <?php else: ?>
                                 <tr>
-                                    <td colspan="4" class="text-center text-muted">No Records Found</td>
+                                    <td colspan="5" class="text-center text-muted">No Records Found</td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>
@@ -70,5 +82,3 @@
 
             </div>
         </div>
-
-   

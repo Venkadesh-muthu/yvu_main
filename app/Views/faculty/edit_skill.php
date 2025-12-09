@@ -19,12 +19,33 @@
                                 <div class="skill-row row g-3 mb-3">
                                     <input type="hidden" name="id[]" value="<?= esc($skill['id']) ?>">
 
-                                    <div class="col-12 col-md-10">
+                                    <!-- Category Dropdown -->
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label">Category</label>
+                                        <select name="category[]" class="form-control" required>
+                                            <option value="skill" 
+                                                <?= ($skill['category'] === 'skill') ? 'selected' : '' ?>>
+                                                Skill
+                                            </option>
+                                            <option value="specialisation" 
+                                                <?= ($skill['category'] === 'specialisation') ? 'selected' : '' ?>>
+                                                Specialisation
+                                            </option>
+                                            <option value="research" 
+                                                <?= ($skill['category'] === 'research') ? 'selected' : '' ?>>
+                                                Research Area
+                                            </option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Skill Value -->
+                                    <div class="col-12 col-md-6">
                                         <label class="form-label">Skill / Specialisation / Research Area</label>
                                         <input type="text" name="skill_value[]" class="form-control"
                                                value="<?= esc($skill['skill_value']) ?>" required>
                                     </div>
 
+                                    <!-- Remove Button -->
                                     <div class="col-12 col-md-2 text-end">
                                         <button type="button" class="btn btn-danger btn-sm remove-skill">
                                             Remove
@@ -60,22 +81,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const container = document.getElementById('skill-container');
 
     addBtn.addEventListener('click', function() {
-        const newRow = container.querySelector('.skill-row').cloneNode(true);
+        const firstRow = container.querySelector('.skill-row');
+        const newRow = firstRow.cloneNode(true);
 
-        // Clear input values but keep hidden ID empty
-        newRow.querySelectorAll('input').forEach(input => {
-            if(input.name === 'id[]') input.value = '';
-            else input.value = '';
-        });
+        // Clear values for cloned row
+        newRow.querySelector('input[name="id[]"]').value = ''; 
+        newRow.querySelector('input[name="skill_value[]"]').value = '';
+        newRow.querySelector('select[name="category[]"]').selectedIndex = 0;
 
         container.appendChild(newRow);
     });
 
     // Remove row
     container.addEventListener('click', function(e) {
-        if(e.target.classList.contains('remove-skill')) {
+        if (e.target.classList.contains('remove-skill')) {
             const rows = container.querySelectorAll('.skill-row');
-            if(rows.length > 1) {
+            if (rows.length > 1) {
                 e.target.closest('.skill-row').remove();
             } else {
                 alert('At least one skill entry is required.');
