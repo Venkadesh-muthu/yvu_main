@@ -205,7 +205,7 @@ class AdminController extends BaseController
                 return view('admin/layout/templates', [
                     'title'      => 'Edit User',
                     'user'       => $user,
-                    'content'    => 'admin/users/edit',
+                    'content'    => 'admin/edit_user',
                     'validation' => $this->validator
                 ]);
             }

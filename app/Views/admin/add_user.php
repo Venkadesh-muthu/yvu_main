@@ -40,11 +40,20 @@
                             <!-- User Type -->
                             <div class="col-12 col-md-6">
                                 <label for="user_type" class="form-label">User Type</label>
-                                <select class="form-select <?= isset($validation) && $validation->hasError('user_type') ? 'is-invalid' : '' ?>" id="user_type" name="user_type">
+                                <select class="form-select <?= isset($validation) && $validation->hasError('user_type') ? 'is-invalid' : '' ?>" 
+                                        id="user_type" 
+                                        name="user_type">
+
                                     <option value="">Select Type</option>
+
                                     <option value="student" <?= set_select('user_type', 'student') ?>>Student</option>
+
                                     <option value="faculty" <?= set_select('user_type', 'faculty') ?>>Faculty</option>
+
+                                    <option value="admin" <?= set_select('user_type', 'admin') ?>>Admin</option>
+
                                 </select>
+
                                 <?php if (isset($validation)): ?>
                                     <div class="invalid-feedback"><?= $validation->getError('user_type') ?></div>
                                 <?php endif; ?>

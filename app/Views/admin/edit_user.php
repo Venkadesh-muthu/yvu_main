@@ -66,8 +66,13 @@
                                         <?= set_select('user_type', 'faculty', $user['user_type'] == 'faculty') ?>>
                                         Faculty
                                     </option>
-                                </select>
 
+                                    <option value="admin" 
+                                        <?= set_select('user_type', 'admin', $user['user_type'] == 'admin') ?>>
+                                        Admin
+                                    </option>
+
+                                </select>
                                 <?php if (isset($validation)): ?>
                                     <div class="invalid-feedback"><?= $validation->getError('user_type') ?></div>
                                 <?php endif; ?>
