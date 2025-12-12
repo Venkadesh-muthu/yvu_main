@@ -6,8 +6,8 @@
                 <div class="card">
                     <div class="card-body">
 
-                        <h4 class="card-title">Add Research Students</h4>
-                        <p class="card-description">Fill all required research student details</p>
+                        <h4 class="card-title">Add Students</h4>
+                        <p class="card-description">Fill all required student details</p>
 
                         <form class="row g-3" action="<?= base_url('faculty/save-research-student') ?>" method="post">
                             <?= csrf_field() ?>
@@ -78,7 +78,7 @@
                             <!-- Submit Buttons -->
                             <div class="col-12 mt-4">
                                 <button type="submit" class="btn btn-primary me-2">Submit</button>
-                                <a href="<?= base_url('faculty/research-students') ?>" class="btn btn-light">Cancel</a>
+                                <a href="<?= base_url('faculty/students') ?>" class="btn btn-light">Cancel</a>
                             </div>
 
                         </form>

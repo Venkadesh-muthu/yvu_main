@@ -118,7 +118,7 @@ $routes->group('faculty', function ($routes) {
     $routes->get('delete-activity/(:num)', 'FacultyController::delete_activity/$1');
     $routes->post('update-activity-visibility', 'FacultyController::updateActivityVisibility');
 
-    $routes->get('research-students', 'FacultyController::research_students');
+    $routes->get('students', 'FacultyController::research_students');
 
     $routes->get('add-research-student', 'FacultyController::add_research_student');
     $routes->post('save-research-student', 'FacultyController::save_research_student');
@@ -200,7 +200,7 @@ $routes->group('api', function ($routes) {
     $routes->get('faculty-memberships/(:num)', 'Api\FacultyMembershipController::getMembershipsByUser/$1');
     $routes->get('faculty-membership-latest/(:num)', 'Api\FacultyMembershipController::getLatestMembershipByUser/$1');
 
-    $routes->get('faculty-research-students/(:num)', 'Api\FacultyResearchStudentsController::getResearchStudentsByUser/$1');
+    $routes->get('faculty-students/(:num)', 'Api\FacultyResearchStudentsController::getResearchStudentsByUser/$1');
     $routes->get('faculty-research-student-latest/(:num)', 'Api\FacultyResearchStudentsController::getLatestResearchStudentByUser/$1');
 
 });

@@ -155,6 +155,7 @@ class FacultyController extends BaseController
         $data = [
             'user_id'             => $facultyId,
             'name'                => $this->request->getPost('name'),
+            'about_me'                => $this->request->getPost('about_me'),
             'photo'               => $photoName,
             'designation'         => $this->request->getPost('designation'),
             'department'          => $this->request->getPost('department'),
@@ -237,6 +238,7 @@ class FacultyController extends BaseController
 
         $data = [
             'name'                => $this->request->getPost('name'),
+            'about_me'                => $this->request->getPost('about_me'),
             'photo'               => $photoName,
             'designation'         => $this->request->getPost('designation'),
             'department'          => $this->request->getPost('department'),
@@ -768,7 +770,7 @@ class FacultyController extends BaseController
                 'title'       => $titles[$index] ?? '',
                 'description' => $descriptions[$index] ?? '',
                 'month_year'  => $monthYears[$index] ?? '',
-                'visibility'  => 1
+                'visibility'  => 0
             ];
 
             $this->achievementModel->save($data);
@@ -1190,7 +1192,7 @@ class FacultyController extends BaseController
                 'isbn_issn'  => $isbnIssn[$key] ?? '',
                 'url'        => $urls[$key] ?? '',
                 'pdf_path'   => $pdfPath,
-                'visibility' => 'view'
+                'visibility' => 'hide'
             ]);
         }
 
@@ -1420,7 +1422,7 @@ class FacultyController extends BaseController
                 'attended_or_role' => $roles[$key],
                 'location'         => $locations[$key],
                 'certificate_path' => $filePath,
-                'visibility'       => 'view'
+                'visibility'       => 'hide'
             ]);
         }
 
@@ -1627,11 +1629,11 @@ class FacultyController extends BaseController
                 'from_year'   => $froms[$key] ?? null,
                 'to_year'     => $tos[$key] ?? null,
                 'status'      => $statuses[$key] ?? null,
-                'visibility'  => 'view'
+                'visibility'  => 'hide'
             ]);
         }
 
-        return redirect()->to('/faculty/research-students')
+        return redirect()->to('/faculty/students')
             ->with('success', 'Research Students added successfully.');
     }
 
@@ -1651,7 +1653,7 @@ class FacultyController extends BaseController
             ->first();
 
         if (!$row) {
-            return redirect()->to('/faculty/research-students')
+            return redirect()->to('/faculty/students')
                 ->with('error', 'Unauthorized access.');
         }
 
@@ -1699,7 +1701,7 @@ class FacultyController extends BaseController
                 'from_year'   => $froms[$key] ?? null,
                 'to_year'     => $tos[$key] ?? null,
                 'status'      => $statuses[$key] ?? null,
-                'visibility'  => 'view' // default visibility
+                'visibility'  => 'hide' // default visibility
             ];
 
             // Update if ID exists, otherwise insert new
@@ -1710,7 +1712,7 @@ class FacultyController extends BaseController
             }
         }
 
-        return redirect()->to('/faculty/research-students')
+        return redirect()->to('/faculty/students')
                          ->with('success', 'Research Students updated successfully.');
     }
 
@@ -1729,13 +1731,13 @@ class FacultyController extends BaseController
             ->first();
 
         if (!$row) {
-            return redirect()->to('/faculty/research-students')
+            return redirect()->to('/faculty/students')
                 ->with('error', 'Unauthorized access.');
         }
 
         $this->researchStudentsModel->delete($id);
 
-        return redirect()->to('/faculty/research-students')
+        return redirect()->to('/faculty/students')
             ->with('success', 'Research Student deleted successfully.');
     }
 
@@ -1842,7 +1844,7 @@ class FacultyController extends BaseController
                 'to_year'     => $toYears[$key] ?? null,
                 'status'      => $statuses[$key] ?? 'ongoing',
                 'upload_path' => $filePath,
-                'visibility'  => 'view'
+                'visibility'  => 'hide'
             ]);
         }
 
@@ -2060,7 +2062,7 @@ class FacultyController extends BaseController
                 'to_year'     => $toYears[$key] ?? null,
                 'status'      => $statuses[$key] ?? 'ongoing',
                 'upload_path' => $filePath,
-                'visibility'  => 'view'
+                'visibility'  => 'hide'
             ]);
         }
 
@@ -2270,7 +2272,7 @@ class FacultyController extends BaseController
                 'type'        => $types[$key] ?? 'Local',
                 'month_year'  => $monthYears[$key] ?? null,
                 'upload_path' => $filePath,
-                'visibility'  => 'view'
+                'visibility'  => 'hide'
             ]);
         }
 

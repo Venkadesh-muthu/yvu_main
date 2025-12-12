@@ -22,6 +22,12 @@
                                 <input type="text" class="form-control" name="name"
                                        value="<?= esc($profile['name']) ?>" required>
                             </div>
+                            
+                            <!-- About Me -->
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">About Me</label>
+                                <textarea class="form-control" name="about_me" rows="4" placeholder="Write something about yourself"><?= esc($profile['about_me']) ?></textarea>
+                            </div>
 
                             <!-- Photo -->
                             <div class="col-12 col-md-6">

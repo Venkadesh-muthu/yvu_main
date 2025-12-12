@@ -12,6 +12,7 @@ class FacultyProfileModel extends Model
     protected $allowedFields = [
         'user_id',
         'name',
+        'about_me',
         'photo',
         'designation',
         'department',

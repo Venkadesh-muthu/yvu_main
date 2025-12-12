@@ -12,6 +12,8 @@ class FacultyProfileVisibilityModel extends Model
     protected $allowedFields = [
         'faculty_profiles_id',
         'name',
+        'about_me',
+        'photo',
         'designation',
         'department',
         'employee_id',

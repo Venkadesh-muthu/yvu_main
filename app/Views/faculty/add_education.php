@@ -6,7 +6,7 @@
                 <div class="card">
                     <div class="card-body">
 
-                        <h4 class="card-title">Add Educational Background</h4>
+                        <h4 class="card-title">Add Education Background</h4>
                         <p class="card-description">Fill all required education details</p>
 
                         <form class="row g-3" action="<?= base_url('faculty/save-education') ?>" method="post">

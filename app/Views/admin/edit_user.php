@@ -81,11 +81,49 @@
                             <!-- Department -->
                             <div class="col-12 col-md-6">
                                 <label for="department" class="form-label">Department</label>
-                                <input type="text" 
-                                       class="form-control"
-                                       id="department"
-                                       name="department"
-                                       value="<?= set_value('department', $user['department']) ?>">
+                                <select class="form-control" id="department" name="department">
+                                    <option value="">Select Department</option>
+                                    <?php
+                                    $departments = [
+                                        "Applied Mathematics",
+                                        "Biochemistry",
+                                        "Biotechnology",
+                                        "Biotechnology & Bioinformatics",
+                                        "Botany",
+                                        "Business Management",
+                                        "Chemistry",
+                                        "Commerce",
+                                        "Computer Science & Technology",
+                                        "Earth Sciences",
+                                        "Economics",
+                                        "English",
+                                        "Environmental Sciences",
+                                        "Fine Arts",
+                                        "Food Technology",
+                                        "Genetics & Genomics",
+                                        "Geology",
+                                        "History & Archaeology",
+                                        "Journalism & Communication",
+                                        "Material Science & Nanotechnology",
+                                        "Microbiology",
+                                        "Physics",
+                                        "Physical Education and Sports Sciences",
+                                        "Political Science & Public Administration",
+                                        "Psychology",
+                                        "Telugu",
+                                        "Urdu",
+                                        "Zoology",
+                                        "Computational Data Science"
+                                    ];
+
+                        foreach ($departments as $d): ?>
+                                        <option value="<?= $d ?>" 
+                                            <?= set_select('department', $d, ($user['department'] == $d)) ?>>
+                                            <?= $d ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+
                             </div>
 
                             <!-- Phone -->

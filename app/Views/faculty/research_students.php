@@ -4,13 +4,13 @@
         <div class="card">
             <div class="card-body">
 
-                <h4 class="card-title">Research Students</h4>
-                <p class="card-description">List of all research students associated with you</p>
+                <h4 class="card-title">students</h4>
+                <p class="card-description">List of all students associated with you</p>
 
                 <div class="row mb-3">
                     <div class="col-12 text-end">
                         <a href="<?= base_url('faculty/add-research-student') ?>" class="btn btn-success btn-sm">
-                            <i class="bi bi-plus-circle"></i> Add Research Student
+                            <i class="bi bi-plus-circle"></i> Add Student
                         </a>
                     </div>
                 </div>

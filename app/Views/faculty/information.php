@@ -5,7 +5,7 @@
             <div class="card-body">
 
                 <h4 class="card-title">
-                    Information
+                    Any other Information
                 </h4>
 
                 <div class="row mb-3">

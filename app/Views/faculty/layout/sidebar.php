@@ -22,7 +22,7 @@
             <?= (!$profileExists) ? 'style="display:none"' : '' ?>>
             <a class="nav-link" href="<?= base_url('faculty/educations') ?>">
                 <i class="ti-book menu-icon"></i>
-                <span class="menu-title">Educational</span>
+                <span class="menu-title">Education</span>
             </a>
         </li>
 
@@ -73,9 +73,9 @@
         <li class="nav-item <?= ($title == 'Research Students') ? 'active' : '' ?>"
             <?= (!$profileExists) ? 'style="display:none"' : '' ?>>
 
-            <a class="nav-link" href="<?= base_url('faculty/research-students') ?>">
+            <a class="nav-link" href="<?= base_url('faculty/students') ?>">
                 <i class="ti-user menu-icon"></i>
-                <span class="menu-title">Research Students</span>
+                <span class="menu-title">Students</span>
             </a>
         </li>
         <li class="nav-item <?= ($title == 'Projects') ? 'active' : '' ?>"
@@ -92,7 +92,7 @@
 
             <a class="nav-link" href="<?= base_url('faculty/information') ?>">
                 <i class="ti-layout-list-post menu-icon"></i>
-                <span class="menu-title">Information</span>
+                <span class="menu-title">Any other Information</span>
             </a>
 
         </li>

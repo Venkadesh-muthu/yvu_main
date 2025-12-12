@@ -93,7 +93,7 @@
                             <!-- Submit Buttons -->
                             <div class="col-12 mt-4">
                                 <button type="submit" class="btn btn-primary me-2">Update</button>
-                                <a href="<?= base_url('faculty/information/extra_curricular') ?>" class="btn btn-light">Cancel</a>
+                                <a href="<?= base_url('faculty/information') ?>" class="btn btn-light">Cancel</a>
                             </div>
 
                         </form>

@@ -61,10 +61,42 @@
 
 
                             <!-- Department -->
-                            <div class="col-12 col-md-6">
+                           <div class="col-12 col-md-6">
                                 <label for="department" class="form-label">Department</label>
-                                <input type="text" class="form-control" id="department" name="department" placeholder="Department" value="<?= set_value('department') ?>">
+                                <select class="form-control" id="department" name="department">
+                                    <option value="">Select Department</option>
+                                    <option value="Applied Mathematics" <?= set_select('department', 'Applied Mathematics') ?>>Applied Mathematics</option>
+                                    <option value="Biochemistry" <?= set_select('department', 'Biochemistry') ?>>Biochemistry</option>
+                                    <option value="Biotechnology" <?= set_select('department', 'Biotechnology') ?>>Biotechnology</option>
+                                    <option value="Biotechnology & Bioinformatics" <?= set_select('department', 'Biotechnology & Bioinformatics') ?>>Biotechnology & Bioinformatics</option>
+                                    <option value="Botany" <?= set_select('department', 'Botany') ?>>Botany</option>
+                                    <option value="Business Management" <?= set_select('department', 'Business Management') ?>>Business Management</option>
+                                    <option value="Chemistry" <?= set_select('department', 'Chemistry') ?>>Chemistry</option>
+                                    <option value="Commerce" <?= set_select('department', 'Commerce') ?>>Commerce</option>
+                                    <option value="Computer Science & Technology" <?= set_select('department', 'Computer Science & Technology') ?>>Computer Science & Technology</option>
+                                    <option value="Earth Sciences" <?= set_select('department', 'Earth Sciences') ?>>Earth Sciences</option>
+                                    <option value="Economics" <?= set_select('department', 'Economics') ?>>Economics</option>
+                                    <option value="English" <?= set_select('department', 'English') ?>>English</option>
+                                    <option value="Environmental Sciences" <?= set_select('department', 'Environmental Sciences') ?>>Environmental Sciences</option>
+                                    <option value="Fine Arts" <?= set_select('department', 'Fine Arts') ?>>Fine Arts</option>
+                                    <option value="Food Technology" <?= set_select('department', 'Food Technology') ?>>Food Technology</option>
+                                    <option value="Genetics & Genomics" <?= set_select('department', 'Genetics & Genomics') ?>>Genetics & Genomics</option>
+                                    <option value="Geology" <?= set_select('department', 'Geology') ?>>Geology</option>
+                                    <option value="History & Archaeology" <?= set_select('department', 'History & Archaeology') ?>>History & Archaeology</option>
+                                    <option value="Journalism & Communication" <?= set_select('department', 'Journalism & Communication') ?>>Journalism & Communication</option>
+                                    <option value="Material Science & Nanotechnology" <?= set_select('department', 'Material Science & Nanotechnology') ?>>Material Science & Nanotechnology</option>
+                                    <option value="Microbiology" <?= set_select('department', 'Microbiology') ?>>Microbiology</option>
+                                    <option value="Physics" <?= set_select('department', 'Physics') ?>>Physics</option>
+                                    <option value="Physical Education and Sports Sciences" <?= set_select('department', 'Physical Education and Sports Sciences') ?>>Physical Education and Sports Sciences</option>
+                                    <option value="Political Science & Public Administration" <?= set_select('department', 'Political Science & Public Administration') ?>>Political Science & Public Administration</option>
+                                    <option value="Psychology" <?= set_select('department', 'Psychology') ?>>Psychology</option>
+                                    <option value="Telugu" <?= set_select('department', 'Telugu') ?>>Telugu</option>
+                                    <option value="Urdu" <?= set_select('department', 'Urdu') ?>>Urdu</option>
+                                    <option value="Zoology" <?= set_select('department', 'Zoology') ?>>Zoology</option>
+                                    <option value="Computational Data Science" <?= set_select('department', 'Computational Data Science') ?>>Computational Data Science</option>
+                                </select>
                             </div>
+
 
                             <!-- Phone -->
                             <div class="col-12 col-md-6">

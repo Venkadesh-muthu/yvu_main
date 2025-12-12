@@ -17,6 +17,12 @@
                                 <label class="form-label">Name</label>
                                 <input type="text" class="form-control" name="name" placeholder="Enter Full Name" value="<?= set_value('name') ?>" required>
                             </div>
+                            
+                            <!-- About Me -->
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">About Me</label>
+                                <textarea class="form-control" name="about_me" placeholder="Write something about yourself" rows="4"><?= set_value('about_me') ?></textarea>
+                            </div>
 
                             <!-- Photo -->
                             <div class="col-12 col-md-6">
