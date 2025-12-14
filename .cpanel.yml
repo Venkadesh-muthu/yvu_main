@@ -1,0 +1,5 @@
+---
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home1/pgescmmy/public_html/yvu_new/
+    - /bin/cp -R * $DEPLOYPATH
