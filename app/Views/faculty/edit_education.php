@@ -29,6 +29,7 @@
                                             <option value="graduation" <?= $education['category'] == 'graduation' ? 'selected' : '' ?>>Graduation</option>
                                             <option value="post_graduation" <?= $education['category'] == 'post_graduation' ? 'selected' : '' ?>>Post Graduation</option>
                                             <option value="mphil_phd" <?= $education['category'] == 'mphil_phd' ? 'selected' : '' ?>>M.Phil / PhD</option>
+                                            <option value="post_doc" <?= $education['category'] == 'post_doc' ? 'selected' : '' ?>>Post Doc</option>
                                         </select>
                                     </div>
 

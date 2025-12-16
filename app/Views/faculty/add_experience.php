@@ -27,6 +27,8 @@
                                             <option value="service">Service</option>
                                             <option value="administrative">Administrative</option>
                                             <option value="collaborative">Collaborative</option>
+                                            <option value="industry">Industry</option>
+                                            <option value="others">Others</option>
                                         </select>
                                     </div>
 

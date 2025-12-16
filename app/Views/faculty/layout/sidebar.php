@@ -105,6 +105,25 @@
             </a>
 
         </li>
+        <li class="nav-item <?= ($title == 'Social Media') ? 'active' : '' ?>"
+            <?= (!$profileExists) ? 'style="display:none"' : '' ?>>
+
+            <a class="nav-link" href="<?= base_url('faculty/social-media') ?>">
+                <i class="ti-world menu-icon"></i>
+                <span class="menu-title">Social Media</span>
+            </a>
+
+        </li>
+        <li class="nav-item <?= ($title == 'Memberships') ? 'active' : '' ?>"
+            <?= (!$profileExists) ? 'style="display:none"' : '' ?>>
+
+            <a class="nav-link" href="<?= base_url('faculty/memberships') ?>">
+                <i class="ti-id-badge menu-icon"></i>
+                <span class="menu-title">Memberships</span>
+            </a>
+
+        </li>
+
 
 
 

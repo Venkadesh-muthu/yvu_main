@@ -36,8 +36,11 @@
                                class="btn btn-danger btn-sm">
                                 <i class="bi bi-trash"></i> Delete Profile
                             </a>
+                             <a href="https://srivatechapps.com/yvu_new/yvu.edu.in/home/faculty-profile.html?id=<?= $profile['user_id'] ?>"
+                            class="btn btn-success btn-sm me-2">
+                                <i class="bi bi-plus-circle"></i> View Profile
+                            </a>
                         <?php endif; ?>
-
                     </div>
                 </div>
 

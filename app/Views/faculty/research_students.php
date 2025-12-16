@@ -20,6 +20,7 @@
                         <thead class="table-light">
                             <tr>
                                 <th>#</th>
+                                <th>Student Type</th>
                                 <th>Student Name</th>
                                 <th>Topic / Title</th>
                                 <th>Type</th>
@@ -37,6 +38,7 @@
                                 foreach ($researchStudents as $row): ?>
                                 <tr>
                                     <td><?= $i++ ?></td>
+                                    <td><?= esc($row['student_type']) ?></td>
                                     <td><?= esc($row['student_name']) ?></td>
                                     <td><?= esc($row['topic_title']) ?></td>
                                     <td><?= esc($row['type']) ?></td>

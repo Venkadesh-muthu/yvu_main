@@ -94,6 +94,34 @@
                                     <option value="Urdu" <?= set_select('department', 'Urdu') ?>>Urdu</option>
                                     <option value="Zoology" <?= set_select('department', 'Zoology') ?>>Zoology</option>
                                     <option value="Computational Data Science" <?= set_select('department', 'Computational Data Science') ?>>Computational Data Science</option>
+                                    <option value="Civil Engineering" <?= set_select('department', 'Civil Engineering') ?>>
+                                        Civil Engineering
+                                    </option>
+
+                                    <option value="Computer Science Engineering" <?= set_select('department', 'Computer Science Engineering') ?>>
+                                        Computer Science Engineering
+                                    </option>
+
+                                    <option value="Electronics and Communication Engineering" <?= set_select('department', 'Electronics and Communication Engineering') ?>>
+                                        Electronics and Communication Engineering
+                                    </option>
+
+                                    <option value="Electrical and Electronics Engineering" <?= set_select('department', 'Electrical and Electronics Engineering') ?>>
+                                        Electrical and Electronics Engineering
+                                    </option>
+
+                                    <option value="Mechanical Engineering" <?= set_select('department', 'Mechanical Engineering') ?>>
+                                        Mechanical Engineering
+                                    </option>
+
+                                    <option value="Metallurgy and Material Technology" <?= set_select('department', 'Metallurgy and Material Technology') ?>>
+                                        Metallurgy and Material Technology
+                                    </option>
+
+                                    <option value="Science and Humanities" <?= set_select('department', 'Science and Humanities') ?>>
+                                        Science and Humanities
+                                    </option>
+                                    <option value="Others" <?= set_select('department', 'Others') ?>>Others</option>
                                 </select>
                             </div>
 

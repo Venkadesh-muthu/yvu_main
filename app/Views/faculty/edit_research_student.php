@@ -21,6 +21,15 @@
 
                                     <!-- Hidden ID -->
                                     <input type="hidden" name="id[]" value="<?= $row['id'] ?? '' ?>">
+                                    <!-- Student Type -->
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label">Student Type</label>
+                                        <select class="form-select" name="student_type[]" required>
+                                            <option value="">Select Student Type</option>
+                                            <option value="Scholar" <?= ($row['student_type'] ?? '') == 'Scholar' ? 'selected' : '' ?>>Scholar</option>
+                                            <option value="PG Student" <?= ($row['student_type'] ?? '') == 'PG Student' ? 'selected' : '' ?>>PG Student</option>
+                                        </select>
+                                    </div>
 
                                     <!-- Student Name -->
                                     <div class="col-12 col-md-4">
@@ -121,8 +130,19 @@ document.addEventListener('DOMContentLoaded', function () {
         // Reset text/number inputs
         newRow.querySelectorAll('input').forEach(input => {
             if (input.type !== 'hidden') input.value = '';
-            input.required = (input.name === 'student_name[]'); // student_name required
+            input.required = (input.name === 'student_name[]');
         });
+
+        // Reset selects
+        newRow.querySelectorAll('select').forEach(select => {
+            select.selectedIndex = 0;
+
+            // Student Type always required
+            if (select.name === 'student_type[]') {
+                select.required = true;
+            }
+        });
+
 
         // Reset selects
         newRow.querySelectorAll('select').forEach(select => select.selectedIndex = 0);

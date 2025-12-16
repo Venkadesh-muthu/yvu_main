@@ -21,7 +21,9 @@ class FacultyProfileController extends BaseController
         $this->visibilityModel = new FacultyProfileVisibilityModel();
     }
 
-    // ✅ FETCH ALL FACULTY PROFILES WITH SAFE VISIBILITY
+    /* ==========================================================
+       ✅ FETCH ALL FACULTY PROFILES (WITH VISIBILITY)
+    ========================================================== */
     public function getFacultyProfiles()
     {
         $profiles = $this->profileModel
@@ -32,34 +34,50 @@ class FacultyProfileController extends BaseController
 
         foreach ($profiles as $profile) {
 
-            // ✅ Fetch visibility (may be null)
             $visibility = $this->visibilityModel
                 ->where('faculty_profiles_id', $profile['id'])
                 ->first();
 
-            // ✅ Always return base fields
+            // Base safe fields (always allowed)
             $filteredProfile = [
-                'id'      => $profile['id'],
-                'user_id' => $profile['user_id'],
-                'photo'   => !empty($profile['photo'])
-                    ? base_url('uploads/faculty/' . $profile['photo'])
-                    : null
+                'id'         => $profile['id'],
+                'user_id'    => $profile['user_id'],
+                'created_at' => $profile['created_at'],
+                'updated_at' => $profile['updated_at'],
             ];
 
-            // ✅ IF VISIBILITY EXISTS → APPLY FILTER
-            if (!empty($visibility)) {
-                foreach ($profile as $field => $value) {
-                    if (
-                        isset($visibility[$field]) &&
-                        $visibility[$field] === 'view'
-                    ) {
-                        $filteredProfile[$field] = $value;
-                    }
-                }
+            /* ---------- PHOTO VISIBILITY ---------- */
+            if (
+                !empty($profile['photo']) &&
+                (
+                    empty($visibility) ||
+                    (isset($visibility['photo']) && $visibility['photo'] === 'view')
+                )
+            ) {
+                $filteredProfile['photo'] = base_url(
+                    'uploads/faculty/' . $profile['photo']
+                );
             }
-            // ✅ IF VISIBILITY DOES NOT EXIST → SHOW EVERYTHING
-            else {
-                foreach ($profile as $field => $value) {
+
+            /* ---------- OTHER FIELDS ---------- */
+            foreach ($profile as $field => $value) {
+
+                if (in_array($field, [
+                    'id',
+                    'user_id',
+                    'photo',
+                    'created_at',
+                    'updated_at'
+                ])) {
+                    continue;
+                }
+
+                // No visibility row → show everything
+                if (empty($visibility)) {
+                    $filteredProfile[$field] = $value;
+                }
+                // Visibility exists → show only allowed fields
+                elseif (isset($visibility[$field]) && $visibility[$field] === 'view') {
                     $filteredProfile[$field] = $value;
                 }
             }
@@ -73,11 +91,14 @@ class FacultyProfileController extends BaseController
         ]);
     }
 
-    // ✅ FETCH SINGLE FACULTY PROFILE WITH SAFE VISIBILITY
+    /* ==========================================================
+       ✅ FETCH SINGLE FACULTY PROFILE (WITH VISIBILITY)
+    ========================================================== */
     public function getFacultyProfile($user_id)
     {
-        // ✅ Fetch profile by user_id instead of primary ID
-        $profile = $this->profileModel->where('user_id', $user_id)->first();
+        $profile = $this->profileModel
+            ->where('user_id', $user_id)
+            ->first();
 
         if (!$profile) {
             return $this->response->setJSON([
@@ -86,31 +107,47 @@ class FacultyProfileController extends BaseController
             ]);
         }
 
-        // ✅ Fetch visibility using the actual profile ID
         $visibility = $this->visibilityModel
             ->where('faculty_profiles_id', $profile['id'])
             ->first();
 
-        // ✅ Base response
+        // Base safe fields
         $filteredProfile = [
-            'id'      => $profile['id'],
-            'user_id' => $profile['user_id'],
-            'photo'   => !empty($profile['photo'])
-                ? base_url('uploads/faculty/' . $profile['photo'])
-                : null
+            'id'         => $profile['id'],
+            'user_id'    => $profile['user_id'],
+            'created_at' => $profile['created_at'],
+            'updated_at' => $profile['updated_at'],
         ];
 
-        // ✅ If visibility exists → show only fields with "view"
-        if (!empty($visibility)) {
-            foreach ($profile as $field => $value) {
-                if (isset($visibility[$field]) && $visibility[$field] === 'view') {
-                    $filteredProfile[$field] = $value;
-                }
-            }
+        /* ---------- PHOTO VISIBILITY ---------- */
+        if (
+            !empty($profile['photo']) &&
+            (
+                empty($visibility) ||
+                (isset($visibility['photo']) && $visibility['photo'] === 'view')
+            )
+        ) {
+            $filteredProfile['photo'] = base_url(
+                'uploads/faculty/' . $profile['photo']
+            );
         }
-        // ✅ If visibility does not exist → show everything
-        else {
-            foreach ($profile as $field => $value) {
+
+        /* ---------- OTHER FIELDS ---------- */
+        foreach ($profile as $field => $value) {
+
+            if (in_array($field, [
+                'id',
+                'user_id',
+                'photo',
+                'created_at',
+                'updated_at'
+            ])) {
+                continue;
+            }
+
+            if (empty($visibility)) {
+                $filteredProfile[$field] = $value;
+            } elseif (isset($visibility[$field]) && $visibility[$field] === 'view') {
                 $filteredProfile[$field] = $value;
             }
         }
@@ -120,5 +157,4 @@ class FacultyProfileController extends BaseController
             'data'   => $filteredProfile
         ]);
     }
-
 }

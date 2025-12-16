@@ -418,6 +418,57 @@ function toggleNewsVisibility(newsId)
     });
 }
 </script>
+<script>
+function toggleSocialVisibility(socialId)
+{
+    let csrfName = "<?= csrf_token() ?>";
+    let csrfHash = "<?= csrf_hash() ?>";
+
+    let formData = new URLSearchParams();
+    formData.append('faculty_social_media_id', socialId);
+    formData.append(csrfName, csrfHash);
+
+    fetch("<?= base_url('faculty/update-social-media-visibility') ?>", {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'success') {
+            let icon = document.querySelector('#eye-btn-social-' + socialId + ' i');
+            icon.className = (data.newVisibility === 'view')
+                ? 'fas fa-eye'
+                : 'fas fa-eye-slash';
+        }
+    })
+    .catch(err => console.error(err));
+}
+</script>
+<script>
+function toggleMembershipVisibility(membershipId)
+{
+    fetch("<?= base_url('faculty/update-membership-visibility') ?>", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "X-Requested-With": "XMLHttpRequest"
+        },
+        body: "membership_id=" + membershipId
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            const btn = document.getElementById("eye-btn-membership-" + membershipId);
+
+            if (data.newVisibility === 'view') {
+                btn.innerHTML = '<i class="fas fa-eye"></i>';
+            } else {
+                btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            }
+        }
+    });
+}
+</script>
 
 
 </body>

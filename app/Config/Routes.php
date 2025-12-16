@@ -159,6 +159,25 @@ $routes->group('faculty', function ($routes) {
     $routes->get('delete-news/(:num)', 'FacultyController::delete_news/$1');
     $routes->post('update-news-visibility', 'FacultyController::updateNewsVisibility');
 
+    $routes->get('social-media', 'FacultyController::social_media');
+    $routes->get('add-social-media', 'FacultyController::add_social_media');
+    $routes->post('save-social-media', 'FacultyController::save_social_media');
+    $routes->get('edit-social-media/(:num)', 'FacultyController::edit_social_media/$1');
+    $routes->post('update-social-media', 'FacultyController::update_social_media');
+    $routes->get('delete-social-media/(:num)', 'FacultyController::delete_social_media/$1');
+    $routes->post('update-social-media-visibility', 'FacultyController::updateSocialMediaVisibility');
+
+    // MEMBERSHIPS
+    $routes->get('memberships', 'FacultyController::memberships');
+    $routes->get('add-membership', 'FacultyController::add_membership');
+    $routes->post('save-membership', 'FacultyController::save_membership');
+
+    $routes->get('edit-membership/(:num)', 'FacultyController::edit_membership/$1');
+    $routes->post('update-membership', 'FacultyController::update_membership');
+
+    $routes->get('delete-membership/(:num)', 'FacultyController::delete_membership/$1');
+    $routes->post('update-membership-visibility', 'FacultyController::updateMembershipVisibility');
+
 });
 $routes->group('api', function ($routes) {
     // User APIs

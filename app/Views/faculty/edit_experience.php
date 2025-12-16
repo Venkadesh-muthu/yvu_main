@@ -30,6 +30,8 @@
                                             <option value="service" <?= $experience['section'] == 'service' ? 'selected' : '' ?>>Service</option>
                                             <option value="administrative" <?= $experience['section'] == 'administrative' ? 'selected' : '' ?>>Administrative</option>
                                             <option value="collaborative" <?= $experience['section'] == 'collaborative' ? 'selected' : '' ?>>Collaborative</option>
+                                            <option value="industry" <?= $experience['section'] == 'industry' ? 'selected' : '' ?>>Industry</option>
+                                            <option value="others" <?= $experience['section'] == 'others' ? 'selected' : '' ?>>Others</option>
                                         </select>
                                     </div>
 

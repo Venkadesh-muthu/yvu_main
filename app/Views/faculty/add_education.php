@@ -26,6 +26,7 @@
                                             <option value="graduation">Graduation</option>
                                             <option value="post_graduation">Post Graduation</option>
                                             <option value="mphil_phd">M.Phil / PhD</option>
+                                            <option value="post_doc">Post Doc</option>
                                         </select>
                                     </div>
 

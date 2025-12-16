@@ -113,7 +113,15 @@
                                         "Telugu",
                                         "Urdu",
                                         "Zoology",
-                                        "Computational Data Science"
+                                        "Computational Data Science",
+                                        'Civil Engineering',
+                                        'Computer Science Engineering',
+                                        'Electronics and Communication Engineering',
+                                        'Electrical and Electronics Engineering',
+                                        'Mechanical Engineering',
+                                        'Metallurgy and Material Technology',
+                                        'Science and Humanities',
+                                        "Others"
                                     ];
 
                         foreach ($departments as $d): ?>

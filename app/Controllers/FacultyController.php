@@ -15,6 +15,8 @@ use App\Models\FacultyResearchStudentsModel;
 use App\Models\FacultyProjectsModel;
 use App\Models\FacultyInformationModel;
 use App\Models\FacultyNewsModel;
+use App\Models\FacultySocialMediaModel;
+use App\Models\FacultyMembershipsModel;
 
 class FacultyController extends BaseController
 {
@@ -30,6 +32,9 @@ class FacultyController extends BaseController
     protected $projectsModel;
     protected $informationModel;
     protected $newsModel;
+    protected $socialMediaModel;
+    protected $membershipsModel;
+
 
 
 
@@ -48,6 +53,10 @@ class FacultyController extends BaseController
         $this->projectsModel = new FacultyProjectsModel();
         $this->informationModel = new FacultyInformationModel();
         $this->newsModel = new FacultyNewsModel();
+        $this->socialMediaModel = new FacultySocialMediaModel();
+        $this->membershipsModel = new FacultyMembershipsModel();
+
+
 
         $this->updateProfileExistsSession();
     }
@@ -238,7 +247,7 @@ class FacultyController extends BaseController
 
         $data = [
             'name'                => $this->request->getPost('name'),
-            'about_me'                => $this->request->getPost('about_me'),
+            'about_me'            => $this->request->getPost('about_me'),
             'photo'               => $photoName,
             'designation'         => $this->request->getPost('designation'),
             'department'          => $this->request->getPost('department'),
@@ -1608,12 +1617,13 @@ class FacultyController extends BaseController
 
         $facultyId = session()->get('faculty_id');
 
-        $names    = $this->request->getPost('student_name');
-        $topics   = $this->request->getPost('topic_title');
-        $types    = $this->request->getPost('type');
-        $froms    = $this->request->getPost('from_year');
-        $tos      = $this->request->getPost('to_year');
-        $statuses = $this->request->getPost('status');
+        $studentTypes = $this->request->getPost('student_type');
+        $names        = $this->request->getPost('student_name');
+        $topics       = $this->request->getPost('topic_title');
+        $types        = $this->request->getPost('type');
+        $froms        = $this->request->getPost('from_year');
+        $tos          = $this->request->getPost('to_year');
+        $statuses     = $this->request->getPost('status');
 
         foreach ($names as $key => $name) {
 
@@ -1622,21 +1632,21 @@ class FacultyController extends BaseController
             }
 
             $this->researchStudentsModel->insert([
-                'faculty_id'  => $facultyId,
-                'student_name'        => $name,
-                'topic_title' => $topics[$key] ?? null,
-                'type'        => $types[$key] ?? null,
-                'from_year'   => $froms[$key] ?? null,
-                'to_year'     => $tos[$key] ?? null,
-                'status'      => $statuses[$key] ?? null,
-                'visibility'  => 'hide'
+                'faculty_id'    => $facultyId,
+                'student_name'  => $name,
+                'student_type'  => $studentTypes[$key] ?? null, // ✅ ADDED
+                'topic_title'   => $topics[$key] ?? null,
+                'type'          => $types[$key] ?? null,
+                'from_year'     => $froms[$key] ?? null,
+                'to_year'       => $tos[$key] ?? null,
+                'status'        => $statuses[$key] ?? null,
+                'visibility'    => 'hide'
             ]);
         }
 
         return redirect()->to('/faculty/students')
             ->with('success', 'Research Students added successfully.');
     }
-
 
     // ======================= EDIT RESEARCH STUDENT =======================
     public function edit_research_student($id)
@@ -1678,13 +1688,14 @@ class FacultyController extends BaseController
         $facultyId = session()->get('faculty_id');
 
         // Get all POST data
-        $ids      = $this->request->getPost('id') ?? [];
-        $names    = $this->request->getPost('student_name') ?? [];
-        $topics   = $this->request->getPost('topic_title') ?? [];
-        $types    = $this->request->getPost('type') ?? [];
-        $froms    = $this->request->getPost('from_year') ?? [];
-        $tos      = $this->request->getPost('to_year') ?? [];
-        $statuses = $this->request->getPost('status') ?? [];
+        $ids          = $this->request->getPost('id') ?? [];
+        $studentTypes = $this->request->getPost('student_type') ?? []; // ✅ ADDED
+        $names        = $this->request->getPost('student_name') ?? [];
+        $topics       = $this->request->getPost('topic_title') ?? [];
+        $types        = $this->request->getPost('type') ?? [];
+        $froms        = $this->request->getPost('from_year') ?? [];
+        $tos          = $this->request->getPost('to_year') ?? [];
+        $statuses     = $this->request->getPost('status') ?? [];
 
         foreach ($names as $key => $name) {
 
@@ -1694,14 +1705,15 @@ class FacultyController extends BaseController
             }
 
             $data = [
-                'faculty_id'  => $facultyId,
-                'student_name' => $name,
-                'topic_title' => $topics[$key] ?? null,
-                'type'        => $types[$key] ?? null,
-                'from_year'   => $froms[$key] ?? null,
-                'to_year'     => $tos[$key] ?? null,
-                'status'      => $statuses[$key] ?? null,
-                'visibility'  => 'hide' // default visibility
+                'faculty_id'    => $facultyId,
+                'student_name'  => $name,
+                'student_type'  => $studentTypes[$key] ?? null, // ✅ ADDED
+                'topic_title'   => $topics[$key] ?? null,
+                'type'          => $types[$key] ?? null,
+                'from_year'     => $froms[$key] ?? null,
+                'to_year'       => $tos[$key] ?? null,
+                'status'        => $statuses[$key] ?? null,
+                'visibility'    => 'hide'
             ];
 
             // Update if ID exists, otherwise insert new
@@ -1715,6 +1727,7 @@ class FacultyController extends BaseController
         return redirect()->to('/faculty/students')
                          ->with('success', 'Research Students updated successfully.');
     }
+
 
     // ======================= DELETE RESEARCH STUDENT =======================
     public function delete_research_student($id)
@@ -2402,6 +2415,376 @@ class FacultyController extends BaseController
 
         return $this->response->setJSON([
             'status' => 'success',
+            'newVisibility' => $newStatus
+        ]);
+    }
+    public function social_media()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $socialMedia = $this->socialMediaModel
+            ->where('faculty_id', $facultyId)
+            ->orderBy('id', 'DESC')
+            ->findAll();
+
+        $data = [
+            'title'        => 'Social Media',
+            'content'      => 'faculty/social_media',
+            'socialMedia'  => $socialMedia
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+    public function add_social_media()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $data = [
+            'title'   => 'Social Media',
+            'content' => 'faculty/add_social_media'
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+    public function save_social_media()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $instagram = $this->request->getPost('instagram_link');
+        $whatsapp  = $this->request->getPost('whatsapp_link');
+        $facebook  = $this->request->getPost('facebook_link');
+        $twitter   = $this->request->getPost('twitter_link');
+
+        if (is_array($instagram)) {
+            foreach ($instagram as $key => $value) {
+
+                // Skip empty rows
+                if (
+                    empty($instagram[$key]) &&
+                    empty($whatsapp[$key]) &&
+                    empty($facebook[$key]) &&
+                    empty($twitter[$key])
+                ) {
+                    continue;
+                }
+
+                $this->socialMediaModel->insert([
+                    'faculty_id'     => $facultyId,
+                    'instagram_link' => $instagram[$key] ?? null,
+                    'whatsapp_link'  => $whatsapp[$key] ?? null,
+                    'facebook_link'  => $facebook[$key] ?? null,
+                    'twitter_link'   => $twitter[$key] ?? null,
+                    'visibility'     => 'hide'
+                ]);
+            }
+        }
+
+        return redirect()->to('/faculty/social-media')
+            ->with('success', 'Social media links added successfully.');
+    }
+
+    public function edit_social_media($id)
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $social = $this->socialMediaModel
+            ->where('id', $id)
+            ->where('faculty_id', $facultyId)
+            ->first();
+
+        if (!$social) {
+            return redirect()->back()->with('error', 'Unauthorized access.');
+        }
+
+        $data = [
+            'title'        => 'Edit Social Media',
+            'content'      => 'faculty/edit_social_media',
+            'socialMedia'  => [$social] // ✅ array (same as news)
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+
+    public function update_social_media()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $ids        = $this->request->getPost('id') ?? [];
+        $instagram = $this->request->getPost('instagram_link') ?? [];
+        $whatsapp  = $this->request->getPost('whatsapp_link') ?? [];
+        $facebook  = $this->request->getPost('facebook_link') ?? [];
+        $twitter   = $this->request->getPost('twitter_link') ?? [];
+
+        foreach ($instagram as $key => $value) {
+
+            // ⛔ Skip empty rows
+            if (
+                empty($instagram[$key]) &&
+                empty($whatsapp[$key]) &&
+                empty($facebook[$key]) &&
+                empty($twitter[$key])
+            ) {
+                continue;
+            }
+
+            $data = [
+                'faculty_id'     => $facultyId,
+                'instagram_link' => $instagram[$key] ?? null,
+                'whatsapp_link'  => $whatsapp[$key] ?? null,
+                'facebook_link'  => $facebook[$key] ?? null,
+                'twitter_link'   => $twitter[$key] ?? null,
+            ];
+
+            if (!empty($ids[$key])) {
+                // ✅ UPDATE
+                $this->socialMediaModel
+                    ->where('id', $ids[$key])
+                    ->where('faculty_id', $facultyId)
+                    ->update(null, $data);
+            } else {
+                // ✅ INSERT
+                $this->socialMediaModel->insert($data);
+            }
+        }
+
+        return redirect()->to('/faculty/social-media')
+            ->with('success', 'Social media updated successfully.');
+    }
+
+
+    public function delete_social_media($id)
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $row = $this->socialMediaModel
+            ->where('id', $id)
+            ->where('faculty_id', $facultyId)
+            ->first();
+
+        if (!$row) {
+            return redirect()->to('/faculty/social-media')
+                ->with('error', 'Unauthorized access.');
+        }
+
+        $this->socialMediaModel->delete($id);
+
+        return redirect()->to('/faculty/social-media')
+            ->with('success', 'Social media link deleted successfully.');
+    }
+    public function updateSocialMediaVisibility()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $id = $this->request->getPost('faculty_social_media_id');
+
+        $social = $this->socialMediaModel->find($id);
+
+        if (!$social) {
+            return $this->response->setJSON([
+                'status' => 'error',
+                'message' => 'Record not found'
+            ]);
+        }
+
+        $newStatus = ($social['visibility'] === 'view') ? 'hide' : 'view';
+
+        $this->socialMediaModel->update($id, [
+            'visibility' => $newStatus
+        ]);
+
+        return $this->response->setJSON([
+            'status'        => 'success',
+            'newVisibility' => $newStatus
+        ]);
+    }
+    public function memberships()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $memberships = $this->membershipsModel
+            ->where('faculty_id', $facultyId)
+            ->orderBy('id', 'DESC')
+            ->findAll();
+
+        $data = [
+            'title'       => 'Memberships',
+            'content'     => 'faculty/memberships',
+            'memberships' => $memberships
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+    public function add_membership()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $data = [
+            'title'   => 'Memberships',
+            'content' => 'faculty/add_membership'
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+    public function save_membership()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $categories = $this->request->getPost('category');
+        $titles     = $this->request->getPost('title');
+
+        foreach ($categories as $key => $category) {
+
+            if (empty($titles[$key])) {
+                continue;
+            }
+
+            $this->membershipsModel->insert([
+                'faculty_id' => $facultyId,
+                'category'   => $category,
+                'title'      => $titles[$key],
+                'visibility' => 'hide'
+            ]);
+        }
+
+        return redirect()->to('/faculty/memberships')
+            ->with('success', 'Memberships added successfully.');
+    }
+    public function edit_membership($id)
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $row = $this->membershipsModel
+            ->where('id', $id)
+            ->where('faculty_id', $facultyId)
+            ->first();
+
+        if (!$row) {
+            return redirect()->to('/faculty/memberships')
+                ->with('error', 'Unauthorized access.');
+        }
+
+        $data = [
+            'title'       => 'Memberships',
+            'content'     => 'faculty/edit_membership',
+            'memberships' => [$row]
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+    public function update_membership()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $ids        = $this->request->getPost('id');
+        $categories = $this->request->getPost('category');
+        $titles     = $this->request->getPost('title');
+
+        foreach ($categories as $key => $category) {
+
+            $data = [
+                'faculty_id' => $facultyId,
+                'category'   => $category,
+                'title'      => $titles[$key],
+            ];
+
+            if (!empty($ids[$key])) {
+                $this->membershipsModel->update($ids[$key], $data);
+            } else {
+                $data['visibility'] = 'hide';
+                $this->membershipsModel->insert($data);
+            }
+        }
+
+        return redirect()->to('/faculty/memberships')
+            ->with('success', 'Memberships updated successfully.');
+    }
+    public function delete_membership($id)
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $facultyId = session()->get('faculty_id');
+
+        $row = $this->membershipsModel
+            ->where('id', $id)
+            ->where('faculty_id', $facultyId)
+            ->first();
+
+        if (!$row) {
+            return redirect()->to('/faculty/memberships')
+                ->with('error', 'Unauthorized access.');
+        }
+
+        $this->membershipsModel->delete($id);
+
+        return redirect()->to('/faculty/memberships')
+            ->with('success', 'Membership deleted successfully.');
+    }
+    public function updateMembershipVisibility()
+    {
+        if ($redirect = $this->checkFacultyLogin()) {
+            return $redirect;
+        }
+
+        $membershipId = $this->request->getPost('membership_id');
+
+        $membership = $this->membershipsModel->find($membershipId);
+
+        if (!$membership) {
+            return $this->response->setJSON(['status' => 'error']);
+        }
+
+        $newStatus = ($membership['visibility'] === 'view') ? 'hide' : 'view';
+
+        $this->membershipsModel->update($membershipId, [
+            'visibility' => $newStatus
+        ]);
+
+        return $this->response->setJSON([
+            'status'        => 'success',
             'newVisibility' => $newStatus
         ]);
     }

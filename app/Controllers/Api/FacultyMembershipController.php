@@ -3,11 +3,11 @@
 namespace App\Controllers\Api;
 
 use App\Controllers\BaseController;
-use App\Models\FacultyActivitiesModel;
+use App\Models\FacultyMembershipsModel;
 
 class FacultyMembershipController extends BaseController
 {
-    protected $facultyActivitiesModel;
+    protected $membershipModel;
 
     public function __construct()
     {
@@ -15,53 +15,52 @@ class FacultyMembershipController extends BaseController
         header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
         header("Access-Control-Allow-Headers: Content-Type, Authorization");
 
-        $this->facultyActivitiesModel = new FacultyActivitiesModel();
+        $this->membershipModel = new FacultyMembershipsModel();
     }
 
-    // Fetch all memberships for a user
+    /**
+     * Fetch all memberships for a faculty user
+     */
     public function getMembershipsByUser($user_id)
     {
-        $records = $this->facultyActivitiesModel
+        $records = $this->membershipModel
             ->where('faculty_id', $user_id)
-            ->where('category', 'membership')
+            ->where('visibility', 'view') // optional: only public
             ->orderBy('id', 'DESC')
             ->findAll();
 
-        if (!$records) {
+        if (empty($records)) {
             return $this->response->setJSON([
                 'status'  => 'error',
                 'message' => 'No memberships found for this user.'
             ]);
         }
 
-        $records = array_map(function ($record) {
+        $data = array_map(function ($row) {
             return [
-                'user_id'         => $record['faculty_id'],
-                'title'           => $record['title'],
-                'type'            => $record['type'],
-                'month_year'      => $record['month_year'],
-                'attended_or_role' => $record['attended_or_role'],
-                'location'        => $record['location'],
-                // Only return filename, not full URL
-                'certificate_url' => $record['certificate_path'],
-                'visibility'      => $record['visibility'],
-                'created_at'      => $record['created_at'],
-                'updated_at'      => $record['updated_at'],
+                'user_id'    => $row['faculty_id'],
+                'category'   => $row['category'],
+                'title'      => $row['title'],
+                'visibility' => $row['visibility'],
+                'created_at' => $row['created_at'],
+                'updated_at' => $row['updated_at'],
             ];
         }, $records);
 
         return $this->response->setJSON([
             'status' => 'success',
-            'data'   => $records
+            'data'   => $data
         ]);
     }
 
-    // Fetch latest membership for a user
+    /**
+     * Fetch latest membership for a faculty user
+     */
     public function getLatestMembershipByUser($user_id)
     {
-        $record = $this->facultyActivitiesModel
+        $record = $this->membershipModel
             ->where('faculty_id', $user_id)
-            ->where('category', 'membership')
+            ->where('visibility', 'view') // optional
             ->orderBy('id', 'DESC')
             ->first();
 
@@ -75,17 +74,12 @@ class FacultyMembershipController extends BaseController
         return $this->response->setJSON([
             'status' => 'success',
             'data'   => [
-                'user_id'         => $record['faculty_id'],
-                'title'           => $record['title'],
-                'type'            => $record['type'],
-                'month_year'      => $record['month_year'],
-                'attended_or_role' => $record['attended_or_role'],
-                'location'        => $record['location'],
-                // Only filename
-                'certificate_url' => $record['certificate_path'],
-                'visibility'      => $record['visibility'],
-                'created_at'      => $record['created_at'],
-                'updated_at'      => $record['updated_at'],
+                'user_id'    => $record['faculty_id'],
+                'category'   => $record['category'],
+                'title'      => $record['title'],
+                'visibility' => $record['visibility'],
+                'created_at' => $record['created_at'],
+                'updated_at' => $record['updated_at'],
             ]
         ]);
     }

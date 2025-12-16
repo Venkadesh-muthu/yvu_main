@@ -11,6 +11,7 @@ class FacultyResearchStudentsModel extends Model
 
     protected $allowedFields = [
         'faculty_id',      // Faculty reference
+        'student_type',
         'student_name',    // Student Name
         'topic_title',     // Research Topic / Title
         'type',            // PhD / MPhil / PG / UG / Other

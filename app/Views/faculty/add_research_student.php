@@ -14,6 +14,15 @@
 
                             <div id="research-container">
                                 <div class="research-row row g-3 mb-3">
+                                    <!-- Student Type -->
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label">Student Type</label>
+                                        <select class="form-select" name="student_type[]" required>
+                                            <option value="">Select Student Type</option>
+                                            <option value="Scholar">Scholar</option>
+                                            <option value="PG Student">PG Student</option>
+                                        </select>
+                                    </div>
 
                                     <!-- Student Name -->
                                     <div class="col-12 col-md-4">
