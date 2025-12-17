@@ -28,8 +28,11 @@
                                             <option value="intermediate" <?= $education['category'] == 'intermediate' ? 'selected' : '' ?>>Intermediate (+2)</option>
                                             <option value="graduation" <?= $education['category'] == 'graduation' ? 'selected' : '' ?>>Graduation</option>
                                             <option value="post_graduation" <?= $education['category'] == 'post_graduation' ? 'selected' : '' ?>>Post Graduation</option>
-                                            <option value="mphil_phd" <?= $education['category'] == 'mphil_phd' ? 'selected' : '' ?>>M.Phil / PhD</option>
-                                            <option value="post_doc" <?= $education['category'] == 'post_doc' ? 'selected' : '' ?>>Post Doc</option>
+                                            <option value="mphil" <?= $education['category'] == 'mphil' ? 'selected' : '' ?>>M.Phil</option>
+                                            <option value="phd" <?= $education['category'] == 'phd' ? 'selected' : '' ?>>PhD</option>
+                                            <option value="post_doc" <?= $education['category'] == 'post_doc' ? 'selected' : '' ?>>Postdoc</option>
+                                            <option value="diploma" <?= $education['category'] == 'diploma' ? 'selected' : '' ?>>Diploma</option>
+                                            <option value="others" <?= $education['category'] == 'others' ? 'selected' : '' ?>>Others</option>
                                         </select>
                                     </div>
 

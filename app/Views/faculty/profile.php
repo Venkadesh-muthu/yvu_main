@@ -31,11 +31,11 @@
                                 <i class="bi bi-pencil-square"></i> Edit Profile
                             </a>
 
-                            <a href="<?= base_url('faculty/delete-profile/' . $profile['id']) ?>"
+                            <!-- <a href="<?= base_url('faculty/delete-profile/' . $profile['id']) ?>"
                                onclick="return confirm('Delete this profile?');"
                                class="btn btn-danger btn-sm">
                                 <i class="bi bi-trash"></i> Delete Profile
-                            </a>
+                            </a> -->
                              <a href="https://srivatechapps.com/yvu_new/yvu.edu.in/home/faculty-profile.html?id=<?= $profile['user_id'] ?>"
                             class="btn btn-success btn-sm me-2">
                                 <i class="bi bi-plus-circle"></i> View Profile
@@ -73,67 +73,93 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php if (!empty($profile)): ?>
-                                <?php
-                                $fields = [
-                                    'name' => 'Name',
-                                    'about_me' => 'About Me',
-                                    'designation' => 'Designation',
-                                    'department' => 'Department',
-                                    'phone_no' => 'Phone',
-                                    'email_official' => 'Email',
-                                    'employee_id' => 'Employee ID',
-                                    'cfms_no' => 'CFMS No',
-                                    'dob' => 'Date of Birth',
-                                    'gender' => 'Gender',
-                                    'religion' => 'Religion',
-                                    'caste' => 'Caste',
-                                    'reservation' => 'Reservation',
-                                    'address_residential' => 'Residential Address',
-                                    'address_office' => 'Office Address',
-                                    'aadhaar_no' => 'Aadhaar No',
-                                    'blood_group' => 'Blood Group',
-                                    'place_of_birth' => 'Place of Birth'
-                                ];
-                                $i = 1;
-                                ?>
+                        <?php if (!empty($profile)): ?>
 
-                                <?php foreach ($fields as $key => $label): ?>
-                                    <tr>
-                                        <td><?= $i++ ?></td>
-                                        <td><?= $label ?></td>
-                                        <td><?= esc($profile[$key] ?: '-') ?></td>
-                                        <td>
-                                            <?php $status = !empty($visibility[$key]) ? $visibility[$key] : 'hide'; ?>
-                                            <button type="button" class="btn btn-sm btn-info"
-                                                    id="<?= $key ?>_eye"
-                                                    onclick="toggleVisibility('<?= $key ?>')"
-                                                    data-status="<?= $status ?>"
-                                                    title="<?= $status === 'view' ? 'Hide' : 'Show' ?>">
-                                                <i class="fas <?= $status === 'view' ? 'fa-eye' : 'fa-eye-slash' ?>"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
+                            <?php
+                            $fields = [
+                                'name' => 'Name',
+                                'about_me' => 'About Me',
+                                'designation' => 'Designation',
+                                'department' => 'Department',
+                                'phone_no' => 'Phone',
+                                'email_official' => 'Email',
+                                'employee_id' => 'Employee ID',
+                                'cfms_no' => 'CFMS No',
+                                'dob' => 'Date of Birth',
+                                'gender' => 'Gender',
+                                'religion' => 'Religion',
+                                'caste' => 'Caste',
+                                'reservation' => 'Reservation',
+                                'address_residential' => 'Residential Address',
+                                'address_office' => 'Office Address',
+                                'aadhaar_no' => 'Aadhaar No',
+                                'blood_group' => 'Blood Group',
+                                'place_of_birth' => 'Place of Birth'
+                            ];
 
-                            <?php else: ?>
+                            $i = 1;
+                            ?>
+
+                            <?php foreach ($fields as $key => $label): ?>
                                 <tr>
-                                    <td colspan="4" class="text-center text-muted">No records found</td>
+                                    <td><?= $i++ ?></td>
+                                    <td><?= esc($label) ?></td>
+                                    <td>
+                                        <?php
+                                        // 🔥 Handle multiple phone & email
+                                        if (in_array($key, ['phone_no', 'email_official']) && !empty($profile[$key])) {
+
+                                            $values = json_decode($profile[$key], true);
+
+                                            if (is_array($values)) {
+                                                echo '<ul class="mb-0 ps-3">';
+                                                foreach ($values as $val) {
+                                                    echo '<li>' . esc($val) . '</li>';
+                                                }
+                                                echo '</ul>';
+                                            } else {
+                                                echo '-';
+                                            }
+
+                                        } else {
+                                            echo !empty($profile[$key]) ? esc($profile[$key]) : '-';
+                                        }
+                                ?>
+                                    </td>
+
+                                    <td>
+                                        <?php $status = !empty($visibility[$key]) ? $visibility[$key] : 'hide'; ?>
+                                        <button type="button"
+                                                class="btn btn-sm btn-info"
+                                                id="<?= $key ?>_eye"
+                                                onclick="toggleVisibility('<?= $key ?>')"
+                                                data-status="<?= $status ?>"
+                                                title="<?= $status === 'view' ? 'Hide' : 'Show' ?>">
+                                            <i class="fas <?= $status === 'view' ? 'fa-eye' : 'fa-eye-slash' ?>"></i>
+                                        </button>
+                                    </td>
                                 </tr>
-                            <?php endif; ?>
+                            <?php endforeach; ?>
+
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">No records found</td>
+                            </tr>
+                        <?php endif; ?>
                         </tbody>
+
                     </table>
                 </div>
 
                 <!-- RESEARCH PROFILE LINKS TABLE -->
                 <h5 class="mt-4">Research Profile Links</h5>
                 <?php
-                $researchLinks = [
-                    'vidwan_url' => 'VIDWAN',
-                    'orcid_url' => 'ORCID',
-                    'scopus_url' => 'SCOPUS',
-                    'google_scholar_url' => 'Google Scholar'
-                ];
+        $researchLinks = [
+            'vidwan_url' => 'VIDWAN',
+            'orcid_url' => 'ORCID',
+            'scopus_url' => 'SCOPUS',
+            'google_scholar_url' => 'Google Scholar'
+        ];
                 ?>
                 <div class="table-responsive">
                     <table class="table table-bordered">

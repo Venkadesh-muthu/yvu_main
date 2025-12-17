@@ -106,6 +106,10 @@
                                                 onclick="return confirm('Are you sure you want to delete this user?');">
                                                     <i class="bi bi-trash"></i> Delete
                                                 </a>
+                                                <a href="<?= base_url('admin/downloadUserPdf/' . $user['id']) ?>"
+                                                class="btn btn-sm btn-info">
+                                                    <i class="bi bi-file-earmark-pdf"></i> PDF
+                                                </a>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>

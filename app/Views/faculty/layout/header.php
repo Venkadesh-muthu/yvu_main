@@ -50,7 +50,7 @@
             </li>
           </ul>
           <ul class="navbar-nav navbar-nav-right">
-            <li class="nav-item dropdown">
+            <!-- <li class="nav-item dropdown">
               <a class="nav-link count-indicator dropdown-toggle" id="notificationDropdown" href="#" data-bs-toggle="dropdown">
                 <i class="icon-bell mx-0"></i>
                 <span class="count"></span>
@@ -91,24 +91,40 @@
                   </div>
                 </a>
               </div>
-            </li>
+            </li> -->
             <li class="nav-item nav-profile dropdown">
               <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" id="profileDropdown">
                 <img src="<?= base_url('admin-template/assets/images/favicon.ico') ?>" alt="profile" />
               </a>
+
               <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-                <a class="dropdown-item">
+
+                <a class="dropdown-item text-center">
                   <?php $facultyname = session()->get('faculty_name'); ?>
-                    <h3 ><?= $facultyname; ?></h3></a>
+                  <h5 class="mb-0"><?= esc($facultyname); ?></h5>
+                </a>
+
+                <div class="dropdown-divider"></div>
+
+                <!-- Forgot / Change Password -->
+                <a class="dropdown-item" href="<?= base_url('faculty/forgot-password') ?>">
+                  <i class="ti-lock text-primary"></i> Change Password
+                </a>
+
+                <div class="dropdown-divider"></div>
+
+                <!-- Logout -->
                 <a class="dropdown-item" href="<?= base_url('logout') ?>">
-                  <i class="ti-power-off text-primary"></i> Logout </a>
+                  <i class="ti-power-off text-primary"></i> Logout
+                </a>
+
               </div>
             </li>
-            <li class="nav-item nav-settings d-none d-lg-flex">
+            <!-- <li class="nav-item nav-settings d-none d-lg-flex">
               <a class="nav-link" href="#">
                 <i class="icon-ellipsis"></i>
               </a>
-            </li>
+            </li> -->
           </ul>
           <button class="navbar-toggler navbar-toggler-right d-lg-none align-self-center" type="button" data-toggle="offcanvas">
             <span class="icon-menu"></span>

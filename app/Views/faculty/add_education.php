@@ -25,8 +25,11 @@
                                             <option value="intermediate">Intermediate (+2)</option>
                                             <option value="graduation">Graduation</option>
                                             <option value="post_graduation">Post Graduation</option>
-                                            <option value="mphil_phd">M.Phil / PhD</option>
-                                            <option value="post_doc">Post Doc</option>
+                                            <option value="mphil">M.Phil</option>
+                                            <option value="phd">PhD</option>
+                                            <option value="post_doc">Postdoc</option>
+                                            <option value="diploma">Diploma</option>
+                                            <option value="others">Others</option>
                                         </select>
                                     </div>
 

@@ -122,16 +122,50 @@
                             <!-- Phone -->
                             <div class="col-12 col-md-6">
                                 <label class="form-label">Phone No</label>
-                                <input type="text" class="form-control" name="phone_no"
-                                       value="<?= esc($profile['phone_no']) ?>">
+
+                                <div id="phone-wrapper">
+                                    <?php foreach ($phones as $index => $phone): ?>
+                                        <div class="input-group mb-2">
+                                            <input type="text"
+                                                class="form-control"
+                                                name="phone_no[]"
+                                                value="<?= esc($phone) ?>"
+                                                placeholder="Phone Number">
+
+                                            <?php if ($index === 0): ?>
+                                                <button type="button" class="btn btn-success" onclick="addPhone()">+</button>
+                                            <?php else: ?>
+                                                <button type="button" class="btn btn-danger" onclick="removeField(this)">−</button>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
                             </div>
+
 
                             <!-- Email -->
                             <div class="col-12 col-md-6">
                                 <label class="form-label">Official Email</label>
-                                <input type="email" class="form-control" name="email_official"
-                                       value="<?= esc($profile['email_official']) ?>">
+
+                                <div id="email-wrapper">
+                                    <?php foreach ($emails as $index => $email): ?>
+                                        <div class="input-group mb-2">
+                                            <input type="email"
+                                                class="form-control"
+                                                name="email_official[]"
+                                                value="<?= esc($email) ?>"
+                                                placeholder="Official Email">
+
+                                            <?php if ($index === 0): ?>
+                                                <button type="button" class="btn btn-success" onclick="addEmail()">+</button>
+                                            <?php else: ?>
+                                                <button type="button" class="btn btn-danger" onclick="removeField(this)">−</button>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
                             </div>
+
 
                             <!-- Aadhaar -->
                             <div class="col-12 col-md-6">
@@ -197,3 +231,28 @@
             </div>
         </div>
 
+<script>
+function addPhone() {
+    document.getElementById('phone-wrapper').insertAdjacentHTML(
+        'beforeend',
+        `<div class="input-group mb-2">
+            <input type="text" class="form-control" name="phone_no[]" placeholder="Phone Number">
+            <button type="button" class="btn btn-danger" onclick="removeField(this)">−</button>
+        </div>`
+    );
+}
+
+function addEmail() {
+    document.getElementById('email-wrapper').insertAdjacentHTML(
+        'beforeend',
+        `<div class="input-group mb-2">
+            <input type="email" class="form-control" name="email_official[]" placeholder="Official Email">
+            <button type="button" class="btn btn-danger" onclick="removeField(this)">−</button>
+        </div>`
+    );
+}
+
+function removeField(btn) {
+    btn.closest('.input-group').remove();
+}
+</script>

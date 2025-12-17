@@ -81,7 +81,7 @@ class AdminController extends BaseController
     private function checkLogin()
     {
         if (!session()->get('isAdminLoggedIn')) {
-            return redirect()->to('/admin')->send();
+            return redirect()->to('/')->send();
         }
     }
 

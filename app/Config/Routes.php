@@ -21,6 +21,7 @@ $routes->group('admin', function ($routes) {
     $routes->get('editUser/(:num)', 'AdminController::editUser/$1');
     $routes->post('editUser/(:num)', 'AdminController::editUser/$1');
     $routes->get('deleteUser/(:num)', 'AdminController::deleteUser/$1');
+    $routes->get('downloadUserPdf/(:num)', 'AdminController::downloadUserPdf/$1');
 });
 
 $routes->group('faculty', function ($routes) {
@@ -30,6 +31,10 @@ $routes->group('faculty', function ($routes) {
 
     // Logout
     $routes->get('logout', 'FacultyController::logout');
+
+    //forget password
+    $routes->get('forgot-password', 'FacultyController::forgotPassword');
+    $routes->post('forgot-password', 'FacultyController::updateForgotPassword');
 
     // Profile List
     $routes->get('profile', 'FacultyController::profile');

@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Models\UserModel;
 use App\Models\FacultyProfileModel;
 use App\Models\FacultyEducationModel;
 use App\Models\FacultyProfileVisibilityModel;
@@ -20,6 +21,7 @@ use App\Models\FacultyMembershipsModel;
 
 class FacultyController extends BaseController
 {
+    protected $userModel;
     protected $profileModel;
     protected $eduModel;
     protected $ProfileVisibilityModel;
@@ -41,6 +43,7 @@ class FacultyController extends BaseController
     public function __construct()
     {
         helper(['form']);
+        $this->userModel = new UserModel();
         $this->profileModel = new FacultyProfileModel();
         $this->eduModel = new FacultyEducationModel();
         $this->ProfileVisibilityModel = new FacultyProfileVisibilityModel();
@@ -82,6 +85,46 @@ class FacultyController extends BaseController
             'content' => 'faculty/dashboard',
         ];
         return view('faculty/layout/template', $data);
+    }
+    public function forgotPassword()
+    {
+        $data = [
+            'title'   => 'Forgot Password',
+            'content' => 'faculty/forgot_password',
+        ];
+
+        return view('faculty/layout/template', $data);
+    }
+    public function updateForgotPassword()
+    {
+        $rules = [
+            'email'    => 'required|valid_email',
+            'password' => 'required|min_length[6]'
+        ];
+
+        if (!$this->validate($rules)) {
+            return redirect()->back()
+                ->withInput()
+                ->with('errors', $this->validator->getErrors());
+        }
+
+        $email    = $this->request->getPost('email');
+        $password = $this->request->getPost('password');
+
+        $user = $this->userModel
+            ->where('email', $email)
+            ->where('user_type', 'faculty')
+            ->first();
+
+        if (!$user) {
+            return redirect()->back()->with('error', 'Faculty email not found');
+        }
+
+        $this->userModel->update($user['id'], [
+            'password' => password_hash($password, PASSWORD_DEFAULT)
+        ]);
+
+        return redirect()->to('/')->with('success', 'Password updated successfully');
     }
 
     // ---------------------------------------------------------
@@ -153,18 +196,23 @@ class FacultyController extends BaseController
 
         $facultyId = session()->get('faculty_id');
 
+        // Photo Upload
         $photo = $this->request->getFile('photo');
         $photoName = null;
 
-        if ($photo && $photo->isValid()) {
+        if ($photo && $photo->isValid() && !$photo->hasMoved()) {
             $photoName = $photo->getRandomName();
             $photo->move('uploads/faculty', $photoName);
         }
 
+        // Get multiple phone & email values
+        $phones = array_filter($this->request->getPost('phone_no') ?? []);
+        $emails = array_filter($this->request->getPost('email_official') ?? []);
+
         $data = [
             'user_id'             => $facultyId,
             'name'                => $this->request->getPost('name'),
-            'about_me'                => $this->request->getPost('about_me'),
+            'about_me'            => $this->request->getPost('about_me'),
             'photo'               => $photoName,
             'designation'         => $this->request->getPost('designation'),
             'department'          => $this->request->getPost('department'),
@@ -177,8 +225,11 @@ class FacultyController extends BaseController
             'reservation'         => $this->request->getPost('reservation'),
             'address_residential' => $this->request->getPost('address_residential'),
             'address_office'      => $this->request->getPost('address_office'),
-            'phone_no'            => $this->request->getPost('phone_no'),
-            'email_official'      => $this->request->getPost('email_official'),
+
+            // 🔥 JSON storage
+            'phone_no'            => json_encode($phones),
+            'email_official'      => json_encode($emails),
+
             'aadhaar_no'          => $this->request->getPost('aadhaar_no'),
             'blood_group'         => $this->request->getPost('blood_group'),
             'place_of_birth'      => $this->request->getPost('place_of_birth'),
@@ -190,8 +241,10 @@ class FacultyController extends BaseController
 
         $this->profileModel->save($data);
 
-        return redirect()->to('/faculty/profile')->with('success', 'Profile created successfully.');
+        return redirect()->to('/faculty/profile')
+            ->with('success', 'Profile created successfully.');
     }
+
 
     // ---------------------------------------------------------
     // EDIT PROFILE
@@ -204,21 +257,52 @@ class FacultyController extends BaseController
 
         $facultyId = session()->get('faculty_id');
 
-        // security: allow editing only own profile
-        $profile = $this->profileModel->where('id', $id)->where('user_id', $facultyId)->first();
+        // Allow editing only own profile
+        $profile = $this->profileModel
+            ->where('id', $id)
+            ->where('user_id', $facultyId)
+            ->first();
 
         if (!$profile) {
-            return redirect()->to('/faculty/profile')->with('error', 'Unauthorized access.');
+            return redirect()->to('/faculty/profile')
+                ->with('error', 'Unauthorized access.');
         }
 
+        // Phones
+        $phones = $profile['phone_no'] ?? [];
+        if (!is_array($phones)) {
+            $decoded = json_decode($phones, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $phones = $decoded;
+            } else {
+                // If it's single value (string, number, etc.), wrap it in array
+                $phones = $phones ? [$phones] : [];
+            }
+        }
+
+        // Emails
+        $emails = $profile['email_official'] ?? [];
+        if (!is_array($emails)) {
+            $decoded = json_decode($emails, true);
+            if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+                $emails = $decoded;
+            } else {
+                $emails = $emails ? [$emails] : [];
+            }
+        }
+
+
         $data = [
-            'title'   => 'Faculty Profile',
+            'title'   => 'Edit Faculty Profile',
             'content' => 'faculty/edit_profile',
             'profile' => $profile,
+            'phones'  => $phones,
+            'emails'  => $emails,
         ];
 
         return view('faculty/layout/template', $data);
     }
+
 
     // ---------------------------------------------------------
     // UPDATE PROFILE
@@ -244,7 +328,8 @@ class FacultyController extends BaseController
             $photoName = $photo->getRandomName();
             $photo->move('uploads/faculty', $photoName);
         }
-
+        $phones = array_filter($this->request->getPost('phone_no') ?? []);
+        $emails = array_filter($this->request->getPost('email_official') ?? []);
         $data = [
             'name'                => $this->request->getPost('name'),
             'about_me'            => $this->request->getPost('about_me'),
@@ -260,8 +345,8 @@ class FacultyController extends BaseController
             'reservation'         => $this->request->getPost('reservation'),
             'address_residential' => $this->request->getPost('address_residential'),
             'address_office'      => $this->request->getPost('address_office'),
-            'phone_no'            => $this->request->getPost('phone_no'),
-            'email_official'      => $this->request->getPost('email_official'),
+            'phone_no'       => json_encode($phones),
+            'email_official' => json_encode($emails),
             'aadhaar_no'          => $this->request->getPost('aadhaar_no'),
             'blood_group'         => $this->request->getPost('blood_group'),
             'place_of_birth'      => $this->request->getPost('place_of_birth'),

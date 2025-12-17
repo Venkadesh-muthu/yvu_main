@@ -17,7 +17,7 @@
                                 <label class="form-label">Name</label>
                                 <input type="text" class="form-control" name="name" placeholder="Enter Full Name" value="<?= set_value('name') ?>" required>
                             </div>
-                            
+
                             <!-- About Me -->
                             <div class="col-12 col-md-6">
                                 <label class="form-label">About Me</label>
@@ -102,16 +102,30 @@
                             </div>
 
                             <!-- Phone -->
-                            <div class="col-12 col-md-6">
+                           <div class="col-12 col-md-6">
                                 <label class="form-label">Phone No</label>
-                                <input type="text" class="form-control" name="phone_no" placeholder="Phone" value="<?= set_value('phone_no') ?>">
+
+                                <div id="phone-wrapper">
+                                    <div class="input-group mb-2">
+                                        <input type="text" class="form-control" name="phone_no[]" placeholder="Phone Number">
+                                        <button type="button" class="btn btn-success" onclick="addPhone()">+</button>
+                                    </div>
+                                </div>
                             </div>
+
 
                             <!-- Email -->
                             <div class="col-12 col-md-6">
                                 <label class="form-label">Official Email</label>
-                                <input type="email" class="form-control" name="email_official" placeholder="Enter full email" value="<?= set_value('email_official') ?>">
+
+                                <div id="email-wrapper">
+                                    <div class="input-group mb-2">
+                                        <input type="email" class="form-control" name="email_official[]" placeholder="Official Email">
+                                        <button type="button" class="btn btn-success" onclick="addEmail()">+</button>
+                                    </div>
+                                </div>
                             </div>
+
 
                             <!-- Aadhaar -->
                             <div class="col-12 col-md-6">
@@ -170,4 +184,27 @@
             </div>
         </div>
 
-    
+<script>
+function addPhone() {
+    let html = `
+        <div class="input-group mb-2">
+            <input type="text" class="form-control" name="phone_no[]" placeholder="Phone Number">
+            <button type="button" class="btn btn-danger" onclick="removeField(this)">−</button>
+        </div>`;
+    document.getElementById('phone-wrapper').insertAdjacentHTML('beforeend', html);
+}
+
+function addEmail() {
+    let html = `
+        <div class="input-group mb-2">
+            <input type="email" class="form-control" name="email_official[]" placeholder="Official Email">
+            <button type="button" class="btn btn-danger" onclick="removeField(this)">−</button>
+        </div>`;
+    document.getElementById('email-wrapper').insertAdjacentHTML('beforeend', html);
+}
+
+function removeField(button) {
+    button.parentElement.remove();
+}
+</script>
+
