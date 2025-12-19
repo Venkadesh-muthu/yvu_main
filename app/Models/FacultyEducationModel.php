@@ -12,6 +12,7 @@ class FacultyEducationModel extends Model
     protected $allowedFields = [
         'faculty_id',
         'category',
+        'course_subject',
         'year_of_class',
         'institute',
         'town',

@@ -21,6 +21,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Category</th>
+                                <th>Course / Subject</th>
                                 <th>Year/Class</th>
                                 <th>Institute</th>
                                 <th>Town</th>
@@ -40,6 +41,7 @@
                                         <td><?= $i++; ?></td>
 
                                         <td class="edu-content"><?= ucfirst(str_replace('_', ' ', $edu['category'])) ?></td>
+                                        <td class="edu-content"><?= esc($edu['course_subject']) ?></td>
                                         <td class="edu-content"><?= esc($edu['year_of_class']) ?></td>
                                         <td class="edu-content"><?= esc($edu['institute']) ?></td>
                                         <td class="edu-content"><?= esc($edu['town']) ?></td>

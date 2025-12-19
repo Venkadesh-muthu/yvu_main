@@ -499,6 +499,7 @@ class FacultyController extends BaseController
 
         // Get arrays from POST
         $categories = $this->request->getPost('category');
+        $courseSubjects = $this->request->getPost('course_subject');
         $years      = $this->request->getPost('year_class');
         $institutes = $this->request->getPost('institute');
         $towns      = $this->request->getPost('town');
@@ -510,6 +511,7 @@ class FacultyController extends BaseController
             $data = [
                 'faculty_id'    => $facultyId,
                 'category'      => $category,
+                'course_subject' => $courseSubjects[$index] ?? '',
                 'year_of_class' => $years[$index] ?? '',
                 'institute'     => $institutes[$index] ?? '',
                 'town'          => $towns[$index] ?? '',
@@ -559,6 +561,7 @@ class FacultyController extends BaseController
         // Get all form inputs
         $ids         = $this->request->getPost('id'); // may contain empty values for new rows
         $categories  = $this->request->getPost('category');
+        $courseSubjects = $this->request->getPost('course_subject');
         $years       = $this->request->getPost('year_class');
         $institutes  = $this->request->getPost('institute');
         $towns       = $this->request->getPost('town');
@@ -569,6 +572,7 @@ class FacultyController extends BaseController
             $data = [
                 'faculty_id'    => $facultyId,
                 'category'      => $category,
+                'course_subject' => $courseSubjects[$key],
                 'year_of_class' => $years[$key],
                 'institute'     => $institutes[$key],
                 'town'          => $towns[$key],

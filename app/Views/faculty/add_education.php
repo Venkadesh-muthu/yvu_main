@@ -32,6 +32,15 @@
                                             <option value="others">Others</option>
                                         </select>
                                     </div>
+                                    <!-- Course / Subject -->
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label">Course / Subject</label>
+                                        <input type="text"
+                                            class="form-control"
+                                            name="course_subject[]"
+                                            placeholder="Course / Subject"
+                                            required>
+                                    </div>
 
                                     <!-- Year / Class -->
                                     <div class="col-12 col-md-6">

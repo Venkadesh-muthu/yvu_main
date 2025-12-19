@@ -35,6 +35,14 @@
                                             <option value="others" <?= $education['category'] == 'others' ? 'selected' : '' ?>>Others</option>
                                         </select>
                                     </div>
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label">Course / Subject</label>
+                                        <input type="text"
+                                            class="form-control"
+                                            name="course_subject[]"
+                                            value="<?= $education['course_subject'] ?>"
+                                            required>
+                                    </div>
 
                                     <!-- Year / Class -->
                                     <div class="col-12 col-md-6">

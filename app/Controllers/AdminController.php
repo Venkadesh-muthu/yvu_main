@@ -6,15 +6,59 @@ use App\Controllers\BaseController;
 use App\Models\UserModel;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use App\Models\FacultyProfileModel;
+use App\Models\FacultyEducationModel;
+use App\Models\FacultyProfileVisibilityModel;
+use App\Models\FacultyExperienceModel;
+use App\Models\FacultyAchievementModel;
+use App\Models\FacultySkillModel;
+use App\Models\FacultyWorksModel;
+use App\Models\FacultyActivitiesModel;
+use App\Models\FacultyResearchStudentsModel;
+use App\Models\FacultyProjectsModel;
+use App\Models\FacultyInformationModel;
+use App\Models\FacultyNewsModel;
+use App\Models\FacultySocialMediaModel;
+use App\Models\FacultyMembershipsModel;
+use Dompdf\Dompdf;
+use Dompdf\Options;
 
 class AdminController extends BaseController
 {
     protected $userModel;
+    protected $profileModel;
+    protected $eduModel;
+    protected $ProfileVisibilityModel;
+    protected $experienceModel;
+    protected $achievementModel;
+    protected $skillModel;
+    protected $worksModel;
+    protected $activitiesModel;
+    protected $researchStudentsModel;
+    protected $projectsModel;
+    protected $informationModel;
+    protected $newsModel;
+    protected $socialMediaModel;
+    protected $membershipsModel;
 
     public function __construct()
     {
         helper(['form', 'url']);
         $this->userModel = new UserModel();
+        $this->profileModel = new FacultyProfileModel();
+        $this->eduModel = new FacultyEducationModel();
+        $this->ProfileVisibilityModel = new FacultyProfileVisibilityModel();
+        $this->experienceModel = new FacultyExperienceModel();
+        $this->achievementModel = new FacultyAchievementModel();
+        $this->skillModel = new FacultySkillModel();
+        $this->worksModel = new FacultyWorksModel();
+        $this->activitiesModel = new FacultyActivitiesModel();
+        $this->researchStudentsModel = new FacultyResearchStudentsModel();
+        $this->projectsModel = new FacultyProjectsModel();
+        $this->informationModel = new FacultyInformationModel();
+        $this->newsModel = new FacultyNewsModel();
+        $this->socialMediaModel = new FacultySocialMediaModel();
+        $this->membershipsModel = new FacultyMembershipsModel();
     }
 
     // ---------- Login / Logout ----------
@@ -323,6 +367,307 @@ class AdminController extends BaseController
         return redirect()->to('/admin/users')->with(
             'success',
             "Excel Import Completed. Imported: $imported, Skipped: $skipped"
+        );
+    }
+    public function downloadFacultyPdf($facultyId)
+    {
+        // ===============================
+        // 1. FETCH ALL DATA
+        // ===============================
+        $profile = $this->profileModel->where('user_id', $facultyId)->first();
+
+        if (!$profile) {
+            return redirect()->back()->with('error', 'Faculty not found');
+        }
+
+        $education = $this->eduModel
+            ->where('faculty_id', $facultyId)
+            ->where('visibility', 'view')
+            ->findAll();
+
+        $experience = $this->experienceModel
+            ->where('faculty_id', $facultyId)
+            ->where('visibility', 'view')
+            ->findAll();
+
+        $achievements = $this->achievementModel
+            ->where('faculty_id', $facultyId)
+            ->where('visibility', 'view')
+            ->findAll();
+
+        $skills = $this->skillModel
+            ->where('faculty_id', $facultyId)
+            ->where('visibility', 'view')
+            ->findAll();
+
+        $works = $this->worksModel
+            ->where('faculty_id', $facultyId)
+            ->where('visibility', 'view')
+            ->findAll();
+
+        $activities = $this->activitiesModel
+            ->where('faculty_id', $facultyId)
+            ->where('visibility', 'view')
+            ->findAll();
+
+        $projects = $this->projectsModel
+            ->where('faculty_id', $facultyId)
+            ->where('visibility', 'view')
+            ->findAll();
+
+        $researchStudents = $this->researchStudentsModel
+            ->where('faculty_id', $facultyId)
+            ->where('visibility', 'view')
+            ->findAll();
+
+        $memberships = $this->membershipsModel
+            ->where('faculty_id', $facultyId)
+            ->where('visibility', 'view')
+            ->findAll();
+
+        $social = $this->socialMediaModel
+            ->where('faculty_id', $facultyId)
+            ->where('visibility', 'view')
+            ->first();
+
+        $information = $this->informationModel
+        ->where('faculty_id', $facultyId)
+        ->where('visibility', 'view')
+        ->findAll();
+
+        $news = $this->newsModel
+        ->where('faculty_id', $facultyId)
+        ->where('visibility', 'view')
+        ->findAll();
+
+        // ===============================
+        // 2. BUILD HTML (INLINE)
+        // ===============================
+        $html = '
+    <style>
+        body { font-family: DejaVu Sans; font-size: 12px; }
+        h2, h3 { margin-bottom: 5px; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+        table, th, td { border: 1px solid #000; }
+        td { padding: 5px; }
+        ul, ol { margin-top: 0; }
+    </style>
+
+    <h2 style="text-align:center;">' . esc($profile['name']) . '</h2>
+    <p style="text-align:center;">
+        ' . esc($profile['designation']) . '<br>
+        ' . esc($profile['department']) . '
+    </p>
+    <hr>
+
+    <h3>Personal Information</h3>
+    <table>
+        <tr><td>Employee ID</td><td>' . esc($profile['employee_id']) . '</td></tr>
+        <tr><td>Date of Birth</td><td>' . esc($profile['dob']) . '</td></tr>
+        <tr><td>Gender</td><td>' . esc($profile['gender']) . '</td></tr>
+        <tr><td>Religion</td><td>' . esc($profile['religion']) . '</td></tr>
+        <tr><td>Caste</td><td>' . esc($profile['caste']) . '</td></tr>
+        <tr><td>Reservation</td><td>' . esc($profile['reservation']) . '</td></tr>
+        <tr><td>Blood Group</td><td>' . esc($profile['blood_group']) . '</td></tr>
+        <tr><td>Place of Birth</td><td>' . esc($profile['place_of_birth']) . '</td></tr>
+    </table>
+
+    <h3>Contact Information</h3>
+    <table>
+        <tr><td>Residential Address</td><td>' . esc($profile['address_residential']) . '</td></tr>
+        <tr><td>Office Address</td><td>' . esc($profile['address_office']) . '</td></tr>
+        <tr><td>Phone</td><td>' . esc($profile['phone_no']) . '</td></tr>
+        <tr><td>Email</td><td>' . esc($profile['email_official']) . '</td></tr>
+    </table>
+
+    <h3>Biography</h3>
+    <p>' . nl2br(esc($profile['about_me'])) . '</p>
+
+    <h3>Profiles / Links</h3>
+    <ul>
+        <li>VIDWAN: ' . esc($profile['vidwan_url']) . '</li>
+        <li>ORCID: ' . esc($profile['orcid_url']) . '</li>
+        <li>Scopus: ' . esc($profile['scopus_url']) . '</li>
+        <li>Google Scholar: ' . esc($profile['google_scholar_url']) . '</li>
+    </ul>
+    ';
+
+        // ===============================
+        // EDUCATION
+        // ===============================
+        if ($education) {
+            $html .= '<h3>Education</h3><ul>';
+            foreach ($education as $edu) {
+                $html .= '<li>' . esc($edu['course_subject']) . ' - ' .
+                         esc($edu['institute']) . ' (' .
+                         esc($edu['year_of_class']) . ')</li>';
+            }
+            $html .= '</ul>';
+        }
+
+        // ===============================
+        // EXPERIENCE
+        // ===============================
+        if ($experience) {
+            $html .= '<h3>Experience</h3><ul>';
+            foreach ($experience as $exp) {
+                $html .= '<li>' . esc($exp['title_value']) . ' - ' .
+                         esc($exp['workplace']) . '</li>';
+            }
+            $html .= '</ul>';
+        }
+
+        // ===============================
+        // SKILLS / RESEARCH AREAS
+        // ===============================
+        if ($skills) {
+            $html .= '<h3>Skills / Research Areas</h3><ul>';
+            foreach ($skills as $skill) {
+                $html .= '<li>' . esc($skill['skill_value']) . '</li>';
+            }
+            $html .= '</ul>';
+        }
+
+        // ===============================
+        // PUBLICATIONS
+        // ===============================
+        if ($works) {
+            $html .= '<h3>Publications</h3><ol>';
+            foreach ($works as $work) {
+                $html .= '<li>' . esc($work['title']) . ' - ' .
+                         esc($work['journal']) . '</li>';
+            }
+            $html .= '</ol>';
+        }
+
+        // ===============================
+        // AWARDS
+        // ===============================
+        if ($achievements) {
+            $html .= '<h3>Awards / Achievements</h3><ul>';
+            foreach ($achievements as $ach) {
+                $html .= '<li>' . esc($ach['title']) . '</li>';
+            }
+            $html .= '</ul>';
+        }
+
+        // ===============================
+        // RESEARCH STUDENTS
+        // ===============================
+        if ($researchStudents) {
+            $html .= '<h3>Research Students</h3><ul>';
+            foreach ($researchStudents as $rs) {
+                $html .= '<li>' . esc($rs['student_name']) .
+                         ' (' . esc($rs['status']) . ')</li>';
+            }
+            $html .= '</ul>';
+        }
+
+        // ===============================
+        // MEMBERSHIPS
+        // ===============================
+        if ($memberships) {
+            $html .= '<h3>Memberships</h3><ul>';
+            foreach ($memberships as $mem) {
+                $html .= '<li>' . esc($mem['title']) . '</li>';
+            }
+            $html .= '</ul>';
+        }
+        // ===============================
+        // SOCIAL MEDIA
+        // ===============================
+        if ($social) {
+            $html .= '<h3>Social Media</h3><ul>';
+
+            if (!empty($social['instagram_link'])) {
+                $html .= '<li>Instagram: ' . esc($social['instagram_link']) . '</li>';
+            }
+
+            if (!empty($social['facebook_link'])) {
+                $html .= '<li>Facebook: ' . esc($social['facebook_link']) . '</li>';
+            }
+
+            if (!empty($social['twitter_link'])) {
+                $html .= '<li>Twitter/X: ' . esc($social['twitter_link']) . '</li>';
+            }
+
+            if (!empty($social['whatsapp_link'])) {
+                $html .= '<li>WhatsApp: ' . esc($social['whatsapp_link']) . '</li>';
+            }
+
+            $html .= '</ul>';
+        }
+        // ===============================
+        // PROJECTS
+        // ===============================
+        if ($projects) {
+            $html .= '<h3>Projects</h3><ul>';
+            foreach ($projects as $project) {
+                $html .= '<li>
+            <strong>' . esc($project['title']) . '</strong><br>
+            Agency: ' . esc($project['agency']) . '<br>
+            Duration: ' . esc($project['from_year']) . ' - ' . esc($project['to_year']) . '<br>
+            Status: ' . esc($project['status']) . '
+        </li>';
+            }
+            $html .= '</ul>';
+        }
+        // ===============================
+        // ACTIVITIES / WORKSHOPS
+        // ===============================
+        if ($activities) {
+            $html .= '<h3>Workshops / Activities</h3><ul>';
+            foreach ($activities as $act) {
+                $html .= '<li>
+            <strong>' . esc($act['title']) . '</strong><br>
+            Category: ' . esc($act['category']) . '<br>
+            Type: ' . esc($act['type']) . '<br>
+            Role: ' . esc($act['attended_or_role']) . '<br>
+            Location: ' . esc($act['location']) . '<br>
+            Month / Year: ' . esc($act['month_year']) . '
+        </li>';
+            }
+            $html .= '</ul>';
+        }
+
+        if ($information) {
+            $html .= '<h3>Additional Information</h3><ul>';
+            foreach ($information as $info) {
+                $html .= '<li>
+            <strong>' . esc($info['title']) . '</strong><br>
+            Type: ' . esc($info['type']) . '<br>
+            Agency: ' . esc($info['agency']) . '<br>
+            Duration: ' . esc($info['from_year']) . ' - ' . esc($info['to_year']) . '<br>
+            Status: ' . esc($info['status']) . '
+        </li>';
+            }
+            $html .= '</ul>';
+        }
+
+        if ($news) {
+            $html .= '<h3>News / Media</h3><ul>';
+            foreach ($news as $n) {
+                $html .= '<li>
+            <strong>' . esc($n['title']) . '</strong>
+            (' . esc($n['type']) . ' - ' . esc($n['month_year']) . ')
+        </li>';
+            }
+            $html .= '</ul>';
+        }
+        // ===============================
+        // 3. GENERATE PDF
+        // ===============================
+        $options = new Options();
+        $options->set('defaultFont', 'DejaVu Sans');
+
+        $dompdf = new Dompdf($options);
+        $dompdf->loadHtml($html);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->render();
+
+        return $dompdf->stream(
+            $profile['name'] . $profile['employee_id'] . '.pdf',
+            ['Attachment' => true]
         );
     }
 }

@@ -21,7 +21,8 @@ $routes->group('admin', function ($routes) {
     $routes->get('editUser/(:num)', 'AdminController::editUser/$1');
     $routes->post('editUser/(:num)', 'AdminController::editUser/$1');
     $routes->get('deleteUser/(:num)', 'AdminController::deleteUser/$1');
-    $routes->get('downloadUserPdf/(:num)', 'AdminController::downloadUserPdf/$1');
+    // ---------- Download User PDF ----------
+    $routes->get('downloadUserPdf/(:num)', 'AdminController::downloadFacultyPdf/$1');
 });
 
 $routes->group('faculty', function ($routes) {
