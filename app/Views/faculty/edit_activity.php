@@ -28,10 +28,13 @@
                                         <label class="form-label">Category</label>
                                         <select class="form-select category-select" name="category[]" required>
                                             <option value="">Select Category</option>
-                                            <option value="workshop"   <?= ($activity['category'] ?? '') == 'workshop' ? 'selected' : '' ?>>Workshop / Conference / Seminar</option>
-                                            <option value="talk"       <?= ($activity['category'] ?? '') == 'talk' ? 'selected' : '' ?>>Talk Delivered</option>
-                                            <option value="membership" <?= ($activity['category'] ?? '') == 'membership' ? 'selected' : '' ?>>Membership</option>
-                                            <option value="training"   <?= ($activity['category'] ?? '') == 'training' ? 'selected' : '' ?>>Training Course</option>
+                                            <option value="Workshop"   <?= ($activity['category'] ?? '') == 'Workshop' ? 'selected' : '' ?>>Workshop</option>
+                                            <option value="Conference" <?= ($activity['category'] ?? '') == 'Conference' ? 'selected' : '' ?>>Conference</option>
+                                            <option value="Seminar"    <?= ($activity['category'] ?? '') == 'Seminar' ? 'selected' : '' ?>>Seminar</option>
+                                            <option value="Talk Delivered"       <?= ($activity['category'] ?? '') == 'Talk Delivered' ? 'selected' : '' ?>>Talk Delivered</option>
+                                            <option value="Membership" <?= ($activity['category'] ?? '') == 'Membership' ? 'selected' : '' ?>>Membership</option>
+                                            <option value="Training Course"   <?= ($activity['category'] ?? '') == 'Training Course' ? 'selected' : '' ?>>Training Course</option>
+                                            <option value="Others" <?= ($activity['category'] ?? '') == 'Others' ? 'selected' : '' ?>>Others</option>
                                         </select>
                                     </div>
 

@@ -23,7 +23,7 @@ class FacultyEducationController extends BaseController
     {
         $records = $this->facultyEducationModel
             ->where('faculty_id', $user_id)
-            ->orderBy('id', 'DESC')
+            ->orderBy('year', 'ASC')
             ->findAll();
 
         if (!$records) {
@@ -35,18 +35,36 @@ class FacultyEducationController extends BaseController
 
         $records = array_map(function ($record) {
             return [
-                'user_id'       => $record['faculty_id'],  // show faculty_id as user_id
+                // User reference
+                'user_id'       => $record['faculty_id'],  // faculty_id shown as user_id
+
+                // Academic details
                 'category'      => $record['category'],
-                'year_of_class' => $record['year_of_class'],
+                'course_subject' => $record['course_subject'],
+                'marks_division' => $record['marks_division'],
+                'year'          => $record['year'],
+                'class'         => $record['class'],
+
+                // Institution details
+                'university'    => $record['university'],
                 'institute'     => $record['institute'],
+
+                // Location details
+                'country'       => $record['country'],
                 'town'          => $record['town'],
                 'district'      => $record['district'],
                 'state'         => $record['state'],
+
+                // Additional info (LAST)
+                'highlights_comments_merits' => $record['highlights_comments_merits'],
+
+                // System fields
                 'visibility'    => $record['visibility'],
                 'created_at'    => $record['created_at'],
                 'updated_at'    => $record['updated_at'],
             ];
         }, $records);
+
 
         return $this->response->setJSON([
             'status' => 'success',
@@ -59,7 +77,7 @@ class FacultyEducationController extends BaseController
     {
         $record = $this->facultyEducationModel
             ->where('faculty_id', $user_id)
-            ->orderBy('id', 'DESC')
+            ->orderBy('year', 'ASC')
             ->first();
 
         if (!$record) {

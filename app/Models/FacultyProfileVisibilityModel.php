@@ -15,6 +15,8 @@ class FacultyProfileVisibilityModel extends Model
         'about_me',
         'photo',
         'designation',
+        'effective_date',
+        'join_date',
         'department',
         'employee_id',
         'cfms_no',

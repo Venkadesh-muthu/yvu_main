@@ -21,7 +21,7 @@
                             <!-- About Me -->
                             <div class="col-12 col-md-6">
                                 <label class="form-label">About Me</label>
-                                <textarea class="form-control" name="about_me" placeholder="Write something about yourself" rows="4"><?= set_value('about_me') ?></textarea>
+                                <textarea class="form-control" name="about_me" placeholder="Write something about yourself" rows="8"><?= set_value('about_me') ?></textarea>
                             </div>
 
                             <!-- Photo -->
@@ -32,8 +32,35 @@
 
                             <!-- Designation -->
                             <div class="col-12 col-md-6">
-                                <label class="form-label">Designation</label>
-                                <input type="text" class="form-control" name="designation" placeholder="Designation" value="<?= set_value('designation') ?>">
+                                <label class="form-label">
+                                    Designation <span class="text-danger">*</span>
+                                </label>
+                                <select name="designation" class="form-control" required>
+                                    <option value="">-- Select Designation --</option>
+                                    <option value="Professor" <?= set_select('designation', 'Professor') ?>>Professor</option>
+                                    <option value="Associate Professor" <?= set_select('designation', 'Associate Professor') ?>>Associate Professor</option>
+                                    <option value="Assistant Professor" <?= set_select('designation', 'Assistant Professor') ?>>Assistant Professor</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">
+                                    Effective Date <span class="text-danger">*</span>
+                                </label>
+                                <input type="date"
+                                    class="form-control"
+                                    name="effective_date"
+                                    value="<?= set_value('effective_date') ?>"
+                                    required>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">
+                                    Join Date <span class="text-danger">*</span>
+                                </label>
+                                <input type="date"
+                                    class="form-control"
+                                    name="join_date"
+                                    value="<?= set_value('join_date') ?>"
+                                    required>
                             </div>
 
                             <!-- Department -->
@@ -116,11 +143,11 @@
 
                             <!-- Email -->
                             <div class="col-12 col-md-6">
-                                <label class="form-label">Official Email</label>
+                                <label class="form-label">Email</label>
 
                                 <div id="email-wrapper">
                                     <div class="input-group mb-2">
-                                        <input type="email" class="form-control" name="email_official[]" placeholder="Official Email">
+                                        <input type="email" class="form-control" name="email_official[]" placeholder="Email">
                                         <button type="button" class="btn btn-success" onclick="addEmail()">+</button>
                                     </div>
                                 </div>

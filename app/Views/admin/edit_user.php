@@ -72,6 +72,11 @@
                                         Admin
                                     </option>
 
+                                    <option value="department_head" 
+                                        <?= set_select('user_type', 'department_head', $user['user_type'] == 'department_head') ?>>
+                                        Department Head
+                                    </option>
+
                                 </select>
                                 <?php if (isset($validation)): ?>
                                     <div class="invalid-feedback"><?= $validation->getError('user_type') ?></div>

@@ -21,12 +21,12 @@
                                 <th>#</th>
                                 <th>Section</th>
                                 <th>Title Type</th>
+                                <th>Visibility</th>
+                                <th>Actions</th>
                                 <th>Title Value</th>
                                 <th>Workplace</th>
                                 <th>From Date</th>
                                 <th>To Date</th>
-                                <th>Visibility</th>
-                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -37,11 +37,6 @@
                                     <td><?= $i++; ?></td>
                                     <td><?= ucfirst($exp['section']) ?></td>
                                     <td><?= ucfirst($exp['title_type']) ?></td>
-                                    <td><?= esc($exp['title_value']) ?></td>
-                                    <td><?= esc($exp['workplace']) ?></td>
-                                    <td><?= esc($exp['from_date']) ?></td>
-                                    <td><?= esc($exp['to_date']) ?></td>
-
                                     <!-- ✅ Visibility Eye Button -->
                                     <td class="text-center">
                                         <button type="button"
@@ -68,6 +63,10 @@
                                             <i class="bi bi-trash"></i> Delete
                                         </a>
                                     </td>
+                                    <td><?= esc($exp['title_value']) ?></td>
+                                    <td><?= esc($exp['workplace']) ?></td>
+                                    <td><?= esc($exp['from_date']) ?></td>
+                                    <td><?= esc($exp['to_date']) ?></td>
                                 </tr>
                             <?php endforeach; ?>
                             <?php else: ?>

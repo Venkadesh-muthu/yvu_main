@@ -22,11 +22,34 @@
                                     <!-- Section -->
                                     <div class="col-12 col-md-6">
                                         <label class="form-label">Section</label>
-                                        <select class="form-select" name="section[]" required>
+                                        <select class="form-select" name="section[]">
                                             <option value="">Select Section</option>
-                                            <option value="Awards / Honors" <?= $achievement['section'] == 'Awards / Honors' ? 'selected' : '' ?>>Awards / Honors</option>
-                                            <option value="Patents / Intellectual Property" <?= $achievement['section'] == 'Patents / Intellectual Property' ? 'selected' : '' ?>>Patents / Intellectual Property</option>
+
+                                            <option value="Awards"
+                                                <?= isset($achievement['section']) && $achievement['section'] === 'Awards' ? 'selected' : '' ?>>
+                                                Awards
+                                            </option>
+
+                                            <option value="Honors"
+                                                <?= isset($achievement['section']) && $achievement['section'] === 'Honors' ? 'selected' : '' ?>>
+                                                Honors
+                                            </option>
+
+                                            <option value="Patents"
+                                                <?= isset($achievement['section']) && $achievement['section'] === 'Patents' ? 'selected' : '' ?>>
+                                                Patents
+                                            </option>
+
+                                            <option value="Intellectual Property"
+                                                <?= isset($achievement['section']) && $achievement['section'] === 'Intellectual Property' ? 'selected' : '' ?>>
+                                                Intellectual Property
+                                            </option>
+                                            <option value="Others"
+                                                <?= isset($achievement['section']) && $achievement['section'] === 'Others' ? 'selected' : '' ?>>
+                                                Others
+                                            </option>
                                         </select>
+
                                     </div>
 
                                     <!-- Title -->
@@ -44,7 +67,7 @@
                                     <!-- Month / Year -->
                                     <div class="col-12 col-md-6">
                                         <label class="form-label">Month / Year</label>
-                                        <input type="month" class="form-control" name="month_year[]" value="<?= $achievement['month_year'] ?>" required>
+                                        <input type="month" class="form-control" name="month_year[]" value="<?= $achievement['month_year'] ?>">
                                     </div>
 
                                     <!-- ✅ Remove Button -->

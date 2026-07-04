@@ -21,14 +21,19 @@
                             <tr>
                                 <th>#</th>
                                 <th>Category</th>
-                                <th>Course / Subject</th>
-                                <th>Year/Class</th>
+                                <th>Course</th>
+                                <th>Visibility</th>
+                                <th>Actions</th>
+                                <th>Marks</th>
+                                <th>Highlights</th>
+                                <th>Year</th>
+                                <th>Class</th>
+                                <th>University</th>
                                 <th>Institute</th>
+                                <th>Country</th>
                                 <th>Town</th>
                                 <th>District</th>
                                 <th>State</th>
-                                <th>Visibility</th>
-                                <th>Actions</th>
                             </tr>
                         </thead>
 
@@ -40,15 +45,9 @@
 
                                         <td><?= $i++; ?></td>
 
-                                        <td class="edu-content"><?= ucfirst(str_replace('_', ' ', $edu['category'])) ?></td>
-                                        <td class="edu-content"><?= esc($edu['course_subject']) ?></td>
-                                        <td class="edu-content"><?= esc($edu['year_of_class']) ?></td>
-                                        <td class="edu-content"><?= esc($edu['institute']) ?></td>
-                                        <td class="edu-content"><?= esc($edu['town']) ?></td>
-                                        <td class="edu-content"><?= esc($edu['district']) ?></td>
-                                        <td class="edu-content"><?= esc($edu['state']) ?></td>
-
-                                        <!-- ✅ ONE COMMON EYE ICON -->
+                                        <td><?= ucfirst(str_replace('_', ' ', esc($edu['category']))) ?></td>
+                                        <td><?= esc($edu['course_subject']) ?></td>
+                                        <!-- VISIBILITY -->
                                         <td class="text-center">
                                             <button type="button"
                                                 class="btn btn-sm btn-info"
@@ -64,7 +63,8 @@
 
                                         <!-- ACTIONS -->
                                         <td>
-                                            <a href="<?= base_url('faculty/edit-education/' . $edu['id']) ?>" class="btn btn-warning btn-sm">
+                                            <a href="<?= base_url('faculty/edit-education/' . $edu['id']) ?>"
+                                            class="btn btn-warning btn-sm">
                                                 <i class="bi bi-pencil-square"></i> Edit
                                             </a>
 
@@ -74,14 +74,25 @@
                                                 <i class="bi bi-trash"></i> Delete
                                             </a>
                                         </td>
-
+                                        <td><?= esc($edu['marks_division']) ?></td>
+                                        <td><?= esc($edu['highlights_comments_merits']) ?></td>
+                                        <td><?= esc($edu['year']) ?></td>
+                                        <td><?= esc($edu['class']) ?></td>
+                                        <td><?= esc($edu['university']) ?></td>
+                                        <td><?= esc($edu['institute']) ?></td>
+                                        <td><?= esc($edu['country']) ?></td>
+                                        <td><?= esc($edu['town']) ?></td>
+                                        <td><?= esc($edu['district']) ?></td>
+                                        <td><?= esc($edu['state']) ?></td>
                                     </tr>
                                 <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr>
-                                        <td colspan="9" class="text-center text-muted">No records found</td>
-                                    </tr>
-                                <?php endif; ?>
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="14" class="text-center text-muted">
+                                        No education records found
+                                    </td>
+                                </tr>
+                            <?php endif; ?>
                         </tbody>
                     </table>
                 </div>

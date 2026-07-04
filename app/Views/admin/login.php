@@ -1,3 +1,4 @@
+<?php helper('captcha'); ?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -45,7 +46,7 @@
             <div class="col-lg-4 mx-auto">
                 <div class="auth-form-light text-left py-5 px-4 px-sm-5">
                     <div class="brand-logo text-center">
-                        <img src="<?= base_url('admin-template/assets/images/yvu150a.gif')?>" alt="logo" />
+                        <img src="<?= base_url('admin-template/assets/images/yvu150-150.png')?>" alt="logo" />
                     </div>
                     <h4 class="text-center">YVU Login</h4>
                     <h6 class="font-weight-light text-center mt-3">Sign in to continue.</h6>
@@ -73,7 +74,7 @@
                                 name="email" 
                                 id="email" 
                                 class="form-control form-control-lg" 
-                                placeholder="Email" 
+                                placeholder="User Id" 
                                 required
                             >
                         </div>
@@ -88,6 +89,8 @@
                                 required
                             >
                         </div>
+
+                        <?= captcha_field() ?>
 
                         <div class="mt-3 d-grid gap-2">
                             <button type="submit" class="btn btn-primary btn-lg btn-block font-weight-medium auth-form-btn">

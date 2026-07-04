@@ -23,7 +23,6 @@ class FacultyPublicationController extends BaseController
     {
         $records = $this->facultyWorksModel
             ->where('faculty_id', $user_id)
-            ->where('category', 'publication')  // Only publication type
             ->orderBy('id', 'DESC')
             ->findAll();
 
@@ -37,6 +36,7 @@ class FacultyPublicationController extends BaseController
         $records = array_map(function ($record) {
             return [
                 'user_id'    => $record['faculty_id'],
+                'category'   => $record['category'],
                 'title'      => $record['title'],
                 'role'       => $record['role'],
                 'journal'    => $record['journal'],
@@ -62,7 +62,6 @@ class FacultyPublicationController extends BaseController
     {
         $record = $this->facultyWorksModel
             ->where('faculty_id', $user_id)
-            ->where('category', 'publication') // Only publication type
             ->orderBy('id', 'DESC')
             ->first();
 
@@ -78,6 +77,7 @@ class FacultyPublicationController extends BaseController
             'data'   => [
                 'user_id'    => $record['faculty_id'],
                 'title'      => $record['title'],
+                'category'   => $record['category'],
                 'role'       => $record['role'],
                 'journal'    => $record['journal'],
                 'type'       => $record['type'],

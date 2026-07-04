@@ -22,12 +22,12 @@
                                 <th>Category</th>
                                 <th>Title</th>
                                 <th>Type</th>
+                                <th>Visibility</th>
+                                <th>Actions</th>
                                 <th>Month & Year</th>
                                 <th>Role</th>
                                 <th>Location</th>
                                 <th>Certificate</th>
-                                <th>Visibility</th>
-                                <th>Actions</th>
                             </tr>
                         </thead>
 
@@ -43,23 +43,6 @@
                                     <td><?= esc($activity['title']) ?></td>
 
                                     <td><?= esc($activity['type']) ?></td>
-
-                                    <td><?= esc($activity['month_year']) ?></td>
-
-                                    <td><?= esc($activity['attended_or_role']) ?></td>
-
-                                    <td><?= esc($activity['location']) ?></td>
-
-                                    <td class="text-center">
-                                        <?php if (!empty($activity['certificate_path'])): ?>
-                                            <a href="<?= base_url($activity['certificate_path']) ?>" target="_blank" class="btn btn-primary btn-sm">
-                                                View
-                                            </a>
-                                        <?php else: ?>
-                                            <span class="text-muted">N/A</span>
-                                        <?php endif; ?>
-                                    </td>
-
                                     <!-- ✅ Visibility Toggle -->
                                     <td class="text-center">
                                         <button class="btn btn-info btn-sm"
@@ -84,6 +67,22 @@
                                            class="btn btn-danger btn-sm">
                                            Delete
                                         </a>
+                                    </td>
+
+                                    <td><?= esc($activity['month_year']) ?></td>
+
+                                    <td><?= esc($activity['attended_or_role']) ?></td>
+
+                                    <td><?= esc($activity['location']) ?></td>
+
+                                    <td class="text-center">
+                                        <?php if (!empty($activity['certificate_path'])): ?>
+                                            <a href="<?= base_url($activity['certificate_path']) ?>" target="_blank" class="btn btn-primary btn-sm">
+                                                View
+                                            </a>
+                                        <?php else: ?>
+                                            <span class="text-muted">N/A</span>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>

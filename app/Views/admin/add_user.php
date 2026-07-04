@@ -52,6 +52,8 @@
 
                                     <option value="admin" <?= set_select('user_type', 'admin') ?>>Admin</option>
 
+                                    <option value="department_head" <?= set_select('user_type', 'department_head') ?>>Department Head</option>
+
                                 </select>
 
                                 <?php if (isset($validation)): ?>

@@ -24,7 +24,7 @@
                                     <!-- Agency -->
                                     <div class="col-12 col-md-4">
                                         <label class="form-label">Agency</label>
-                                        <input type="text" class="form-control" name="agency[]" placeholder="Enter Agency" required>
+                                        <input type="text" class="form-control" name="agency[]" placeholder="Enter Agency">
                                     </div>
 
                                     <!-- From Year -->
@@ -87,10 +87,6 @@ document.addEventListener('DOMContentLoaded', function() {
             input.value = '';
             input.required = false;
         });
-
-        // Project Title & Agency must always be required
-        newRow.querySelector('input[name="title[]"]').required = true;
-        newRow.querySelector('input[name="agency[]"]').required = true;
 
         container.appendChild(newRow);
     });

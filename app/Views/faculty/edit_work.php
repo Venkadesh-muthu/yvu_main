@@ -27,25 +27,34 @@
                                         <label class="form-label">Category</label>
                                         <select class="form-select category-select" name="category[]" required>
                                             <option value="">Select Category</option>
-                                            <option value="publication" <?= ($work['category'] ?? '') == 'publication' ? 'selected' : '' ?>>Publication</option>
-                                            <option value="book" <?= ($work['category'] ?? '') == 'book' ? 'selected' : '' ?>>Book / Book Chapter</option>
-                                            <option value="editorial" <?= ($work['category'] ?? '') == 'editorial' ? 'selected' : '' ?>>Editorial</option>
+                                            <option value="Publication" <?= ($work['category'] ?? '') == 'Publication' ? 'selected' : '' ?>>Publication</option>
+                                            <option value="Book" <?= ($work['category'] ?? '') == 'Book' ? 'selected' : '' ?>>Book</option>
+                                            <option value="Book Chapter" <?= ($work['category'] ?? '') == 'Book Chapter' ? 'selected' : '' ?>>Book Chapter</option>
+                                            <option value="Editorial" <?= ($work['category'] ?? '') == 'Editorial' ? 'selected' : '' ?>>Editorial</option>
+                                            <option value="Others" <?= ($work['category'] ?? '') == 'Others' ? 'selected' : '' ?>>Others</option>
                                         </select>
                                     </div>
 
                                     <!-- Title -->
-                                    <div class="col-12 col-md-4 work-title" <?= ($work['category'] ?? '') == 'book' ? 'style="display:none;"' : '' ?>>
+                                    <div class="col-12 col-md-4 work-title">
                                         <label class="form-label">Title</label>
-                                        <input type="text" class="form-control" name="title[]" placeholder="Enter Title"
-                                            value="<?= esc($work['title'] ?? '') ?>" <?= ($work['category'] ?? '') == 'book' ? 'disabled' : 'required' ?>>
+                                        <input type="text"
+                                            class="form-control"
+                                            name="title[]"
+                                            placeholder="Enter Title"
+                                            value="<?= esc($work['title'] ?? '') ?>">
                                     </div>
 
-                                    <!-- Role (for books) -->
-                                    <div class="col-12 col-md-4 work-role" <?= ($work['category'] ?? '') == 'book' ? '' : 'style="display:none;"' ?>>
+                                    <!-- Role -->
+                                    <div class="col-12 col-md-4 work-role">
                                         <label class="form-label">Role (for Book / Chapter)</label>
-                                        <input type="text" class="form-control" name="role[]" placeholder="Enter Role if applicable"
-                                            value="<?= esc($work['role'] ?? '') ?>" <?= ($work['category'] ?? '') == 'book' ? 'required' : 'readonly' ?>>
+                                        <input type="text"
+                                            class="form-control"
+                                            name="role[]"
+                                            placeholder="Enter Role if applicable"
+                                            value="<?= esc($work['role'] ?? '') ?>">
                                     </div>
+
 
                                     <!-- Journal / Publisher -->
                                     <div class="col-12 col-md-4">
@@ -61,7 +70,7 @@
                                             <option value="">Select Type</option>
                                             <option value="International" <?= ($work['type'] ?? '') == 'International' ? 'selected' : '' ?>>International</option>
                                             <option value="National" <?= ($work['type'] ?? '') == 'National' ? 'selected' : '' ?>>National</option>
-                                            <option value="Local" <?= ($work['type'] ?? '') == 'Local' ? 'selected' : '' ?>>Local</option>
+                                            <option value="Regional" <?= ($work['type'] ?? '') == 'Regional' ? 'selected' : '' ?>>Regional</option>
                                         </select>
                                     </div>
 
@@ -76,6 +85,27 @@
                                         <label class="form-label">ISBN / ISSN</label>
                                         <input type="text" class="form-control" name="isbn_issn[]" placeholder="Enter ISBN / ISSN"
                                             value="<?= esc($work['isbn_issn'] ?? '') ?>">
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label">Authors</label>
+                                        <input type="text" class="form-control" name="authers[]" placeholder="Enter Authors"
+                                            value="<?= esc($work['authers'] ?? '') ?>">
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label">Volume</label>
+                                        <input type="text" class="form-control" name="volume[]" placeholder="Enter Volume"
+                                            value="<?= esc($work['volume'] ?? '') ?>">
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label">Page Numbers</label>
+                                        <input type="text" class="form-control" name="page_numbers[]" placeholder="Enter Page Numbers"
+                                            value="<?= esc($work['page_numbers'] ?? '') ?>">
+                                    </div>
+                                    <!-- DOI -->
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label">DOI</label>
+                                        <input type="text" class="form-control" name="doi[]" placeholder="Enter DOI (e.g. 10.1000/xyz123)"
+                                            value="<?= esc($work['doi'] ?? '') ?>">
                                     </div>
 
                                     <!-- URL -->
@@ -129,81 +159,81 @@ document.addEventListener('DOMContentLoaded', function () {
     const container = document.getElementById('works-container');
     const addBtn = document.getElementById('add-work');
 
-    // ✅ CATEGORY CHANGE TOGGLE (FIXED)
+    // ✅ FUNCTION TO TOGGLE TITLE / ROLE
+    function toggleFields(categorySelect) {
+
+        const row = categorySelect.closest('.works-row');
+        const titleInput = row.querySelector('input[name="title[]"]');
+        const roleInput  = row.querySelector('input[name="role[]"]');
+        const titleDiv   = row.querySelector('.work-title');
+        const roleDiv    = row.querySelector('.work-role');
+
+        const value = categorySelect.value;
+
+        if (value === 'Book' || value === 'Book Chapter') {
+
+            // Hide Title
+            titleInput.value = '';
+            titleInput.readOnly = true;
+            titleInput.required = false;
+            titleDiv.style.display = 'none';
+
+            // Show Role
+            roleInput.readOnly = false;
+            roleInput.required = true;
+            roleDiv.style.display = 'block';
+
+        } else {
+
+            // Show Title
+            titleInput.readOnly = false;
+            titleInput.required = true;
+            titleDiv.style.display = 'block';
+
+            // Hide Role
+            roleInput.value = '';
+            roleInput.readOnly = true;
+            roleInput.required = false;
+            roleDiv.style.display = 'none';
+        }
+    }
+
+    // ✅ APPLY ON PAGE LOAD (EDIT MODE FIX)
+    container.querySelectorAll('select[name="category[]"]').forEach(select => {
+        toggleFields(select);
+    });
+
+    // ✅ APPLY ON CATEGORY CHANGE
     container.addEventListener('change', function (e) {
         if (e.target.name === 'category[]') {
-
-            const row = e.target.closest('.works-row');
-            const titleInput = row.querySelector('input[name="title[]"]');
-            const roleInput  = row.querySelector('input[name="role[]"]');
-            const titleDiv = titleInput.closest('.work-title');
-            const roleDiv  = roleInput.closest('.work-role');
-
-            // ✅ USE "book" EXACTLY AS YOUR OPTION VALUE
-            if (e.target.value === 'book') {
-
-                titleInput.value = '';
-                titleInput.readOnly = true;   // ✅ FIX (NOT DISABLED)
-                titleInput.required = false;
-                titleDiv.style.display = 'none';
-
-                roleInput.readOnly = false;
-                roleInput.required = true;
-                roleDiv.style.display = 'block';
-
-            } else {
-
-                titleInput.readOnly = false;
-                titleInput.required = true;
-                titleDiv.style.display = 'block';
-
-                roleInput.value = '';
-                roleInput.readOnly = true;
-                roleInput.required = false;
-                roleDiv.style.display = 'none';
-            }
+            toggleFields(e.target);
         }
     });
 
-    // ✅ ADD NEW WORK ROW (FIXED)
+    // ✅ ADD NEW WORK ROW
     addBtn.addEventListener('click', function () {
 
         const firstRow = container.querySelector('.works-row');
         const newRow = firstRow.cloneNode(true);
 
         newRow.querySelectorAll('input, select').forEach(input => {
-
-            if (input.type === 'hidden') {
-                input.value = '';
-            } 
-            else if (input.type === 'file') {
-                input.value = '';
-            } 
-            else {
-                input.value = '';
-            }
-
-            input.readOnly = false;   // ✅ FIX
-            input.disabled = false;   // ✅ ENSURE ENABLED
-            input.required = (input.name === 'title[]');
+            input.value = '';
+            input.readOnly = false;
+            input.required = false;
         });
 
-        // ✅ RESET VISIBILITY
         newRow.querySelector('.work-title').style.display = 'block';
-        newRow.querySelector('.work-role').style.display  = 'none';
+        newRow.querySelector('.work-role').style.display = 'none';
 
         newRow.querySelector('input[name="role[]"]').readOnly = true;
-        newRow.querySelector('input[name="role[]"]').required = false;
 
         container.appendChild(newRow);
     });
 
-    // ✅ REMOVE ROW (SAFE)
+    // ✅ REMOVE ROW
     container.addEventListener('click', function (e) {
         if (e.target.classList.contains('remove-work')) {
-
             const rows = container.querySelectorAll('.works-row');
-
             if (rows.length > 1) {
                 e.target.closest('.works-row').remove();
             } else {
@@ -214,6 +244,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 </script>
+
 
 
 

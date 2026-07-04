@@ -44,7 +44,7 @@
                                         <label class="form-label">Topic / Title</label>
                                         <input type="text" class="form-control" name="topic_title[]"
                                                placeholder="Enter Topic / Title"
-                                               value="<?= esc($row['topic_title'] ?? '') ?>" required>
+                                               value="<?= esc($row['topic_title'] ?? '') ?>">
                                     </div>
 
                                     <!-- Type -->

@@ -18,18 +18,21 @@
                                     <!-- Category -->
                                     <div class="col-12 col-md-4">
                                         <label class="form-label">Category</label>
-                                        <select class="form-select" name="category[]" required>
+                                        <select class="form-select work-category" name="category[]" required>
                                             <option value="">Select Category</option>
                                             <option value="Publication">Publication</option>
-                                            <option value="Book">Book / Book Chapter</option>
+                                            <option value="Book">Book</option>
+                                            <option value="Book Chapter">Book Chapter</option>
                                             <option value="Editorial">Editorial</option>
+                                            <option value="Others">Others</option>
                                         </select>
                                     </div>
+
 
                                     <!-- Title -->
                                     <div class="col-12 col-md-4 work-title">
                                         <label class="form-label">Title</label>
-                                        <input type="text" class="form-control" name="title[]" placeholder="Enter Title" required>
+                                        <input type="text" class="form-control" name="title[]" placeholder="Enter Title">
                                     </div>
 
                                     <!-- Role (for books) -->
@@ -51,7 +54,7 @@
                                             <option value="">Select Type</option>
                                             <option value="International">International</option>
                                             <option value="National">National</option>
-                                            <option value="Local">Local</option>
+                                            <option value="Regional">Regional</option>
                                         </select>
                                     </div>
 
@@ -67,6 +70,28 @@
                                         <input type="text" class="form-control" name="isbn_issn[]" placeholder="Enter ISBN / ISSN">
                                     </div>
 
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label">Authors</label>
+                                        <input type="text" class="form-control" name="authors[]" placeholder="Enter Authors">
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label">Volume</label>
+                                        <input type="text" class="form-control" name="volume[]" placeholder="Enter Volume">
+                                    </div>  
+
+                                    <div class="col-12 col-md-4">
+                                        <label class="form-label">Page Numbers</label>
+                                        <input type="text" class="form-control" name="page_numbers[]" placeholder="Enter Page Numbers">
+                                    </div>
+
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label">DOI</label>
+                                        <input type="text"
+                                            class="form-control"
+                                            name="doi[]"
+                                            placeholder="Enter DOI (e.g. 10.1000/xyz123)">
+                                    </div>
+                                    
                                     <!-- URL -->
                                     <div class="col-12 col-md-6">
                                         <label class="form-label">URL</label>
@@ -131,11 +156,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 role.required = true;
                 role.closest('.work-role').style.display = 'block';
 
-            } else {
-                title.readOnly = false;
-                title.required = true;
-                title.closest('.work-title').style.display = 'block';
+            } else if (e.target.value === 'Book Chapter') {
+                title.value = '';
+                title.readOnly = true;
+                title.required = false;
+                title.closest('.work-title').style.display = 'none';
 
+                role.readOnly = false;
+                role.required = true;
+                role.closest('.work-role').style.display = 'block';
+            } else {
                 role.value = '';
                 role.readOnly = true;
                 role.required = false;

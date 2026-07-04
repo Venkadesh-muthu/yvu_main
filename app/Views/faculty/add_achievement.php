@@ -22,9 +22,13 @@
                                         <label class="form-label">Section</label>
                                         <select class="form-select" name="section[]" required>
                                             <option value="">Select Section</option>
-                                            <option value="Awards / Honors">Awards / Honors</option>
-                                            <option value="Patents / Intellectual Property">Patents / Intellectual Property</option>
+                                            <option value="Awards">Awards</option>
+                                            <option value="Honors">Honors</option>
+                                            <option value="Patents">Patents</option>
+                                            <option value="Intellectual Property">Intellectual Property</option>
+                                            <option value="Others">Others</option>
                                         </select>
+
                                     </div>
 
                                     <!-- Title -->
@@ -42,7 +46,7 @@
                                     <!-- Month / Year -->
                                     <div class="col-12 col-md-6">
                                         <label class="form-label">Month / Year</label>
-                                        <input type="month" class="form-control" name="month_year[]" required>
+                                        <input type="month" class="form-control" name="month_year[]">
                                     </div>
 
                                     <!-- ✅ Remove Button -->

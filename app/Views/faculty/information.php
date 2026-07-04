@@ -24,12 +24,12 @@
                                 <th>#</th>
                                 <th>Type</th>
                                 <th>Title</th>
+                                <th>Visibility</th>
+                                <th>Actions</th>
                                 <th>Agency</th>
                                 <th>From</th>
                                 <th>To</th>
                                 <th>Upload</th>
-                                <th>Visibility</th>
-                                <th>Actions</th>
                             </tr>
                         </thead>
 
@@ -43,21 +43,6 @@
                                         <?= ucfirst(str_replace('_', ' ', esc($info['type']))) ?>
                                     </td>
                                     <td><?= esc($info['title']) ?></td>
-                                    <td><?= esc($info['agency']) ?></td>
-                                    <td><?= esc($info['from_year']) ?></td>
-                                    <td><?= esc($info['to_year']) ?></td>
-
-                                    <!-- Upload -->
-                                    <td class="text-center">
-                                        <?php if (!empty($info['upload_path'])): ?>
-                                            <a href="<?= base_url($info['upload_path']) ?>" target="_blank" class="btn btn-primary btn-sm">
-                                                View
-                                            </a>
-                                        <?php else: ?>
-                                            <span class="text-muted">N/A</span>
-                                        <?php endif; ?>
-                                    </td>
-
                                     <!-- ✅ Visibility Toggle -->
                                     <td class="text-center">
                                         <button class="btn btn-info btn-sm"
@@ -82,6 +67,20 @@
                                            class="btn btn-danger btn-sm">
                                            Delete
                                         </a>
+                                    </td>
+                                    <td><?= esc($info['agency']) ?></td>
+                                    <td><?= esc($info['from_year']) ?></td>
+                                    <td><?= esc($info['to_year']) ?></td>
+
+                                    <!-- Upload -->
+                                    <td class="text-center">
+                                        <?php if (!empty($info['upload_path'])): ?>
+                                            <a href="<?= base_url($info['upload_path']) ?>" target="_blank" class="btn btn-primary btn-sm">
+                                                View
+                                            </a>
+                                        <?php else: ?>
+                                            <span class="text-muted">N/A</span>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>

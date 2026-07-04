@@ -20,10 +20,13 @@
                                         <label class="form-label">Category</label>
                                         <select class="form-select" name="category[]" required>
                                             <option value="">Select Category</option>
-                                            <option value="workshop">Workshop / Conference / Seminar</option>
-                                            <option value="talk">Talk Delivered</option>
-                                            <option value="membership">Membership</option>
-                                            <option value="training">Training Course</option>
+                                            <option value="Workshop">Workshop</option>
+                                            <option value="Conference">Conference</option>
+                                             <option value="Seminar">Seminar</option>
+                                            <option value="Talk Delivered">Talk Delivered</option>
+                                            <option value="Membership">Membership</option>
+                                            <option value="Training Course">Training Course</option>
+                                            <option value="Others">Others</option>
                                         </select>
                                     </div>
 

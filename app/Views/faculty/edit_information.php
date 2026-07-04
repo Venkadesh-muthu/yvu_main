@@ -33,13 +33,13 @@
                                     <div class="col-12 col-md-4">
                                         <label class="form-label">Agency</label>
                                         <input type="text" class="form-control" name="agency[]"
-                                            value="<?= esc($info['agency'] ?? '') ?>" placeholder="Enter Agency" required>
+                                            value="<?= esc($info['agency'] ?? '') ?>" placeholder="Enter Agency">
                                     </div>
 
                                     <!-- Type -->
                                     <div class="col-12 col-md-4">
                                         <label class="form-label">Information Type</label>
-                                        <select name="type[]" class="form-control" required>
+                                        <select name="type[]" class="form-control">
                                             <option value="">Select Type</option>
                                             <option value="extra_curricular" <?= ($info['type'] ?? '') == 'extra_curricular' ? 'selected' : '' ?>>Extra Curricular</option>
                                             <option value="extension_community" <?= ($info['type'] ?? '') == 'extension_community' ? 'selected' : '' ?>>Extension & Community</option>

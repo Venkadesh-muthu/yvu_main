@@ -1,3 +1,10 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<style>
+    .to-date {
+    cursor: pointer;
+}
+</style>
 <div class="main-panel">
     <div class="content-wrapper">
 
@@ -19,7 +26,7 @@
                                     <!-- Section -->
                                     <div class="col-12 col-md-6">
                                         <label class="form-label">Section</label>
-                                        <select class="form-select" name="section[]" required>
+                                        <select class="form-select section-select" name="section[]" required>
                                             <option value="">Select Section</option>
                                             <option value="teaching">Teaching</option>
                                             <option value="research">Research</option>
@@ -30,12 +37,16 @@
                                             <option value="industry">Industry</option>
                                             <option value="others">Others</option>
                                         </select>
+                                        <input type="text"
+                                        name="section_other[]"
+                                        class="form-control mt-2 other-section d-none"
+                                        placeholder="Enter Section">
                                     </div>
 
                                     <!-- Title Type -->
                                     <div class="col-12 col-md-6">
                                         <label class="form-label">Title Type</label>
-                                        <select class="form-select" name="title_type[]" required>
+                                        <select class="form-select" name="title_type[]">
                                             <option value="">Select Title Type</option>
                                             <option value="appointment">Appointment</option>
                                             <option value="position">Position</option>
@@ -46,27 +57,51 @@
                                     <!-- Title Value -->
                                     <div class="col-12 col-md-6">
                                         <label class="form-label">Title / Value</label>
-                                        <input type="text" class="form-control" name="title_value[]" placeholder="Title / Value" required>
+                                        <input type="text" class="form-control" name="title_value[]" placeholder="Title / Value">
                                     </div>
 
                                     <!-- Workplace -->
                                     <div class="col-12 col-md-6">
                                         <label class="form-label">Workplace</label>
-                                        <input type="text" class="form-control" name="workplace[]" placeholder="Workplace" required>
+                                        <input type="text" class="form-control" name="workplace[]" placeholder="Workplace">
                                     </div>
 
                                     <!-- From Date -->
                                     <div class="col-12 col-md-6">
                                         <label class="form-label">From Date</label>
-                                        <input type="date" class="form-control" name="from_date[]" required>
+                                        <input type="text"
+                                            class="form-control from-date"
+                                            name="from_date[]"
+                                            placeholder="DD-MMM-YYYY">
                                     </div>
 
-                                    <!-- To Date -->
+                                    <!-- To Date OR Still Working -->
                                     <div class="col-12 col-md-6">
-                                        <label class="form-label">To Date</label>
-                                        <input type="date" class="form-control" name="to_date[]">
-                                    </div>
+                                        <label class="form-label">To</label>
 
+                                        <div class="d-flex gap-1 mb-2" style="padding-left: 22px;"s>
+                                            <div class="form-check">
+                                                <input class="form-check-input to-type" type="radio"
+                                                    name="to_type[0]" value="date" checked>
+                                                <label class="form-check-label">To Date</label>
+                                            </div>
+
+                                            <div class="form-check" style="padding-left: 50px;">
+                                                <input class="form-check-input to-type" type="radio"
+                                                    name="to_type[0]" value="present">
+                                                <label class="form-check-label">Still Working</label>
+                                            </div>
+                                        </div>
+
+                                        <input type="text"
+                                            class="form-control to-date"
+                                            placeholder="DD-MMM-YYYY">
+
+                                        <input type="hidden"
+                                            class="to-date-hidden"
+                                            name="to_date[]">
+
+                                    </div>
                                     <!-- Remove button -->
                                     <div class="col-12 text-end">
                                         <button type="button" class="btn btn-danger btn-sm remove-experience">Remove</button>
@@ -94,31 +129,135 @@
                 </div>
             </div>
         </div>
-
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const addBtn = document.getElementById('add-experience');
-    const container = document.getElementById('experience-container');
+document.addEventListener('DOMContentLoaded', function () {
 
-    addBtn.addEventListener('click', function() {
-        const newRow = container.querySelector('.experience-row').cloneNode(true);
-        
-        // Clear input values
-        newRow.querySelectorAll('input, select').forEach(input => input.value = '');
-        
+    const container = document.getElementById('experience-container');
+    const addBtn = document.getElementById('add-experience');
+
+    /* ---------- DATE PICKER INIT ---------- */
+    function initDatePicker(context = document) {
+
+        context.querySelectorAll('.experience-row').forEach(row => {
+
+            const fromInput = row.querySelector('.from-date');
+            const toInput   = row.querySelector('.to-date');
+            const hidden    = row.querySelector('.to-date-hidden');
+
+            if (fromInput && !fromInput._flatpickr) {
+                flatpickr(fromInput, {
+                    dateFormat: "d-M-Y",
+                    allowInput: false,
+                    onChange: function (dates) {
+                        if (toInput?._flatpickr) {
+                            toInput._flatpickr.set('minDate', dates[0]);
+                        }
+                    }
+                });
+            }
+
+            if (toInput && !toInput._flatpickr) {
+                flatpickr(toInput, {
+                    dateFormat: "d-M-Y",
+                    allowInput: false,
+                    onChange: function (_, dateStr) {
+                        if (hidden) hidden.value = dateStr;
+                    }
+                });
+            }
+        });
+    }
+
+    initDatePicker();
+
+    /* ---------- ADD EXPERIENCE ---------- */
+    addBtn.addEventListener('click', function () {
+
+        const rows = container.querySelectorAll('.experience-row');
+        const index = rows.length;
+
+        // destroy flatpickr before clone
+        rows[0].querySelectorAll('.from-date, .to-date').forEach(input => {
+            if (input._flatpickr) {
+                input._flatpickr.destroy();
+                input._flatpickr = null;
+            }
+        });
+
+        const newRow = rows[0].cloneNode(true);
+
+        newRow.querySelectorAll('input, select').forEach(input => {
+
+            if (input.type === 'radio') {
+                input.checked = input.value === 'date';
+                input.name = `to_type[${index}]`;
+            } else {
+                input.value = '';
+            }
+
+            if (input.classList.contains('other-section')) {
+                input.classList.add('d-none');
+                input.required = false;
+            }
+        });
+
         container.appendChild(newRow);
+        initDatePicker(container);
     });
 
-    // Remove row functionality
-    container.addEventListener('click', function(e) {
-        if(e.target && e.target.classList.contains('remove-experience')) {
-            const rows = container.querySelectorAll('.experience-row');
-            if(rows.length > 1) { // Keep at least one row
-                e.target.closest('.experience-row').remove();
-            } else {
-                alert('At least one experience entry is required.');
-            }
+    /* ---------- SECTION OTHERS ---------- */
+    container.addEventListener('change', function (e) {
+        if (!e.target.classList.contains('section-select')) return;
+
+        const row = e.target.closest('.experience-row');
+        const other = row.querySelector('.other-section');
+
+        if (e.target.value === 'others') {
+            other.classList.remove('d-none');
+            other.required = true;
+        } else {
+            other.classList.add('d-none');
+            other.value = '';
+            other.required = false;
         }
     });
+
+    /* ---------- PRESENT / DATE ---------- */
+    container.addEventListener('change', function (e) {
+        if (!e.target.classList.contains('to-type')) return;
+
+        const row = e.target.closest('.experience-row');
+        const toInput = row.querySelector('.to-date');
+        const hidden = row.querySelector('.to-date-hidden');
+        const fp = toInput._flatpickr;
+
+        if (e.target.value === 'present') {
+            toInput.value = 'Present';
+            hidden.value = 'Present';
+            toInput.readOnly = true;
+            toInput.style.pointerEvents = 'none';
+            if (fp) fp.close();
+        } else {
+            toInput.value = '';
+            hidden.value = '';
+            toInput.readOnly = false;
+            toInput.style.pointerEvents = 'auto';
+            if (fp) fp.enable();
+        }
+    });
+
+    /* ---------- REMOVE ---------- */
+    container.addEventListener('click', function (e) {
+        if (!e.target.classList.contains('remove-experience')) return;
+
+        const rows = container.querySelectorAll('.experience-row');
+        if (rows.length > 1) {
+            e.target.closest('.experience-row').remove();
+        } else {
+            alert('At least one experience entry is required.');
+        }
+    });
+
 });
 </script>
+

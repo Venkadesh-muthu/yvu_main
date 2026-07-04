@@ -18,6 +18,10 @@ class FacultyWorksModel extends Model
         'type',         // International / National / Local
         'month_year',   // Month and Year
         'isbn_issn',    // ISBN or ISSN
+        'authers',      // Authors of the work
+        'volume',      // Volume info
+        'page_numbers', // Page numbers
+        'doi',          // DOI of the work
         'url',        // URL column
         'pdf_path',   // PDF file column
         'visibility',   // view / hide

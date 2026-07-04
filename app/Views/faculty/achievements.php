@@ -1,3 +1,18 @@
+<style>
+    .table {
+    table-layout: fixed;          /* Prevent table from expanding */
+    width: 100%;
+}
+
+.table td,
+.table th {
+    white-space: normal;          /* Allow text wrapping */
+    word-wrap: break-word;        /* Break long words */
+    word-break: break-word;       /* For very long strings */
+    vertical-align: top;
+}
+
+</style>
 <div class="main-panel">
     <div class="content-wrapper">
         <div class="card">

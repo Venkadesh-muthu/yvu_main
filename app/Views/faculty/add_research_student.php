@@ -33,7 +33,7 @@
                                     <!-- Topic / Title -->
                                     <div class="col-12 col-md-4">
                                         <label class="form-label">Topic / Title</label>
-                                        <input type="text" class="form-control" name="topic_title[]" placeholder="Enter Topic / Title" required>
+                                        <input type="text" class="form-control" name="topic_title[]" placeholder="Enter Topic / Title">
                                     </div>
 
                                     <!-- Type (PhD / MPhil / Project) -->

@@ -33,7 +33,7 @@
                                     <div class="col-12 col-md-4">
                                         <label class="form-label">Agency</label>
                                         <input type="text" class="form-control" name="agency[]" placeholder="Enter Agency"
-                                            value="<?= esc($project['agency'] ?? '') ?>" required>
+                                            value="<?= esc($project['agency'] ?? '') ?>">
                                     </div>
 
                                     <!-- From Year -->
@@ -113,7 +113,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             input.readOnly  = false;
             input.disabled  = false;
-            input.required  = (input.name === 'title[]' || input.name === 'agency[]');
         });
 
         container.appendChild(newRow);

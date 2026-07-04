@@ -1,3 +1,4 @@
+<?php helper('captcha'); ?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -73,7 +74,7 @@
                                 name="email" 
                                 id="email" 
                                 class="form-control form-control-lg" 
-                                placeholder="Email" 
+                                placeholder="User Id" 
                                 required
                             >
                         </div>
@@ -88,6 +89,8 @@
                                 required
                             >
                         </div>
+
+                        <?= captcha_field() ?>
 
                         <div class="mt-3 d-grid gap-2">
                             <button type="submit" class="btn btn-primary btn-lg btn-block font-weight-medium auth-form-btn">

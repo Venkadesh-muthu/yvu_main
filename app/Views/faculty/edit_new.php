@@ -32,7 +32,7 @@
                                     <!-- Type -->
                                     <div class="col-12 col-md-4">
                                         <label class="form-label">Type (Intl / National / Local)</label>
-                                        <select name="type[]" class="form-control" required>
+                                        <select name="type[]" class="form-control">
                                             <option value="">Select Type</option>
                                             <option value="international" <?= ($item['type'] ?? '') == 'international' ? 'selected' : '' ?>>International</option>
                                             <option value="national" <?= ($item['type'] ?? '') == 'national' ? 'selected' : '' ?>>National</option>

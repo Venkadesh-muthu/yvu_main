@@ -7,6 +7,7 @@ use CodeIgniter\Router\RouteCollection;
  */
 // ---------- Public routes ----------
 $routes->get('/', 'AdminController::index');
+$routes->get('captcha/image', 'CaptchaController::image');
 $routes->post('login', 'AdminController::login');
 $routes->get('logout', 'AdminController::logout');
 $routes->group('admin', function ($routes) {

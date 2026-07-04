@@ -23,11 +23,10 @@ class FacultyAchievementController extends BaseController
     {
         $records = $this->achievementModel
             ->where('faculty_id', $user_id)
-            ->where('section', 'Awards / Honors') // only Awards section
+            ->where('section', 'Awards') // only Awards section
             ->where('visibility', '1') // only visible records
             ->orderBy('id', 'DESC')
             ->findAll();
-
         if (!$records) {
             return $this->response->setJSON([
                 'status'  => 'error',

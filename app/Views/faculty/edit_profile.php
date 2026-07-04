@@ -26,7 +26,7 @@
                             <!-- About Me -->
                             <div class="col-12 col-md-6">
                                 <label class="form-label">About Me</label>
-                                <textarea class="form-control" name="about_me" rows="4" placeholder="Write something about yourself"><?= esc($profile['about_me']) ?></textarea>
+                                <textarea class="form-control" name="about_me" rows="8" placeholder="Write something about yourself"><?= esc($profile['about_me']) ?></textarea>
                             </div>
 
                             <!-- Photo -->
@@ -42,10 +42,49 @@
 
                             <!-- Designation -->
                             <div class="col-12 col-md-6">
-                                <label class="form-label">Designation</label>
-                                <input type="text" class="form-control" name="designation"
-                                       value="<?= esc($profile['designation']) ?>">
+                                <label class="form-label">
+                                    Designation <span class="text-danger">*</span>
+                                </label>
+                                <select name="designation" class="form-control" required>
+                                    <option value="">-- Select Designation --</option>
+
+                                    <option value="Professor"
+                                        <?= ($profile['designation'] === 'Professor') ? 'selected' : '' ?>>
+                                        Professor
+                                    </option>
+
+                                    <option value="Associate Professor"
+                                        <?= ($profile['designation'] === 'Associate Professor') ? 'selected' : '' ?>>
+                                        Associate Professor
+                                    </option>
+
+                                    <option value="Assistant Professor"
+                                        <?= ($profile['designation'] === 'Assistant Professor') ? 'selected' : '' ?>>
+                                        Assistant Professor
+                                    </option>
+                                </select>
                             </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">
+                                    Effective Date <span class="text-danger">*</span>
+                                </label>
+                                <input type="date"
+                                    class="form-control"
+                                    name="effective_date"
+                                    value="<?= esc($profile['effective_date'] ?? '') ?>"
+                                    required>
+                            </div>
+                            <div class="col-12 col-md-6">
+                                <label class="form-label">
+                                    Join Date <span class="text-danger">*</span>
+                                </label>
+                                <input type="date"
+                                    class="form-control"
+                                    name="join_date"
+                                    value="<?= esc($profile['join_date'] ?? '') ?>"
+                                    required>
+                            </div>
+
 
                             <!-- Department -->
                             <div class="col-12 col-md-6">
@@ -120,6 +159,10 @@
                             </div>
 
                             <!-- Phone -->
+                            <?php
+                            $phones = (!empty($phones)) ? $phones : [''];
+                              ?>
+
                             <div class="col-12 col-md-6">
                                 <label class="form-label">Phone No</label>
 
@@ -143,9 +186,14 @@
                             </div>
 
 
+
                             <!-- Email -->
+                            <?php
+                            $emails = (!empty($emails)) ? $emails : [''];
+                              ?>
+
                             <div class="col-12 col-md-6">
-                                <label class="form-label">Official Email</label>
+                                <label class="form-label">Email</label>
 
                                 <div id="email-wrapper">
                                     <?php foreach ($emails as $index => $email): ?>
@@ -154,7 +202,7 @@
                                                 class="form-control"
                                                 name="email_official[]"
                                                 value="<?= esc($email) ?>"
-                                                placeholder="Official Email">
+                                                placeholder="Email">
 
                                             <?php if ($index === 0): ?>
                                                 <button type="button" class="btn btn-success" onclick="addEmail()">+</button>
@@ -165,6 +213,7 @@
                                     <?php endforeach; ?>
                                 </div>
                             </div>
+
 
 
                             <!-- Aadhaar -->
@@ -246,7 +295,7 @@ function addEmail() {
     document.getElementById('email-wrapper').insertAdjacentHTML(
         'beforeend',
         `<div class="input-group mb-2">
-            <input type="email" class="form-control" name="email_official[]" placeholder="Official Email">
+            <input type="email" class="form-control" name="email_official[]" placeholder="Email">
             <button type="button" class="btn btn-danger" onclick="removeField(this)">−</button>
         </div>`
     );

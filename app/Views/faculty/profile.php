@@ -1,3 +1,18 @@
+<style>
+    .table {
+    table-layout: fixed;          /* Prevent table from expanding */
+    width: 100%;
+}
+
+.table td,
+.table th {
+    white-space: normal;          /* Allow text wrapping */
+    word-wrap: break-word;        /* Break long words */
+    word-break: break-word;       /* For very long strings */
+    vertical-align: top;
+}
+
+</style>
 <div class="main-panel">
     <div class="content-wrapper">
 
@@ -36,8 +51,8 @@
                                class="btn btn-danger btn-sm">
                                 <i class="bi bi-trash"></i> Delete Profile
                             </a> -->
-                             <a href="https://srivatechapps.com/yvu_new/yvu.edu.in/home/faculty-profile.html?id=<?= $profile['user_id'] ?>"
-                            class="btn btn-success btn-sm me-2">
+                             <a href="https://yvu.edu.in/faculty-profile/<?= $profile['user_id'] ?>"
+                            class="btn btn-success btn-sm me-2" target="_blank">
                                 <i class="bi bi-plus-circle"></i> View Profile
                             </a>
                         <?php endif; ?>
@@ -73,80 +88,94 @@
                             </tr>
                         </thead>
                         <tbody>
-                        <?php if (!empty($profile)): ?>
+                            <?php if (!empty($profile)): ?>
 
-                            <?php
-                            $fields = [
-                                'name' => 'Name',
-                                'about_me' => 'About Me',
-                                'designation' => 'Designation',
-                                'department' => 'Department',
-                                'phone_no' => 'Phone',
-                                'email_official' => 'Email',
-                                'employee_id' => 'Employee ID',
-                                'cfms_no' => 'CFMS No',
-                                'dob' => 'Date of Birth',
-                                'gender' => 'Gender',
-                                'religion' => 'Religion',
-                                'caste' => 'Caste',
-                                'reservation' => 'Reservation',
-                                'address_residential' => 'Residential Address',
-                                'address_office' => 'Office Address',
-                                'aadhaar_no' => 'Aadhaar No',
-                                'blood_group' => 'Blood Group',
-                                'place_of_birth' => 'Place of Birth'
-                            ];
+                                <?php
+                                $fields = [
+                                    'name' => 'Name',
+                                    'about_me' => 'About Me',
+                                    'designation' => 'Designation',
+                                    'effective_date' => 'Effective Date',
+                                    'join_date' => 'Join Date',
+                                    'department' => 'Department',
+                                    'phone_no' => 'Phone',
+                                    'email_official' => 'Email',
+                                    'employee_id' => 'Employee ID',
+                                    'cfms_no' => 'CFMS No',
+                                    'dob' => 'Date of Birth',
+                                    'gender' => 'Gender',
+                                    'religion' => 'Religion',
+                                    'caste' => 'Caste',
+                                    'reservation' => 'Reservation',
+                                    'address_residential' => 'Residential Address',
+                                    'address_office' => 'Office Address',
+                                    'aadhaar_no' => 'Aadhaar No',
+                                    'blood_group' => 'Blood Group',
+                                    'place_of_birth' => 'Place of Birth'
+                                ];
 
-                            $i = 1;
-                            ?>
+                                // ✅ Define date fields
+                                $date_fields = ['effective_date', 'join_date', 'dob'];
 
-                            <?php foreach ($fields as $key => $label): ?>
-                                <tr>
-                                    <td><?= $i++ ?></td>
-                                    <td><?= esc($label) ?></td>
-                                    <td>
-                                        <?php
-                                        // 🔥 Handle multiple phone & email
-                                        if (in_array($key, ['phone_no', 'email_official']) && !empty($profile[$key])) {
+                                $i = 1;
+                                ?>
 
-                                            $values = json_decode($profile[$key], true);
+                                <?php foreach ($fields as $key => $label): ?>
+                                    <tr>
+                                        <td><?= $i++ ?></td>
+                                        <td><?= esc($label) ?></td>
+                                        <td>
+                                            <?php
+                                            // 🔥 Handle multiple phone & email
+                                            if (in_array($key, ['phone_no', 'email_official']) && !empty($profile[$key])) {
 
-                                            if (is_array($values)) {
-                                                echo '<ul class="mb-0 ps-3">';
-                                                foreach ($values as $val) {
-                                                    echo '<li>' . esc($val) . '</li>';
+                                                $values = json_decode($profile[$key], true);
+
+                                                if (is_array($values)) {
+                                                    echo '<ul class="mb-0 ps-3">';
+                                                    foreach ($values as $val) {
+                                                        echo '<li>' . esc($val) . '</li>';
+                                                    }
+                                                    echo '</ul>';
+                                                } else {
+                                                    echo '-';
                                                 }
-                                                echo '</ul>';
-                                            } else {
-                                                echo '-';
                                             }
 
-                                        } else {
-                                            echo !empty($profile[$key]) ? esc($profile[$key]) : '-';
-                                        }
-                                ?>
-                                    </td>
+                                            // 🔥 Handle date format (Indian format)
+                                            elseif (in_array($key, $date_fields) && !empty($profile[$key])) {
 
-                                    <td>
-                                        <?php $status = !empty($visibility[$key]) ? $visibility[$key] : 'hide'; ?>
-                                        <button type="button"
-                                                class="btn btn-sm btn-info"
-                                                id="<?= $key ?>_eye"
-                                                onclick="toggleVisibility('<?= $key ?>')"
-                                                data-status="<?= $status ?>"
-                                                title="<?= $status === 'view' ? 'Hide' : 'Show' ?>">
-                                            <i class="fas <?= $status === 'view' ? 'fa-eye' : 'fa-eye-slash' ?>"></i>
-                                        </button>
-                                    </td>
+                                                echo date('d-m-Y', strtotime($profile[$key]));
+                                            }
+
+                                            // 🔥 Default
+                                            else {
+                                                echo !empty($profile[$key]) ? esc($profile[$key]) : '-';
+                                            }
+                                    ?>
+                                        </td>
+
+                                        <td>
+                                            <?php $status = !empty($visibility[$key]) ? $visibility[$key] : 'hide'; ?>
+                                            <button type="button"
+                                                    class="btn btn-sm btn-info"
+                                                    id="<?= $key ?>_eye"
+                                                    onclick="toggleVisibility('<?= $key ?>')"
+                                                    data-status="<?= $status ?>"
+                                                    title="<?= $status === 'view' ? 'Hide' : 'Show' ?>">
+                                                <i class="fas <?= $status === 'view' ? 'fa-eye' : 'fa-eye-slash' ?>"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+
+                            <?php else: ?>
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted">No records found</td>
                                 </tr>
-                            <?php endforeach; ?>
-
-                        <?php else: ?>
-                            <tr>
-                                <td colspan="4" class="text-center text-muted">No records found</td>
-                            </tr>
-                        <?php endif; ?>
+                            <?php endif; ?>
                         </tbody>
+
 
                     </table>
                 </div>

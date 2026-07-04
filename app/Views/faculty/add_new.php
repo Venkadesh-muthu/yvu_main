@@ -24,7 +24,7 @@
                                     <!-- Type -->
                                     <div class="col-12 col-md-4">
                                         <label class="form-label">Type</label>
-                                        <select name="type[]" class="form-control" required>
+                                        <select name="type[]" class="form-control">
                                             <option value="">Select Type</option>
                                             <option value="international">International</option>
                                             <option value="national">National</option>
@@ -35,7 +35,7 @@
                                     <!-- Month & Year -->
                                     <div class="col-12 col-md-2">
                                         <label class="form-label">Month & Year</label>
-                                        <input type="month" class="form-control" name="month_year[]" required>
+                                        <input type="month" class="form-control" name="month_year[]">
                                     </div>
 
                                     <!-- Upload -->
@@ -87,10 +87,6 @@ document.addEventListener('DOMContentLoaded', function() {
             input.required = false;
         });
 
-        // Required fields
-        newRow.querySelector('input[name="title[]"]').required = true;
-        newRow.querySelector('select[name="type[]"]').required = true;
-        newRow.querySelector('input[name="month_year[]"]').required = true;
 
         container.appendChild(newRow);
     });

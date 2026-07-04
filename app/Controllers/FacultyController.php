@@ -188,6 +188,62 @@ class FacultyController extends BaseController
     // ---------------------------------------------------------
     // SAVE PROFILE
     // ---------------------------------------------------------
+    // public function save_profile()
+    // {
+    //     if ($redirect = $this->checkFacultyLogin()) {
+    //         return $redirect;
+    //     }
+
+    //     $facultyId = session()->get('faculty_id');
+
+    //     // Photo Upload
+    //     $photo = $this->request->getFile('photo');
+    //     $photoName = null;
+
+    //     if ($photo && $photo->isValid() && !$photo->hasMoved()) {
+    //         $photoName = $photo->getRandomName();
+    //         $photo->move('uploads/faculty', $photoName);
+    //     }
+
+    //     // Get multiple phone & email values
+    //     $phones = array_filter($this->request->getPost('phone_no') ?? []);
+    //     $emails = array_filter($this->request->getPost('email_official') ?? []);
+
+    //     $data = [
+    //         'user_id'             => $facultyId,
+    //         'name'                => $this->request->getPost('name'),
+    //         'about_me'            => $this->request->getPost('about_me'),
+    //         'photo'               => $photoName,
+    //         'designation'         => $this->request->getPost('designation'),
+    //         'department'          => $this->request->getPost('department'),
+    //         'employee_id'         => $this->request->getPost('employee_id'),
+    //         'cfms_no'             => $this->request->getPost('cfms_no'),
+    //         'dob'                 => $this->request->getPost('dob'),
+    //         'gender'              => $this->request->getPost('gender'),
+    //         'religion'            => $this->request->getPost('religion'),
+    //         'caste'               => $this->request->getPost('caste'),
+    //         'reservation'         => $this->request->getPost('reservation'),
+    //         'address_residential' => $this->request->getPost('address_residential'),
+    //         'address_office'      => $this->request->getPost('address_office'),
+
+    //         // 🔥 JSON storage
+    //         'phone_no'            => json_encode($phones),
+    //         'email_official'      => json_encode($emails),
+
+    //         'aadhaar_no'          => $this->request->getPost('aadhaar_no'),
+    //         'blood_group'         => $this->request->getPost('blood_group'),
+    //         'place_of_birth'      => $this->request->getPost('place_of_birth'),
+    //         'vidwan_url'          => $this->request->getPost('vidwan_url'),
+    //         'orcid_url'           => $this->request->getPost('orcid_url'),
+    //         'scopus_url'          => $this->request->getPost('scopus_url'),
+    //         'google_scholar_url'  => $this->request->getPost('google_scholar_url'),
+    //     ];
+
+    //     $this->profileModel->save($data);
+
+    //     return redirect()->to('/faculty/profile')
+    //         ->with('success', 'Profile created successfully.');
+    // }
     public function save_profile()
     {
         if ($redirect = $this->checkFacultyLogin()) {
@@ -205,16 +261,21 @@ class FacultyController extends BaseController
             $photo->move('uploads/faculty', $photoName);
         }
 
-        // Get multiple phone & email values
+        // Multiple phones & emails
         $phones = array_filter($this->request->getPost('phone_no') ?? []);
         $emails = array_filter($this->request->getPost('email_official') ?? []);
 
-        $data = [
+        /** -------------------------
+         *  MAIN PROFILE DATA
+         * ------------------------- */
+        $profileData = [
             'user_id'             => $facultyId,
             'name'                => $this->request->getPost('name'),
             'about_me'            => $this->request->getPost('about_me'),
             'photo'               => $photoName,
             'designation'         => $this->request->getPost('designation'),
+            'effective_date'      => $this->request->getPost('effective_date'),
+            'join_date'           => $this->request->getPost('join_date'),
             'department'          => $this->request->getPost('department'),
             'employee_id'         => $this->request->getPost('employee_id'),
             'cfms_no'             => $this->request->getPost('cfms_no'),
@@ -225,11 +286,8 @@ class FacultyController extends BaseController
             'reservation'         => $this->request->getPost('reservation'),
             'address_residential' => $this->request->getPost('address_residential'),
             'address_office'      => $this->request->getPost('address_office'),
-
-            // 🔥 JSON storage
             'phone_no'            => json_encode($phones),
             'email_official'      => json_encode($emails),
-
             'aadhaar_no'          => $this->request->getPost('aadhaar_no'),
             'blood_group'         => $this->request->getPost('blood_group'),
             'place_of_birth'      => $this->request->getPost('place_of_birth'),
@@ -239,7 +297,48 @@ class FacultyController extends BaseController
             'google_scholar_url'  => $this->request->getPost('google_scholar_url'),
         ];
 
-        $this->profileModel->save($data);
+        $db = \Config\Database::connect();
+        $db->transStart();
+
+        // Insert into faculty_profiles
+        $this->profileModel->insert($profileData);
+        $facultyProfileId = $this->profileModel->getInsertID();
+
+        /** -------------------------
+         *  VISIBILITY (ALL HIDE)
+         * ------------------------- */
+        $visibilityData = [
+            'faculty_profiles_id' => $facultyProfileId,
+            'name'                => 'hide',
+            'about_me'            => 'hide',
+            'photo'               => 'hide',
+            'designation'         => 'hide',
+            'effective_date'      => 'hide',
+            'join_date'           => 'hide',
+            'department'          => 'hide',
+            'employee_id'         => 'hide',
+            'cfms_no'             => 'hide',
+            'dob'                 => 'hide',
+            'gender'              => 'hide',
+            'religion'            => 'hide',
+            'caste'               => 'hide',
+            'reservation'         => 'hide',
+            'address_residential' => 'hide',
+            'address_office'      => 'hide',
+            'phone_no'            => 'hide',
+            'email_official'      => 'hide',
+            'aadhaar_no'          => 'hide',
+            'blood_group'         => 'hide',
+            'place_of_birth'      => 'hide',
+            'vidwan_url'          => 'hide',
+            'orcid_url'           => 'hide',
+            'scopus_url'          => 'hide',
+            'google_scholar_url'  => 'hide',
+        ];
+
+        $this->ProfileVisibilityModel->insert($visibilityData);
+
+        $db->transComplete();
 
         return redirect()->to('/faculty/profile')
             ->with('success', 'Profile created successfully.');
@@ -335,6 +434,8 @@ class FacultyController extends BaseController
             'about_me'            => $this->request->getPost('about_me'),
             'photo'               => $photoName,
             'designation'         => $this->request->getPost('designation'),
+            'effective_date'      => $this->request->getPost('effective_date'),
+            'join_date'           => $this->request->getPost('join_date'),
             'department'          => $this->request->getPost('department'),
             'employee_id'         => $this->request->getPost('employee_id'),
             'cfms_no'             => $this->request->getPost('cfms_no'),
@@ -465,7 +566,7 @@ class FacultyController extends BaseController
 
         $education = $this->eduModel
             ->where('faculty_id', $facultyId)
-            ->orderBy('id', 'DESC')
+            ->orderBy('year', 'ASC')
             ->findAll();
         $data = [
             'title'      => 'Educational Background',
@@ -497,32 +598,71 @@ class FacultyController extends BaseController
 
         $facultyId = session()->get('faculty_id');
 
-        // Get arrays from POST
-        $categories = $this->request->getPost('category');
-        $courseSubjects = $this->request->getPost('course_subject');
-        $years      = $this->request->getPost('year_class');
-        $institutes = $this->request->getPost('institute');
-        $towns      = $this->request->getPost('town');
-        $districts  = $this->request->getPost('district');
-        $states     = $this->request->getPost('state');
+        $categories       = $this->request->getPost('category');
+        $otherCategories  = $this->request->getPost('category_other');
+        $subjects         = $this->request->getPost('course_subject');
+        $marks            = $this->request->getPost('marks_division');
+        $highlights       = $this->request->getPost('highlights_comments_merits');
+        $years            = $this->request->getPost('year');
+        $classes          = $this->request->getPost('class');
+        $universities     = $this->request->getPost('university');
+        $institutes       = $this->request->getPost('institute');
+        $countries        = $this->request->getPost('country');
+        $towns            = $this->request->getPost('town');
+        $districts        = $this->request->getPost('district');
+        $states           = $this->request->getPost('state');
 
-        // Loop through all entries
-        foreach ($categories as $index => $category) {
-            $data = [
-                'faculty_id'    => $facultyId,
-                'category'      => $category,
-                'course_subject' => $courseSubjects[$index] ?? '',
-                'year_of_class' => $years[$index] ?? '',
-                'institute'     => $institutes[$index] ?? '',
-                'town'          => $towns[$index] ?? '',
-                'district'      => $districts[$index] ?? '',
-                'state'         => $states[$index] ?? '',
-            ];
-
-            $this->eduModel->save($data);
+        if (!is_array($categories)) {
+            return redirect()->back()->with('error', 'No education data received.');
         }
 
-        return redirect()->to('/faculty/educations')->with('success', 'Education added successfully.');
+        foreach ($categories as $i => $category) {
+
+            // Skip only if EVERYTHING is empty
+            if (
+                empty($category) &&
+                empty($subjects[$i]) &&
+                empty($institutes[$i]) &&
+                empty($years[$i])
+            ) {
+                continue;
+            }
+
+            $category = strip_tags(trim($category));
+
+            // ✅ Handle Other category
+            if ($category === 'others') {
+                $category = trim(strip_tags($otherCategories[$i] ?? ''));
+            }
+
+
+            $year = $years[$i] ?? '';
+            if (!empty($year) && !preg_match('/^\d{4}$/', $year)) {
+                $year = '';
+            }
+
+            $data = [
+                'faculty_id'                 => $facultyId,
+                'category'                   => $category,
+                'course_subject'             => $subjects[$i] ?? '',
+                'marks_division'             => $marks[$i] ?? '',
+                'highlights_comments_merits' => $highlights[$i] ?? '',
+                'year'                       => $year,
+                'class'                      => $classes[$i] ?? '',
+                'university'                 => $universities[$i] ?? '',
+                'institute'                  => $institutes[$i] ?? '',
+                'country'                    => $countries[$i] ?? '',
+                'town'                       => $towns[$i] ?? '',
+                'district'                   => $districts[$i] ?? '',
+                'state'                      => $states[$i] ?? '',
+                'visibility'                 => 'hide',
+            ];
+
+            $this->eduModel->insert($data);
+        }
+
+        return redirect()->to('/faculty/educations')
+                         ->with('success', 'Education details added successfully.');
     }
 
     public function edit_education($id)
@@ -550,6 +690,7 @@ class FacultyController extends BaseController
 
         return view('faculty/layout/template', $data);
     }
+
     public function update_education()
     {
         if ($redirect = $this->checkFacultyLogin()) {
@@ -558,39 +699,83 @@ class FacultyController extends BaseController
 
         $facultyId = session()->get('faculty_id');
 
-        // Get all form inputs
-        $ids         = $this->request->getPost('id'); // may contain empty values for new rows
-        $categories  = $this->request->getPost('category');
-        $courseSubjects = $this->request->getPost('course_subject');
-        $years       = $this->request->getPost('year_class');
-        $institutes  = $this->request->getPost('institute');
-        $towns       = $this->request->getPost('town');
-        $districts   = $this->request->getPost('district');
-        $states      = $this->request->getPost('state');
+        // ✅ ALWAYS force arrays (prevents foreach null error)
+        $ids             = $this->request->getPost('id') ?? [];
+        $categories      = $this->request->getPost('category') ?? [];
+        $otherCategories = $this->request->getPost('category_other') ?? [];
+        $subjects        = $this->request->getPost('course_subject') ?? [];
+        $marks           = $this->request->getPost('marks_division') ?? [];
+        $highlights      = $this->request->getPost('highlights_comments_merits') ?? [];
+        $years           = $this->request->getPost('year') ?? [];
+        $classes         = $this->request->getPost('class') ?? [];
+        $universities    = $this->request->getPost('university') ?? [];
+        $institutes      = $this->request->getPost('institute') ?? [];
+        $countries       = $this->request->getPost('country') ?? [];
+        $towns           = $this->request->getPost('town') ?? [];
+        $districts       = $this->request->getPost('district') ?? [];
+        $states          = $this->request->getPost('state') ?? [];
 
-        foreach ($categories as $key => $category) {
+        if (!is_array($categories) || empty($categories)) {
+            return redirect()->back()->with('error', 'No education data received.');
+        }
+
+        foreach ($categories as $i => $category) {
+
+            // ✅ Skip fully empty cloned rows
+            if (
+                empty($category) &&
+                empty($subjects[$i] ?? '') &&
+                empty($institutes[$i] ?? '')
+            ) {
+                continue;
+            }
+
+            $category = trim(strip_tags($category));
+
+
+            if ($category === 'others') {
+                $category = trim(strip_tags($otherCategories[$i] ?? ''));
+            }
+
+            if ($category === '') {
+                continue;
+            }
+
+            // ✅ Optional year validation
+            $year = $years[$i] ?? '';
+            if ($year && !preg_match('/^\d{4}$/', $year)) {
+                $year = '';
+            }
+
             $data = [
-                'faculty_id'    => $facultyId,
-                'category'      => $category,
-                'course_subject' => $courseSubjects[$key],
-                'year_of_class' => $years[$key],
-                'institute'     => $institutes[$key],
-                'town'          => $towns[$key],
-                'district'      => $districts[$key],
-                'state'         => $states[$key],
+                'faculty_id'                 => $facultyId,
+                'category'                   => $category,
+                'course_subject'             => $subjects[$i] ?? '',
+                'marks_division'             => $marks[$i] ?? '',
+                'highlights_comments_merits' => $highlights[$i] ?? '',
+                'year'                       => $year,
+                'class'                      => $classes[$i] ?? '',
+                'university'                 => $universities[$i] ?? '',
+                'institute'                  => $institutes[$i] ?? '',
+                'country'                    => $countries[$i] ?? '',
+                'town'                       => $towns[$i] ?? '',
+                'district'                   => $districts[$i] ?? '',
+                'state'                      => $states[$i] ?? '',
             ];
 
-            if (!empty($ids[$key])) {
-                // Update existing row
-                $this->eduModel->update($ids[$key], $data);
+            // ✅ UPDATE OR INSERT
+            if (!empty($ids[$i])) {
+                $this->eduModel->update($ids[$i], $data);
             } else {
-                // Insert new row
+                $data['visibility'] = 'hide';
                 $this->eduModel->insert($data);
             }
         }
 
-        return redirect()->to('/faculty/educations')->with('success', 'Education updated successfully.');
+        return redirect()->to('/faculty/educations')
+            ->with('success', 'Education details updated successfully.');
     }
+
 
     public function delete_education($id)
     {
@@ -684,15 +869,20 @@ class FacultyController extends BaseController
 
         $facultyId = session()->get('faculty_id');
 
-        // Get arrays from POST
-        $sections    = $this->request->getPost('section');
-        $titleTypes  = $this->request->getPost('title_type');
-        $titleValues = $this->request->getPost('title_value');
-        $workplaces  = $this->request->getPost('workplace');
-        $fromDates   = $this->request->getPost('from_date');
-        $toDates     = $this->request->getPost('to_date');
+        $sections        = $this->request->getPost('section');
+        $sectionOthers   = $this->request->getPost('section_other');
+        $titleTypes      = $this->request->getPost('title_type');
+        $titleValues     = $this->request->getPost('title_value');
+        $workplaces      = $this->request->getPost('workplace');
+        $fromDates       = $this->request->getPost('from_date');
+        $toDates         = $this->request->getPost('to_date');
 
         foreach ($sections as $index => $section) {
+
+            // ✅ HANDLE "OTHERS"
+            if ($section === 'others') {
+                $section = $sectionOthers[$index] ?? '';
+            }
             $data = [
                 'faculty_id'  => $facultyId,
                 'section'     => $section,
@@ -706,8 +896,11 @@ class FacultyController extends BaseController
             $this->experienceModel->save($data);
         }
 
-        return redirect()->to('/faculty/experiences')->with('success', 'Experience added successfully.');
+        return redirect()
+            ->to('/faculty/experiences')
+            ->with('success', 'Experience added successfully.');
     }
+
 
     public function edit_experience($id)
     {
@@ -743,34 +936,48 @@ class FacultyController extends BaseController
 
         $facultyId = session()->get('faculty_id');
 
-        $ids          = $this->request->getPost('id'); // may contain empty values for new rows
-        $sections     = $this->request->getPost('section');
-        $titleTypes   = $this->request->getPost('title_type');
-        $titleValues  = $this->request->getPost('title_value');
-        $workplaces   = $this->request->getPost('workplace');
-        $fromDates    = $this->request->getPost('from_date');
-        $toDates      = $this->request->getPost('to_date');
+        $ids            = $this->request->getPost('id');
+        $sections       = $this->request->getPost('section');
+        $sectionOthers  = $this->request->getPost('section_other');
+        $titleTypes     = $this->request->getPost('title_type');
+        $titleValues    = $this->request->getPost('title_value');
+        $workplaces     = $this->request->getPost('workplace');
+        $fromDates      = $this->request->getPost('from_date');
+        $toDates        = $this->request->getPost('to_date');
 
         foreach ($sections as $key => $section) {
+
+            // ✅ Handle "Others"
+            if ($section === 'others' && !empty($sectionOthers[$key])) {
+                $sectionValue = $sectionOthers[$key];
+            } else {
+                $sectionValue = $section;
+            }
+
             $data = [
                 'faculty_id'  => $facultyId,
-                'section'     => $section,
-                'title_type'  => $titleTypes[$key],
-                'title_value' => $titleValues[$key],
-                'workplace'   => $workplaces[$key],
-                'from_date'   => $fromDates[$key],
-                'to_date'     => $toDates[$key],
+                'section'     => $sectionValue,
+                'title_type'  => $titleTypes[$key]  ?? null,
+                'title_value' => $titleValues[$key] ?? null,
+                'workplace'   => $workplaces[$key]  ?? null,
+                'from_date'   => $fromDates[$key]   ?? null,
+                'to_date'     => $toDates[$key]     ?? null,
             ];
 
             if (!empty($ids[$key])) {
+                // Update existing
                 $this->experienceModel->update($ids[$key], $data);
             } else {
+                // Insert new
                 $this->experienceModel->insert($data);
             }
         }
 
-        return redirect()->to('/faculty/experiences')->with('success', 'Experience updated successfully.');
+        return redirect()
+            ->to('/faculty/experiences')
+            ->with('success', 'Experience updated successfully.');
     }
+
 
     public function delete_experience($id)
     {
@@ -1242,18 +1449,21 @@ class FacultyController extends BaseController
         $types      = $this->request->getPost('type');
         $monthYears = $this->request->getPost('month_year');
         $isbnIssn   = $this->request->getPost('isbn_issn');
-        $urls       = $this->request->getPost('url'); // matches form input name
+        $authers    = $this->request->getPost('authers');
+        $volumes    = $this->request->getPost('volume');
+        $pageNumbers = $this->request->getPost('page_numbers');
+        $dois       = $this->request->getPost('doi');
+        $urls       = $this->request->getPost('url');
 
         // ✅ Get multiple files correctly for input name "pdf_file[]"
         $pdfFiles = $this->request->getFileMultiple('pdf_file');
 
         foreach ($categories as $key => $category) {
-
             // Correct title logic for Book category
-            if (strtolower($category) === 'book') {
-                $titleToSave = $roles[$key] ?? '';
+            if ($category === 'Book' || $category === 'Book Chapter') {
+                $titleToSave = $roles[$key] ?? null;
             } else {
-                $titleToSave = $titles[$key] ?? '';
+                $titleToSave = $titles[$key] ?? null;
             }
 
             // Skip row if all important fields are empty
@@ -1288,6 +1498,10 @@ class FacultyController extends BaseController
                 'type'       => $types[$key] ?? '',
                 'month_year' => $monthYears[$key] ?? '',
                 'isbn_issn'  => $isbnIssn[$key] ?? '',
+                'authers'    => $authers[$key] ?? '',
+                'volume'     => $volumes[$key] ?? '',
+                'page_numbers' => $pageNumbers[$key] ?? '',
+                'doi'        => $dois[$key] ?? '',
                 'url'        => $urls[$key] ?? '',
                 'pdf_path'   => $pdfPath,
                 'visibility' => 'hide'
@@ -1344,6 +1558,10 @@ class FacultyController extends BaseController
         $types      = $this->request->getPost('type');
         $monthYears = $this->request->getPost('month_year');
         $isbnIssns  = $this->request->getPost('isbn_issn');
+        $authers    = $this->request->getPost('authers');
+        $volumes    = $this->request->getPost('volume');
+        $pageNumbers = $this->request->getPost('page_numbers');
+        $dois       = $this->request->getPost('doi');
         $urls       = $this->request->getPost('url');
 
         // ✅ Correctly handle multiple files
@@ -1356,12 +1574,11 @@ class FacultyController extends BaseController
         foreach ($categories as $key => $category) {
 
             // ✅ Book category title logic
-            $titleToSave = (strtolower($category) === 'book') ? ($roles[$key] ?? '') : ($titles[$key] ?? '');
-
-            if (empty($category) || empty($titleToSave)) {
-                continue;
+            if ($category === 'Book' || $category === 'Book Chapter') {
+                $titleToSave = $roles[$key] ?? null;
+            } else {
+                $titleToSave = $titles[$key] ?? null;
             }
-
             // ✅ Keep old PDF if no new file uploaded
             $pdfPath = null;
             if (!empty($ids[$key])) {
@@ -1390,6 +1607,10 @@ class FacultyController extends BaseController
                 'type'       => $types[$key] ?? null,
                 'month_year' => $monthYears[$key] ?? null,
                 'isbn_issn'  => $isbnIssns[$key] ?? null,
+                'authers'    => $authers[$key] ?? null,
+                'volume'     => $volumes[$key] ?? null,
+                'page_numbers' => $pageNumbers[$key] ?? null,
+                'doi'        => $dois[$key] ?? null,
                 'url'        => $urls[$key] ?? null,
                 'pdf_path'   => $pdfPath,
             ];
@@ -1900,7 +2121,7 @@ class FacultyController extends BaseController
         }
 
         $data = [
-            'title'   => 'Add Project',
+            'title'   => 'Projects',
             'content' => 'faculty/add_project'
         ];
 
@@ -1974,7 +2195,7 @@ class FacultyController extends BaseController
         }
 
         $data = [
-            'title'    => 'Edit Project',
+            'title'    => 'Projects',
             'content'  => 'faculty/edit_project',
             'projects' => [$project]
         ];
@@ -2334,7 +2555,7 @@ class FacultyController extends BaseController
         }
 
         $data = [
-            'title' => 'Add News / Press / Pictures',
+            'title' => 'News / Press / Pictures',
             'content' => 'faculty/add_new'
         ];
 
@@ -2401,7 +2622,7 @@ class FacultyController extends BaseController
         }
 
         $data = [
-            'title' => 'Edit News / Press / Pictures',
+            'title' => 'News / Press / Pictures',
             'content' => 'faculty/edit_new',
             'news' => [$news]
         ];

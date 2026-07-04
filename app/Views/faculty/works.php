@@ -21,15 +21,19 @@
                                 <th>#</th>
                                 <th>Category</th>
                                 <th>Title</th>
+                                <th>Visibility</th>
+                                <th>Actions</th>
                                 <th>Role</th>
                                 <th>Journal / Publisher</th>
                                 <th>Type (Intl./National/Local)</th>
                                 <th>Month / Year</th>
                                 <th>ISBN/ISSN</th>
+                                <th>Authors</th>
+                                <th>Volume</th>
+                                <th>Page Numbers</th>
+                                <th>DOI</th>
                                 <th>URL</th>
                                 <th>PDF</th>
-                                <th>Visibility</th>
-                                <th>Actions</th>
                             </tr>
                         </thead>
 
@@ -42,30 +46,6 @@
                                         <td><?= $i++; ?></td>
                                         <td><?= esc($work['category']) ?></td>
                                         <td><?= esc($work['title']) ?></td>
-                                        <td><?= esc($work['role']) ?></td>
-                                        <td><?= esc($work['journal']) ?></td>
-                                        <td><?= esc($work['type']) ?></td>
-                                        <td><?= esc($work['month_year']) ?></td>
-                                        <td><?= esc($work['isbn_issn']) ?></td>
-
-                                        <!-- ✅ URL Column -->
-                                        <td>
-                                            <?php if ($work['url']): ?>
-                                                <a href="<?= esc($work['url']) ?>" target="_blank">Visit</a>
-                                            <?php else: ?>
-                                                -
-                                            <?php endif; ?>
-                                        </td>
-
-                                        <!-- ✅ PDF Column -->
-                                        <td>
-                                            <?php if ($work['pdf_path']): ?>
-                                                <a href="<?= base_url($work['pdf_path']) ?>" target="_blank">View PDF</a>
-                                            <?php else: ?>
-                                                -
-                                            <?php endif; ?>
-                                        </td>
-
                                         <!-- ✅ Visibility -->
                                         <td class="text-center">
                                             <button type="button"
@@ -93,7 +73,33 @@
                                                 <i class="bi bi-trash"></i> Delete
                                             </a>
                                         </td>
+                                        <td><?= esc($work['role']) ?></td>
+                                        <td><?= esc($work['journal']) ?></td>
+                                        <td><?= esc($work['type']) ?></td>
+                                        <td><?= esc($work['month_year']) ?></td>
+                                        <td><?= esc($work['isbn_issn']) ?></td>
+                                        <td><?= esc($work['authers']) ?></td>
+                                        <td><?= esc($work['volume']) ?></td>
+                                        <td><?= esc($work['page_numbers']) ?></td>
+                                        <td><?= esc($work['doi']) ?></td>
 
+                                        <!-- ✅ URL Column -->
+                                        <td>
+                                            <?php if ($work['url']): ?>
+                                                <a href="<?= esc($work['url']) ?>" target="_blank">Visit</a>
+                                            <?php else: ?>
+                                                -
+                                            <?php endif; ?>
+                                        </td>
+
+                                        <!-- ✅ PDF Column -->
+                                        <td>
+                                            <?php if ($work['pdf_path']): ?>
+                                                <a href="<?= base_url($work['pdf_path']) ?>" target="_blank">View PDF</a>
+                                            <?php else: ?>
+                                                -
+                                            <?php endif; ?>
+                                        </td>
                                     </tr>
                                 <?php endforeach; ?>
                             <?php else: ?>

@@ -24,13 +24,13 @@
                                     <!-- Agency -->
                                     <div class="col-12 col-md-4">
                                         <label class="form-label">Agency</label>
-                                        <input type="text" class="form-control" name="agency[]" placeholder="Enter Agency" required>
+                                        <input type="text" class="form-control" name="agency[]" placeholder="Enter Agency">
                                     </div>
 
                                     <!-- Type -->
                                     <div class="col-12 col-md-4">
                                         <label class="form-label">Information Type</label>
-                                        <select name="type[]" class="form-control" required>
+                                        <select name="type[]" class="form-control">
                                             <option value="">Select Type</option>
                                             <option value="extra_curricular">Extra Curricular</option>
                                             <option value="extension_community">Extension & Community</option>
@@ -98,11 +98,6 @@ document.addEventListener('DOMContentLoaded', function() {
             input.value = '';
             input.required = false;
         });
-
-        // Required fields
-        newRow.querySelector('input[name="title[]"]').required = true;
-        newRow.querySelector('input[name="agency[]"]').required = true;
-        newRow.querySelector('select[name="type[]"]').required = true;
 
         container.appendChild(newRow);
     });

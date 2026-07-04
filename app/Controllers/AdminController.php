@@ -20,6 +20,7 @@ use App\Models\FacultyInformationModel;
 use App\Models\FacultyNewsModel;
 use App\Models\FacultySocialMediaModel;
 use App\Models\FacultyMembershipsModel;
+use App\Libraries\CaptchaService;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 
@@ -43,7 +44,7 @@ class AdminController extends BaseController
 
     public function __construct()
     {
-        helper(['form', 'url']);
+        helper(['form', 'url', 'captcha']);
         $this->userModel = new UserModel();
         $this->profileModel = new FacultyProfileModel();
         $this->eduModel = new FacultyEducationModel();
@@ -74,13 +75,21 @@ class AdminController extends BaseController
 
         $rules = [
             'email'    => 'required|valid_email',
-            'password' => 'required'
+            'password' => 'required',
+            'captcha'  => 'required'
         ];
 
         if (!$this->validate($rules)) {
             return redirect()->back()
                 ->withInput()
                 ->with('errors', $this->validator->getErrors());
+        }
+
+        $captcha = new CaptchaService();
+        if (! $captcha->validate($this->request->getPost('captcha'))) {
+            return redirect()->back()
+                ->withInput()
+                ->with('errors', ['captcha' => 'Invalid CAPTCHA. Please refresh the CAPTCHA and try again.']);
         }
 
         $email = $this->request->getPost('email');
@@ -379,6 +388,12 @@ class AdminController extends BaseController
         if (!$profile) {
             return redirect()->back()->with('error', 'Faculty not found');
         }
+        $phones = json_decode($profile['phone_no'], true);
+        $emails = json_decode($profile['email_official'], true);
+
+        // fallback if single value
+        $phones = is_array($phones) ? $phones : [$profile['phone_no']];
+        $emails = is_array($emails) ? $emails : [$profile['email_official']];
 
         $education = $this->eduModel
             ->where('faculty_id', $facultyId)
@@ -474,11 +489,31 @@ class AdminController extends BaseController
 
     <h3>Contact Information</h3>
     <table>
-        <tr><td>Residential Address</td><td>' . esc($profile['address_residential']) . '</td></tr>
-        <tr><td>Office Address</td><td>' . esc($profile['address_office']) . '</td></tr>
-        <tr><td>Phone</td><td>' . esc($profile['phone_no']) . '</td></tr>
-        <tr><td>Email</td><td>' . esc($profile['email_official']) . '</td></tr>
+        <tr>
+            <td>Residential Address</td>
+            <td>' . nl2br(esc($profile['address_residential'])) . '</td>
+        </tr>
+
+        <tr>
+            <td>Office Address</td>
+            <td>' . nl2br(esc($profile['address_office'])) . '</td>
+        </tr>
+
+        <tr>
+            <td>Phone</td>
+            <td>
+                ' . implode('<br>', array_map('esc', $phones)) . '
+            </td>
+        </tr>
+
+        <tr>
+            <td>Email</td>
+            <td>
+                ' . implode('<br>', array_map('esc', $emails)) . '
+            </td>
+        </tr>
     </table>
+
 
     <h3>Biography</h3>
     <p>' . nl2br(esc($profile['about_me'])) . '</p>

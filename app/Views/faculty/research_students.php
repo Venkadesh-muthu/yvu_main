@@ -23,12 +23,12 @@
                                 <th>Student Type</th>
                                 <th>Student Name</th>
                                 <th>Topic / Title</th>
+                                <th class="text-center">Visibility</th>
+                                <th class="text-center">Actions</th>
                                 <th>Type</th>
                                 <th>From</th>
                                 <th>To</th>
                                 <th>Status</th>
-                                <th class="text-center">Visibility</th>
-                                <th class="text-center">Actions</th>
                             </tr>
                         </thead>
 
@@ -41,17 +41,6 @@
                                     <td><?= esc($row['student_type']) ?></td>
                                     <td><?= esc($row['student_name']) ?></td>
                                     <td><?= esc($row['topic_title']) ?></td>
-                                    <td><?= esc($row['type']) ?></td>
-                                    <td><?= esc($row['from_year']) ?></td>
-                                    <td><?= esc($row['to_year']) ?></td>
-                                    <td>
-                                        <?php if ($row['status'] === 'completed'): ?>
-                                            <span class="badge bg-success">Completed</span>
-                                        <?php else: ?>
-                                            <span class="badge bg-warning">Ongoing</span>
-                                        <?php endif; ?>
-                                    </td>
-
                                     <!-- Visibility Toggle -->
                                     <td class="text-center">
                                         <button class="btn btn-info btn-sm"
@@ -75,6 +64,16 @@
                                            class="btn btn-danger btn-sm">
                                            <i class="bi bi-trash"></i> Delete
                                         </a>
+                                    </td>
+                                    <td><?= esc($row['type']) ?></td>
+                                    <td><?= esc($row['from_year']) ?></td>
+                                    <td><?= esc($row['to_year']) ?></td>
+                                    <td>
+                                        <?php if ($row['status'] === 'completed'): ?>
+                                            <span class="badge bg-success">Completed</span>
+                                        <?php else: ?>
+                                            <span class="badge bg-warning">Ongoing</span>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                                 <?php endforeach; ?>

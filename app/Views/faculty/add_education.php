@@ -14,70 +14,101 @@
 
                             <!-- Container for multiple education rows -->
                             <div id="education-container">
-
                                 <div class="education-row row g-3 mb-3">
+
                                     <!-- Category -->
                                     <div class="col-12 col-md-6">
                                         <label class="form-label">Category</label>
-                                        <select class="form-select" name="category[]" required>
+                                        <select class="form-select category-select" name="category[]" required>
                                             <option value="">Select Category</option>
                                             <option value="schooling">Schooling (I - X)</option>
                                             <option value="intermediate">Intermediate (+2)</option>
                                             <option value="graduation">Graduation</option>
                                             <option value="post_graduation">Post Graduation</option>
                                             <option value="mphil">M.Phil</option>
-                                            <option value="phd">PhD</option>
+                                            <option value="Ph.D.">Ph.D.</option>
                                             <option value="post_doc">Postdoc</option>
                                             <option value="diploma">Diploma</option>
                                             <option value="others">Others</option>
                                         </select>
+
+                                        <input type="text" name="category_other[]"
+                                            class="form-control mt-2 other-category d-none"
+                                            placeholder="Enter category">
+
                                     </div>
+
                                     <!-- Course / Subject -->
                                     <div class="col-12 col-md-6">
                                         <label class="form-label">Course / Subject</label>
-                                        <input type="text"
-                                            class="form-control"
-                                            name="course_subject[]"
-                                            placeholder="Course / Subject"
-                                            required>
+                                        <input type="text" class="form-control" name="course_subject[]">
                                     </div>
 
-                                    <!-- Year / Class -->
+                                    <!-- Marks / Division (NEXT TO Course) -->
                                     <div class="col-12 col-md-6">
-                                        <label class="form-label">Year / Class</label>
-                                        <input type="text" class="form-control" name="year_class[]" placeholder="Year / Class" required>
+                                        <label class="form-label">Marks / Division</label>
+                                        <input type="text" class="form-control" name="marks_division[]">
+                                    </div>
+
+                                    <!-- Year -->
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label">Year</label>
+                                        <input type="text" class="form-control" name="year[]" placeholder="e.g. 2020">
+                                    </div>
+
+                                    <!-- Class -->
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label">Class</label>
+                                        <input type="text" class="form-control" name="class[]" placeholder="First / Distinction">
+                                    </div>
+
+                                    <!-- University -->
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label">University / Board</label>
+                                        <input type="text" class="form-control" name="university[]">
                                     </div>
 
                                     <!-- Institute -->
                                     <div class="col-12 col-md-6">
                                         <label class="form-label">Institute / College / School</label>
-                                        <input type="text" class="form-control" name="institute[]" placeholder="Institute Name" required>
+                                        <input type="text" class="form-control" name="institute[]">
                                     </div>
 
-                                    <!-- Town / Village -->
+                                    <!-- Country -->
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label">Country</label>
+                                        <input type="text" class="form-control" name="country[]" value="India">
+                                    </div>
+
+                                    <!-- Town -->
                                     <div class="col-12 col-md-6">
                                         <label class="form-label">Town / Village</label>
-                                        <input type="text" class="form-control" name="town[]" placeholder="Town / Village">
+                                        <input type="text" class="form-control" name="town[]">
                                     </div>
 
                                     <!-- District -->
                                     <div class="col-12 col-md-6">
                                         <label class="form-label">District</label>
-                                        <input type="text" class="form-control" name="district[]" placeholder="District">
+                                        <input type="text" class="form-control" name="district[]">
                                     </div>
 
                                     <!-- State -->
                                     <div class="col-12 col-md-6">
                                         <label class="form-label">State</label>
-                                        <input type="text" class="form-control" name="state[]" placeholder="State">
+                                        <input type="text" class="form-control" name="state[]">
                                     </div>
 
-                                    <!-- Remove button -->
+                                    <!-- Highlights / Comments / Merits -->
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label">Highlights / Comments / Merits</label>
+                                        <input type="text" class="form-control" name="highlights_comments_merits[]">
+                                    </div>
+                                    <!-- Remove -->
                                     <div class="col-12 text-end">
                                         <button type="button" class="btn btn-danger btn-sm remove-education">Remove</button>
                                     </div>
-                                </div>
 
+                                </div>
                             </div>
 
                             <!-- Add another education button -->
@@ -104,29 +135,58 @@
 
 <!-- JS to clone education row -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     const addBtn = document.getElementById('add-education');
     const container = document.getElementById('education-container');
+    const form = document.querySelector('form');
 
-    addBtn.addEventListener('click', function() {
+    // Add new row
+    addBtn.addEventListener('click', function () {
         const newRow = container.querySelector('.education-row').cloneNode(true);
-        
+
         // Clear input values
-        newRow.querySelectorAll('input, select').forEach(input => input.value = '');
-        
+        newRow.querySelectorAll('input').forEach(input => {
+            input.value = '';
+            if (input.classList.contains('other-category')) {
+                input.classList.add('d-none');
+                input.required = false;
+            }
+        });
+
+        newRow.querySelectorAll('select').forEach(select => select.value = '');
         container.appendChild(newRow);
     });
 
-    // Remove row functionality
-    container.addEventListener('click', function(e) {
-        if(e.target && e.target.classList.contains('remove-education')) {
-            const rows = container.querySelectorAll('.education-row');
-            if(rows.length > 1) { // Keep at least one row
-                e.target.closest('.education-row').remove();
-            } else {
-                alert('At least one education entry is required.');
-            }
+    // Handle category change for "Other"
+    container.addEventListener('change', function (e) {
+        if (!e.target.classList.contains('category-select')) return;
+
+        const row = e.target.closest('.education-row');
+        const otherInput = row.querySelector('.other-category');
+
+        if (e.target.value === 'others') {
+            otherInput.classList.remove('d-none');
+            otherInput.required = true;
+        } else {
+            otherInput.classList.add('d-none');
+            otherInput.value = '';
+            otherInput.required = false;
         }
     });
+
+    // Remove row
+    container.addEventListener('click', function (e) {
+        if (!e.target.classList.contains('remove-education')) return;
+
+        const rows = container.querySelectorAll('.education-row');
+        if (rows.length > 1) {
+            e.target.closest('.education-row').remove();
+        } else {
+            alert('At least one education entry is required.');
+        }
+    });
+
 });
 </script>
+
+
