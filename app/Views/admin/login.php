@@ -1,122 +1,182 @@
 <?php helper('captcha'); ?>
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <title>YVU main</title>
-    <!-- plugins:css -->
-    <link rel="stylesheet" href="<?php base_url()?>admin-template/assets/vendors/feather/feather.css" />
-    <link
-      rel="stylesheet"
-      href="<?php base_url()?>admin-template/assets/vendors/ti-icons/css/themify-icons.css"
-    />
-    <link
-      rel="stylesheet"
-      href="<?php base_url()?>admin-template/assets/vendors/css/vendor.bundle.base.css"
-    />
-    <link
-      rel="stylesheet"
-      href="<?php base_url()?>admin-template/assets/vendors/font-awesome/css/font-awesome.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="<?php base_url()?>admin-template/assets/vendors/mdi/css/materialdesignicons.min.css"
-    />
-    <!-- endinject -->
-    <!-- Plugin css for this page -->
-    <!-- End plugin css for this page -->
-    <!-- inject:css -->
-    <link
-      rel="stylesheet"
-      href="<?php base_url()?>admin-template/assets/css/style.css"
-    />
-    <!-- endinject -->
-    <link rel="shortcut icon" href="<?= base_url('admin-template/assets/images/favicon.ico') ?>" />
-  </head>
-  <body>
-    <div class="container-scroller">
-      <div class="container-fluid page-body-wrapper full-page-wrapper">
-        <div class="content-wrapper d-flex align-items-center auth px-0">
-          <div class="row w-100 mx-0">
-            <div class="col-lg-4 mx-auto">
-                <div class="auth-form-light text-left py-5 px-4 px-sm-5">
-                    <div class="brand-logo text-center">
-                        <img src="<?= base_url('admin-template/assets/images/yvu150-150.png')?>" alt="logo" />
-                    </div>
-                    <h4 class="text-center">YVU Login</h4>
-                    <h6 class="font-weight-light text-center mt-3">Sign in to continue.</h6>
 
-                    <!-- Error Messages -->
-                    <?php if (session()->getFlashdata('error')): ?>
-                        <div class="alert alert-danger text-center py-2">
-                            <?= esc(session()->getFlashdata('error')) ?>
-                        </div>
-                    <?php endif; ?>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YVU Main Login</title>
 
-                    <?php if (session()->getFlashdata('errors')): ?>
-                        <div class="alert alert-danger">
-                            <?php foreach (session()->getFlashdata('errors') as $error): ?>
-                                <div><?= esc($error) ?></div>
-                            <?php endforeach; ?>
-                        </div>
-                    <?php endif; ?>
+    <!-- Plugins CSS -->
+    <link rel="stylesheet" href="<?= base_url('admin-template/assets/vendors/feather/feather.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('admin-template/assets/vendors/ti-icons/css/themify-icons.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('admin-template/assets/vendors/css/vendor.bundle.base.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('admin-template/assets/vendors/font-awesome/css/font-awesome.min.css') ?>">
+    <link rel="stylesheet" href="<?= base_url('admin-template/assets/vendors/mdi/css/materialdesignicons.min.css') ?>">
 
-                    <!-- Login Form -->
-                    <form method="POST" action="<?= base_url('login') ?>" class="pt-3">
-                        <div class="form-group">
-                            <input 
-                                type="email" 
-                                name="email" 
-                                id="email" 
-                                class="form-control form-control-lg" 
-                                placeholder="User Id" 
-                                required
-                            >
-                        </div>
+    <!-- Template CSS -->
+    <link rel="stylesheet" href="<?= base_url('admin-template/assets/css/style.css') ?>">
 
-                        <div class="form-group">
-                            <input 
-                                type="password" 
-                                name="password" 
-                                id="password" 
-                                class="form-control form-control-lg" 
-                                placeholder="Password" 
-                                required
-                            >
-                        </div>
+    <link rel="shortcut icon" href="<?= base_url('admin-template/assets/images/favicon.ico') ?>">
 
-                        <?= captcha_field() ?>
+    <style>
+        body{
+            background:#f5f7fb;
+        }
 
-                        <div class="mt-3 d-grid gap-2">
-                            <button type="submit" class="btn btn-primary btn-lg btn-block font-weight-medium auth-form-btn">
-                                Login
-                            </button>
-                        </div>
-                    </form>
+        .login-wrapper{
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+        }
+
+        .login-card{
+            width:100%;
+            max-width:360px;
+        }
+
+        .login-card .card{
+            border:none;
+            border-radius:10px;
+        }
+
+        .login-card .card-body{
+            padding:20px !important;
+        }
+
+        .login-card img{
+            width:65px;
+        }
+
+        .login-card h4{
+            font-size:22px;
+            margin-top:10px;
+            margin-bottom:2px;
+            font-weight:600;
+        }
+
+        .login-card small{
+            font-size:13px;
+        }
+
+        .form-group{
+            margin-bottom:12px !important;
+        }
+
+        .form-group label{
+            font-size:13px;
+            font-weight:600;
+            margin-bottom:4px;
+        }
+
+        .form-control{
+            height:38px !important;
+            min-height:38px !important;
+            padding:6px 10px !important;
+            font-size:14px !important;
+            border-radius:6px;
+        }
+
+        .btn{
+            height:38px !important;
+            font-size:14px !important;
+            border-radius:6px;
+        }
+
+        .alert{
+            padding:8px 12px;
+            font-size:13px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<div class="container login-wrapper">
+
+    <div class="login-card">
+
+        <div class="card shadow">
+
+            <div class="card-body">
+
+                <div class="text-center mb-3">
+
+                    <img
+                        src="<?= base_url('admin-template/assets/images/yvu150-150.png') ?>"
+                        alt="YVU Logo">
+
+                    <h4>YVU Login</h4>
+
+                    <small class="text-muted">
+                        Sign in to continue
+                    </small>
+
                 </div>
+
+                <?php if (session()->getFlashdata('error')): ?>
+                    <div class="alert alert-danger text-center">
+                        <?= esc(session()->getFlashdata('error')) ?>
+                    </div>
+                <?php endif; ?>
+
+                <?php if (session()->getFlashdata('errors')): ?>
+                    <div class="alert alert-danger">
+                        <?php foreach (session()->getFlashdata('errors') as $error): ?>
+                            <div><?= esc($error) ?></div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+
+                <form action="<?= base_url('login') ?>" method="post">
+
+                    <div class="form-group">
+                        <label>Email</label>
+
+                        <input
+                            type="email"
+                            name="email"
+                            class="form-control"
+                            placeholder="Enter Email"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Password</label>
+
+                        <input
+                            type="password"
+                            name="password"
+                            class="form-control"
+                            placeholder="Enter Password"
+                            required>
+                    </div>
+
+                    <div class="form-group">
+                        <?= captcha_field(); ?>
+                    </div>
+
+                    <button class="btn btn-primary btn-block mt-2">
+                        Login
+                    </button>
+
+                </form>
+
             </div>
-          </div>
+
         </div>
-        <!-- content-wrapper ends -->
-      </div>
-      <!-- page-body-wrapper ends -->
+
     </div>
-    <!-- container-scroller -->
-    <!-- plugins:js -->
-    <script src="<?php base_url()?>admin-template/assets/vendors/js/vendor.bundle.base.js"></script>
-    <!-- endinject -->
-    <!-- Plugin js for this page -->
-    <!-- End plugin js for this page -->
-    <!-- inject:js -->
-    <script src="<?php base_url()?>admin-template/assets/js/off-canvas.js"></script>
-    <script src="<?php base_url()?>admin-template/assets/js/template.js"></script>
-    <script src="<?php base_url()?>admin-template/assets/js/settings.js"></script>
-    <script src="<?php base_url()?>admin-template/assets/js/todolist.js"></script>
-    <!-- endinject -->
-  </body>
+
+</div>
+
+<script src="<?= base_url('admin-template/assets/vendors/js/vendor.bundle.base.js') ?>"></script>
+<script src="<?= base_url('admin-template/assets/js/off-canvas.js') ?>"></script>
+<script src="<?= base_url('admin-template/assets/js/template.js') ?>"></script>
+<script src="<?= base_url('admin-template/assets/js/settings.js') ?>"></script>
+<script src="<?= base_url('admin-template/assets/js/todolist.js') ?>"></script>
+
+</body>
 </html>
