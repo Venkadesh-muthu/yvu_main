@@ -20,7 +20,7 @@
                             <div class="col-12 col-md-6">
                                 <label class="form-label">Name</label>
                                 <input type="text" class="form-control" name="name"
-                                       value="<?= esc($profile['name']) ?>" required>
+                                       value="<?= esc($profile['name']) ?>" >
                             </div>
                             
                             <!-- About Me -->
@@ -43,9 +43,9 @@
                             <!-- Designation -->
                             <div class="col-12 col-md-6">
                                 <label class="form-label">
-                                    Designation <span class="text-danger">*</span>
+                                    Designation
                                 </label>
-                                <select name="designation" class="form-control" required>
+                                <select name="designation" class="form-control" >
                                     <option value="">-- Select Designation --</option>
 
                                     <option value="Professor"
@@ -66,23 +66,23 @@
                             </div>
                             <div class="col-12 col-md-6">
                                 <label class="form-label">
-                                    Effective Date <span class="text-danger">*</span>
+                                    Effective Date 
                                 </label>
                                 <input type="date"
                                     class="form-control"
                                     name="effective_date"
                                     value="<?= esc($profile['effective_date'] ?? '') ?>"
-                                    required>
+                                    >
                             </div>
                             <div class="col-12 col-md-6">
                                 <label class="form-label">
-                                    Join Date <span class="text-danger">*</span>
+                                    Join Date 
                                 </label>
                                 <input type="date"
                                     class="form-control"
                                     name="join_date"
                                     value="<?= esc($profile['join_date'] ?? '') ?>"
-                                    required>
+                                    >
                             </div>
 
 

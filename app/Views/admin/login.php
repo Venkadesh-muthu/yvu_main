@@ -133,13 +133,13 @@
                 <form action="<?= base_url('login') ?>" method="post">
 
                     <div class="form-group">
-                        <label>Email</label>
+                        <label>User ID</label>
 
                         <input
-                            type="email"
+                            type="text"
                             name="email"
                             class="form-control"
-                            placeholder="Enter Email"
+                            placeholder="Enter User ID"
                             required>
                     </div>
 

@@ -15,7 +15,7 @@
                             <!-- Name -->
                             <div class="col-12 col-md-6">
                                 <label class="form-label">Name</label>
-                                <input type="text" class="form-control" name="name" placeholder="Enter Full Name" value="<?= set_value('name') ?>" required>
+                                <input type="text" class="form-control" name="name" placeholder="Enter Full Name" value="<?= set_value('name') ?>">
                             </div>
 
                             <!-- About Me -->
@@ -35,7 +35,7 @@
                                 <label class="form-label">
                                     Designation <span class="text-danger">*</span>
                                 </label>
-                                <select name="designation" class="form-control" required>
+                                <select name="designation" class="form-control">
                                     <option value="">-- Select Designation --</option>
                                     <option value="Professor" <?= set_select('designation', 'Professor') ?>>Professor</option>
                                     <option value="Associate Professor" <?= set_select('designation', 'Associate Professor') ?>>Associate Professor</option>
@@ -50,7 +50,7 @@
                                     class="form-control"
                                     name="effective_date"
                                     value="<?= set_value('effective_date') ?>"
-                                    required>
+                                    >
                             </div>
                             <div class="col-12 col-md-6">
                                 <label class="form-label">
@@ -60,7 +60,7 @@
                                     class="form-control"
                                     name="join_date"
                                     value="<?= set_value('join_date') ?>"
-                                    required>
+                                    >
                             </div>
 
                             <!-- Department -->
